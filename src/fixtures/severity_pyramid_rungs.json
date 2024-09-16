@@ -1,0 +1,72 @@
+[
+{
+    "model": "signals.severitypyramidrung",
+    "pk": 73,
+    "fields": {
+        "created": "2024-08-15T09:57:05.874Z",
+        "modified": "2024-08-15T13:08:28.334Z",
+        "name": "outpatient visit",
+        "display_name": "Outpatient / ED"
+    }
+},
+{
+    "model": "signals.severitypyramidrung",
+    "pk": 74,
+    "fields": {
+        "created": "2024-08-15T09:57:06.623Z",
+        "modified": "2024-08-15T13:08:20.357Z",
+        "name": "infected",
+        "display_name": "Infected"
+    }
+},
+{
+    "model": "signals.severitypyramidrung",
+    "pk": 75,
+    "fields": {
+        "created": "2024-08-15T09:57:06.742Z",
+        "modified": "2024-08-15T13:08:14.615Z",
+        "name": "population",
+        "display_name": "Population"
+    }
+},
+{
+    "model": "signals.severitypyramidrung",
+    "pk": 76,
+    "fields": {
+        "created": "2024-08-15T09:57:07.184Z",
+        "modified": "2024-08-15T13:08:07.134Z",
+        "name": "hospitalized",
+        "display_name": "Hospitalized"
+    }
+},
+{
+    "model": "signals.severitypyramidrung",
+    "pk": 77,
+    "fields": {
+        "created": "2024-08-15T09:57:07.541Z",
+        "modified": "2024-08-15T13:07:59.789Z",
+        "name": "symptomatic",
+        "display_name": "Symptomatic"
+    }
+},
+{
+    "model": "signals.severitypyramidrung",
+    "pk": 78,
+    "fields": {
+        "created": "2024-08-15T09:57:16.477Z",
+        "modified": "2024-08-15T13:07:54.021Z",
+        "name": "ascertained (case)",
+        "display_name": "Ascertained (case)"
+    }
+},
+{
+    "model": "signals.severitypyramidrung",
+    "pk": 79,
+    "fields": {
+        "created": "2024-08-15T09:57:49.327Z",
+        "modified": "2024-08-15T13:07:46.136Z",
+        "name": "dead",
+        "display_name": "Dead"
+    }
+}
+]

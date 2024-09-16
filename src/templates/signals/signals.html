@@ -1,0 +1,462 @@
+{% extends 'index.html' %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-3">
+        <form method="GET" id="filterSignalsForm">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Filters</h5>
+                    <div class="input-group">
+                        {{ form.active|as_crispy_field}}
+                    </div>
+                    <div class="accordion accordion-flush" id="accordionSignalFilters">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading_{{ form.pathogen.auto_id }}">
+                                <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
+                                    data-mdb-toggle="collapse"
+                                    data-mdb-target="#flush-collapse_{{ form.pathogen.auto_id }}" aria-expanded="false"
+                                    aria-controls="flush-collapse_{{ form.pathogen.auto_id }}">
+                                    Pathogen / Syndrome
+                                    <a
+                                        tabindex="0"
+                                        type="button"
+                                        class="info-button filter-description-popover"
+                                        data-mdb-container="body"
+                                        data-mdb-ripple-init
+                                        data-mdb-popover-init
+                                        data-mdb-trigger="hover"
+                                        data-mdb-placement="right"
+                                        data-mdb-content=""
+                                        >
+                                        <i class="far fa-circle-question"></i>
+                                    </a>
+                                </button>
+                            </h2>
+                            <div id="flush-collapse_{{ form.pathogen.auto_id }}"
+                                class="accordion-collapse {% if form.pathogen.value %} {% else %}collapse{% endif %}"
+                                aria-labelledby="flush-heading_{{ form.pathogen.auto_id }}"
+                                data-mdb-parent="#accordionSignalFilters">
+                                <div class="accordion-body margin-top-1rem">
+                                    <div class="bulk-select form-check">
+                                        <input type="checkbox" class="form-check-input" id="select-all">
+                                        <label class="form-check-label" for="select-all">Select all</label>
+                                    </div>
+                                    <div id="div_id_pathogen" class="mb-3">
+                                        <div>
+                                            {{ form.pathogen|as_crispy_field }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading_{{ form.geographic_scope.auto_id }}">
+                                <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
+                                    data-mdb-toggle="collapse"
+                                    data-mdb-target="#flush-collapse_{{ form.geographic_scope.auto_id }}"
+                                    aria-expanded="false"
+                                    aria-controls="flush-collapse_{{ form.geographic_scope.auto_id }}">
+                                    Country
+                                    <a
+                                        tabindex="0"
+                                        type="button"
+                                        class="info-button filter-description-popover"
+                                        data-mdb-container="body"
+                                        data-mdb-ripple-init
+                                        data-mdb-popover-init
+                                        data-mdb-trigger="hover"
+                                        data-mdb-placement="right"
+                                        data-mdb-content=""
+                                        >
+                                        <i class="far fa-circle-question"></i>
+                                    </a>
+                                </button>
+                            </h2>
+                            <div id="flush-collapse_{{ form.geographic_scope.auto_id }}"
+                                class="accordion-collapse {% if form.geographic_scope.value %} {% else %}collapse{% endif %}"
+                                aria-labelledby="flush-heading_{{ form.geographic_scope.auto_id }}"
+                                data-mdb-parent="#accordionSignalFilters">
+                                <div class="accordion-body margin-top-1rem">
+                                    {{ form.geographic_scope|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading_{{ form.available_geographies.auto_id }}">
+                                <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
+                                    data-mdb-toggle="collapse"
+                                    data-mdb-target="#flush-collapse_{{ form.available_geographies.auto_id }}"
+                                    aria-expanded="false"
+                                    aria-controls="flush-collapse_{{ form.available_geographies.auto_id }}">
+                                    Geo-level
+                                    <a
+                                        tabindex="0"
+                                        type="button"
+                                        class="info-button filter-description-popover"
+                                        data-mdb-container="body"
+                                        data-mdb-ripple-init
+                                        data-mdb-popover-init
+                                        data-mdb-trigger="hover"
+                                        data-mdb-placement="right"
+                                        data-mdb-content=""
+                                        >
+                                        <i class="far fa-circle-question"></i>
+                                    </a>
+                                </button>
+                            </h2>
+                            <div id="flush-collapse_{{ form.available_geographies.auto_id }}"
+                                class="accordion-collapse {% if form.available_geographies.value %} {% else %}collapse{% endif %}"
+                                aria-labelledby="flush-heading_{{ form.available_geographies.auto_id }}"
+                                data-mdb-parent="#accordionSignalFilters">
+                                <div class="accordion-body margin-top-1rem">
+                                    <div class="bulk-select form-check">
+                                        <input type="checkbox" class="form-check-input" id="select-all">
+                                        <label class="form-check-label" for="select-all">Select all</label>
+                                    </div>
+                                    {{ form.available_geographies|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading_{{ form.severity_pyramid_rung.auto_id }}">
+                                <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
+                                    data-mdb-toggle="collapse"
+                                    data-mdb-target="#flush-collapse_{{ form.severity_pyramid_rung.auto_id }}"
+                                    aria-expanded="false"
+                                    aria-controls="flush-collapse_{{ form.severity_pyramid_rung.auto_id }}">
+                                    Severity Pyramid
+                                    <a
+                                        tabindex="0"
+                                        type="button"
+                                        class="info-button filter-description-popover"
+                                        data-mdb-container="body"
+                                        data-mdb-ripple-init
+                                        data-mdb-popover-init
+                                        data-mdb-trigger="hover"
+                                        data-mdb-placement="right"
+                                        data-mdb-content=""
+                                        >
+                                        <i class="far fa-circle-question"></i>
+                                    </a>
+                                </button>
+                            </h2>
+                            <div id="flush-collapse_{{ form.severity_pyramid_rung.auto_id }}"
+                                class="accordion-collapse {% if form.severity_pyramid_rung.value %} {% else %}collapse{% endif %}"
+                                aria-labelledby="flush-heading_{{ form.severity_pyramid_rung.auto_id }}"
+                                data-mdb-parent="#accordionSignalFilters">
+                                <div class="accordion-body margin-top-1rem">
+                                    <div class="bulk-select form-check">
+                                        <input type="checkbox" class="form-check-input" id="select-all">
+                                        <label class="form-check-label" for="select-all">Select all</label>
+                                    </div>
+                                    {{ form.severity_pyramid_rung|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading_{{ form.source.auto_id }}">
+                                <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
+                                    data-mdb-toggle="collapse"
+                                    data-mdb-target="#flush-collapse_{{ form.source.auto_id }}" aria-expanded="false"
+                                    aria-controls="flush-collapse_{{ form.source.auto_id }}">
+                                    Data Source
+                                    <a
+                                        tabindex="0"
+                                        type="button"
+                                        class="info-button filter-description-popover"
+                                        data-mdb-container="body"
+                                        data-mdb-ripple-init
+                                        data-mdb-popover-init
+                                        data-mdb-trigger="hover"
+                                        data-mdb-placement="right"
+                                        data-mdb-content=""
+                                        >
+                                        <i class="far fa-circle-question"></i>
+                                    </a>
+                                </button>
+                            </h2>
+                            <div id="flush-collapse_{{ form.source.auto_id }}"
+                                class="accordion-collapse {% if form.source.value %} {% else %}collapse{% endif %}"
+                                aria-labelledby="flush-heading_{{ form.source.auto_id }}"
+                                data-mdb-parent="#accordionSignalFilters">
+                                <div class="accordion-body margin-top-1rem">
+                                    <div class="bulk-select form-check">
+                                        <input type="checkbox" class="form-check-input" id="select-all">
+                                        <label class="form-check-label" for="select-all">Select all</label>
+                                    </div>
+                                    {{ form.source|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading_{{ form.time_type.auto_id }}">
+                                <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
+                                    data-mdb-toggle="collapse"
+                                    data-mdb-target="#flush-collapse_{{ form.time_type.auto_id }}" aria-expanded="false"
+                                    aria-controls="flush-collapse_{{ form.time_type.auto_id }}">
+                                    Temporal Granularity
+                                    <a
+                                        tabindex="0"
+                                        type="button"
+                                        class="info-button filter-description-popover"
+                                        data-mdb-container="body"
+                                        data-mdb-ripple-init
+                                        data-mdb-popover-init
+                                        data-mdb-trigger="hover"
+                                        data-mdb-placement="right"
+                                        data-mdb-content=""
+                                        >
+                                        <i class="far fa-circle-question"></i>
+                                    </a>
+                                </button>
+                            </h2>
+                            <div id="flush-collapse_{{ form.time_type.auto_id }}"
+                                class="accordion-collapse {% if form.time_type.value %} {% else %}collapse{% endif %}"
+                                aria-labelledby="flush-heading_{{ form.time_type.auto_id }}"
+                                data-mdb-parent="#accordionSignalFilters">
+                                <div class="accordion-body margin-top-1rem">
+                                    {{ form.time_type|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading_id_signal_availability">
+                                <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
+                                    data-mdb-toggle="collapse" data-mdb-target="#flush-collapse_id_signal_availability"
+                                    aria-expanded="false" aria-controls="flush-collapse_id_signal_availability">
+                                    Signal Availability
+                                    <a
+                                        tabindex="0"
+                                        type="button"
+                                        class="info-button filter-description-popover"
+                                        data-mdb-container="body"
+                                        data-mdb-ripple-init
+                                        data-mdb-popover-init
+                                        data-mdb-trigger="hover"
+                                        data-mdb-placement="right"
+                                        data-mdb-content=""
+                                        >
+                                        <i class="far fa-circle-question"></i>
+                                    </a>
+                                </button>
+                            </h2>
+                            <div id="flush-collapse_id_signal_availability"
+                                clas
+                                s="accordion-collapse {% if form.from_date.value or form.to_date.value or form.signal_availability_days.value %} {% else %}collapse{% endif %}"
+                                aria-labelledby="flush-heading_id_signal_availability"
+                                data-mdb-parent="#accordionSignalFilters">
+                                <div class="accordion-body margin-top-1rem">
+                                    {{ form.from_date|as_crispy_field }}
+                                    {{ form.to_date|as_crispy_field }}
+                                    {{ form.signal_availability_days|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2 mt-3">
+                            <button id="filter-submit" type="submit" class="btn btn-primary">{% trans 'Apply Filters' %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-9">
+        <form methog="GET" id="orderByForm">
+            <div class="row d-flex justify-content-end">
+                <div class="col-6">
+                    <div class="input-group mb-3 d-flex justify-content-start">
+                        <span class="pt-05">
+                            Showing {{ signals|length }} row{{ signals|length|pluralize:"s" }}.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive" data-fl-scrolls='{"orientation": "horizontal"}'>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Ongoing</th>
+                                    <th scope="col">Data Source</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Geographic Scope</th>
+                                    <th scope="col">Geographic Granularity, aka Geo-Level</th>
+                                    <th scope="col">Available Since</th>
+                                    <th scope="col">Available Until</th>
+                                    <th scope="col">Temporal Granularity</th>
+                                    <th scope="col">Reporting Cadence</th>
+                                    <th scope="col">Reporting Lag(nominal)</th>
+                                    <th scope="col">Revision Cadence</th>
+                                    <th scope="col">Demographic Scope</th>
+                                    <th scope="col">Pathogen / Syndrome</th>
+                                    <th scope="col">Severity Pyramid Rungs</th>
+                                    <th scope="col">Missingness</th>
+                                    <th scope="col">License / Data Use Restrictions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for signal in signals %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="id" value="{{ signal.id }}">
+                                        {{ form.id|as_crispy_field }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.signal_display_name }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {% if signal.active == True%}
+                                        <i class="fas fa-circle" style="color:green;"></i>
+                                        {% else %}
+                                        <i class="fas fa-circle" style="color:red;"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.datasource_display_name }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.description }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.geographic_scope }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {% for geography in signal.get_available_geographies %}
+                                        <span class="badge rounded-pill bg-dark">
+                                            {{ geography }}
+                                        </span>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.temporal_scope_start }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.temporal_scope_end }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.time_type }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.reporting_cadence }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.typical_reporting_lag }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.typical_revision_cadence }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.demographic_scope }}
+                                    </td>
+                                    <td cla ss="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {% for pathogen in signal.get_pathogens %}
+                                        <span class="badge rounded-pill bg-dark">
+                                            {{ pathogen|title }}
+                                        </span>
+                                        {% endfor %}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.severity_pyramid_rung }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.missingness }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.license }}
+                                        <br>
+                                        {{ signal.restrictions }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showAllOptions(event, parentDiv) {
+        event.preventDefault();
+        var childDivs = parentDiv.querySelectorAll('.form-check');
+        for (i = 5; i < childDivs.length; i++) {
+            if (childDivs[i].style.display === 'none') {
+                childDivs[i].style.display = 'block';
+            } else {
+                childDivs[i].style.display = 'none';
+            }
+        }
+        if (event.target.innerText === 'Show more...') {
+            event.target.innerText = 'Show less...';
+        } else {
+            event.target.innerText = 'Show more...';
+        }
+    }
+
+
+
+    // Add an event listener to each 'bulk-select' element
+    let bulkSelectDivs = document.querySelectorAll('.bulk-select');
+    bulkSelectDivs.forEach(div => {
+        div.addEventListener('click', function(event) {
+            let form = this.nextElementSibling;
+            let showMoreLink = form.querySelector('a');
+            let checkboxes = form.querySelectorAll('input[type="checkbox"]');
+
+            if (event.target.checked === true) {
+                checkboxes.forEach((checkbox, index) => {
+                    checkbox.checked = true;
+                    if (index > 4) {
+                        checkbox.parentElement.style.display = checkbox.parentElement.style.display === 'none' ? 'block' : null;
+                    }
+                })
+                if (showMoreLink) {
+                    showMoreLink.innerText = 'Show less...';
+                }
+            } else if (event.target.checked === false) {
+                checkboxes.forEach((checkbox, index) => {
+                    checkbox.checked = false
+                    if (index > 4) {
+                        checkbox.parentElement.style.display = checkbox.parentElement.style.display === 'block' ? 'none' : null;
+                    }
+                });
+                if (showMoreLink) {
+                    showMoreLink.innerText = 'Show more...';
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

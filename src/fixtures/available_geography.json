@@ -1,0 +1,79 @@
+[
+    {
+      "model": "signals.Geography",
+      "pk": 1,
+      "fields": {
+        "name": "county",
+        "display_name": "ADM2 (e.g. U.S. counties)",
+        "display_order_number": 3,
+        "created": "2023-08-09T19:23:22.597131",
+        "modified": "2023-08-09T19:23:22.597131"
+      }
+    },
+    {
+      "model": "signals.Geography",
+      "pk": 2,
+      "fields": {
+        "name": "hhs",
+        "display_name": "HHS Regions",
+        "display_order_number": 4,
+        "created": "2023-08-09T19:23:22.597131",
+        "modified": "2023-08-09T19:23:22.597131"
+      }
+    },
+    {
+      "model": "signals.Geography",
+      "pk": 3,
+      "fields": {
+        "name": "hrr",
+        "display_name": "Hospital Referral Regions (HRRs)",
+        "display_order_number": 6,
+        "created": "2023-08-09T19:23:22.597131",
+        "modified": "2023-08-09T19:23:22.597131"
+      }
+    },
+    {
+      "model": "signals.Geography",
+      "pk": 4,
+      "fields": {
+        "name": "msa",
+        "display_name": "Metropolitan Statistical Areas (MSAs)",
+        "display_order_number": 5,
+        "created": "2023-08-09T19:23:22.597131",
+        "modified": "2023-08-09T19:23:22.597131"
+      }
+    },
+    {
+      "model": "signals.Geography",
+      "pk": 5,
+      "fields": {
+        "name": "nation",
+        "display_name": "National",
+        "display_order_number": 1,
+        "created": "2023-08-09T19:23:22.597131",
+        "modified": "2023-08-09T19:23:22.597131"
+      }
+    },
+    {
+      "model": "signals.Geography",
+      "pk": 6,
+      "fields": {
+        "name": "state",
+        "display_name": "ADM1 (e.g. U.S. states)",
+        "display_order_number": 2,
+        "created": "2023-08-09T19:23:22.597131",
+        "modified": "2023-08-09T19:23:22.597131"
+      }
+    },
+    {
+      "model": "signals.Geography",
+      "pk": 7,
+      "fields": {
+        "name": "dma",
+        "display_name": "Designated Market Areas (DMAs)",
+        "display_order_number": 7,
+        "created": "2023-08-09T19:23:22.597131",
+        "modified": "2023-08-09T19:23:22.597131"
+      }
+    }
+  ]

@@ -1,0 +1,52 @@
+[
+{
+    "model": "signals.formattype",
+    "pk": 16,
+    "fields": {
+        "created": "2024-08-15T09:23:25.774Z",
+        "modified": "2024-08-15T09:23:25.774Z",
+        "name": "raw",
+        "display_name": "Raw"
+    }
+},
+{
+    "model": "signals.formattype",
+    "pk": 17,
+    "fields": {
+        "created": "2024-08-15T09:23:32.604Z",
+        "modified": "2024-08-15T09:23:32.604Z",
+        "name": "percent",
+        "display_name": "Percent"
+    }
+},
+{
+    "model": "signals.formattype",
+    "pk": 18,
+    "fields": {
+        "created": "2024-08-15T09:23:38.271Z",
+        "modified": "2024-08-15T09:23:38.272Z",
+        "name": "fraction",
+        "display_name": "Fraction"
+    }
+},
+{
+    "model": "signals.formattype",
+    "pk": 19,
+    "fields": {
+        "created": "2024-08-15T09:23:43.219Z",
+        "modified": "2024-08-15T09:23:43.219Z",
+        "name": "count",
+        "display_name": "Count"
+    }
+},
+{
+    "model": "signals.formattype",
+    "pk": 20,
+    "fields": {
+        "created": "2024-08-15T09:23:50.509Z",
+        "modified": "2024-08-15T09:23:50.509Z",
+        "name": "per100k",
+        "display_name": "Per 100K"
+    }
+}
+]
