@@ -19,7 +19,7 @@ class SignalsListView(ListView):
     ListView for displaying a list of Signal objects.
     """
 
-    model = Signal
+    model = SignalsDbView
     template_name = "signals/signals.html"
     context_object_name = "signals"
 
