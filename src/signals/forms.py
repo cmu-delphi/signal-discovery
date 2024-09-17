@@ -17,13 +17,11 @@ class SignalFilterForm(forms.ModelForm):
 
     id = forms.ModelMultipleChoiceField(
         queryset=Signal.objects.all(),
-        required=False,
         widget=forms.MultipleHiddenInput,
     )
     active = forms.TypedMultipleChoiceField(
         choices=[(True, "Ongoing Surveillance Only")],
         coerce=bool,
-        required=False,
         widget=forms.CheckboxSelectMultiple(),
     )
 
@@ -58,19 +56,17 @@ class SignalFilterForm(forms.ModelForm):
     )
 
     from_date = forms.DateField(
-        required=False,
         widget=forms.DateInput(attrs={"type": "date"}),
         label=_("Available Since"),
     )
 
     to_date = forms.DateField(
-        required=False,
         widget=forms.DateInput(attrs={"type": "date"}),
         label=_("Available Until"),
     )
 
     signal_availability_days = forms.IntegerField(
-        required=False, label=_("Available for at least (days)")
+        label=_("Available for at least (days)")
     )
 
     class Meta:
@@ -96,18 +92,18 @@ class SignalFilterForm(forms.ModelForm):
         """
         super().__init__(*args, **kwargs)
 
-        # Set required attribute to False and disable helptext for all fields
-        # self.fields["available_geography"].queryset = self.fields["available_geography"].queryset.order_by("order_id")
         try:
             self.fields["datasource"].choices = set(
                 SourceSubdivision.objects.values_list("display_name", "display_name")
             )
         except SourceSubdivision.DoesNotExist:
             self.fields["datasource"].choices = []
+
+        # Set required attribute to False and disable helptext for all fields
         for field_name, field in self.fields.items():
             field.required = False
             field.help_text = ""
             field.label = ""
-        # self.fields['from_date'].label = _('Available Since')
-        # self.fields['to_date'].label = _('Available Until')
-        # self.fields['signal_availability_days'].label = _('Available for at least (days)')
+        self.fields['from_date'].label = _('Available Since')
+        self.fields['to_date'].label = _('Available Until')
+        self.fields['signal_availability_days'].label = _('Available for at least (days)')
