@@ -32,9 +32,52 @@ class SignalsListView(ListView):
             logger.error(f"Error getting queryset: {e}")
             return SignalsDbView.objects.none()
 
+    def get_url_params(self):
+        url_params_dict = {
+            "id": self.request.GET.get("id"),
+            "search": self.request.GET.get("search"),
+            "order_by": self.request.GET.get("order_by"),
+            "pathogens": [int(el) for el in self.request.GET.getlist("pathogens")],
+            "active": [el for el in self.request.GET.getlist("active")],
+            "available_geography": (
+                [int(el) for el in self.request.GET.getlist("available_geography")]
+                if self.request.GET.get("available_geography")
+                else None
+            ),
+            "severity_pyramid_rung": (
+                [el for el in self.request.GET.getlist("severity_pyramid_rung")]
+                if self.request.GET.get("severity_pyramid_rung")
+                else None
+            ),
+            "geographic_scope": (
+                [el for el in self.request.GET.getlist("geographic_scope")]
+                if self.request.GET.get("geographic_scope")
+                else None
+            ),
+            "datasource": [el for el in self.request.GET.getlist("datasource")],
+            "time_type": [el for el in self.request.GET.getlist("time_type")],
+            "from_date": self.request.GET.get("from_date"),
+            "to_date": self.request.GET.get("to_date"),
+            "signal_availability_days": self.request.GET.get(
+                "signal_availability_days"
+            ),
+        }
+        url_params_str = ""
+        for param_name, param_value in url_params_dict.items():
+            if isinstance(param_value, list):
+                for value in param_value:
+                    url_params_str = f"{url_params_str}&{param_name}={value}"
+            else:
+                if param_value not in ["", None]:
+                    url_params_str = f"{url_params_str}&{param_name}={param_value}"
+        return url_params_dict, url_params_str
+
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["form"] = SignalFilterForm()
+        url_params_dict, url_params_str = self.get_url_params()
+        context["url_params_dict"] = url_params_dict
+        context["url_params_str"] = url_params_str
+        context["form"] = SignalFilterForm(initial=url_params_dict)
         context["filter"] = SignalFilter(self.request.GET, queryset=self.get_queryset())
         context["signals"] = self.get_queryset()
 

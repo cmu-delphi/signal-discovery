@@ -24,8 +24,8 @@ urlpatterns = [
     # datasources
     path(f'{settings.MAIN_PAGE}/datasources' if settings.MAIN_PAGE else 'datasources', include('datasources.urls')),
     
-    #signals
-    path(f'{settings.MAIN_PAGE}/signals' if settings.MAIN_PAGE else 'signals', include('signals.urls')),
+    # signals
+    path(f'{settings.MAIN_PAGE}/' if settings.MAIN_PAGE else 'signals', include('signals.urls')),
 
     path('__debug__/', include('debug_toolbar.urls')),
 ]
