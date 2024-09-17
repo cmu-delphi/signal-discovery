@@ -87,12 +87,12 @@
                             </div>
                         </div>
                         <div class="accordion-item">
-                            <h2 class="accordion-header" id="flush-heading_{{ form.available_geographies.auto_id }}">
+                            <h2 class="accordion-header" id="flush-heading_{{ form.available_geography.auto_id }}">
                                 <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
                                     data-mdb-toggle="collapse"
-                                    data-mdb-target="#flush-collapse_{{ form.available_geographies.auto_id }}"
+                                    data-mdb-target="#flush-collapse_{{ form.available_geography.auto_id }}"
                                     aria-expanded="false"
-                                    aria-controls="flush-collapse_{{ form.available_geographies.auto_id }}">
+                                    aria-controls="flush-collapse_{{ form.available_geography.auto_id }}">
                                     Geo-level
                                     <a
                                         tabindex="0"
@@ -109,16 +109,16 @@
                                     </a>
                                 </button>
                             </h2>
-                            <div id="flush-collapse_{{ form.available_geographies.auto_id }}"
-                                class="accordion-collapse {% if form.available_geographies.value %} {% else %}collapse{% endif %}"
-                                aria-labelledby="flush-heading_{{ form.available_geographies.auto_id }}"
+                            <div id="flush-collapse_{{ form.available_geography.auto_id }}"
+                                class="accordion-collapse {% if form.available_geography.value %} {% else %}collapse{% endif %}"
+                                aria-labelledby="flush-heading_{{ form.available_geography.auto_id }}"
                                 data-mdb-parent="#accordionSignalFilters">
                                 <div class="accordion-body margin-top-1rem">
                                     <div class="bulk-select form-check">
                                         <input type="checkbox" class="form-check-input" id="select-all">
                                         <label class="form-check-label" for="select-all">Select all</label>
                                     </div>
-                                    {{ form.available_geographies|as_crispy_field }}
+                                    {{ form.available_geography|as_crispy_field }}
                                 </div>
                             </div>
                         </div>
@@ -158,13 +158,12 @@
                                 </div>
                             </div>
                         </div>
-                        {% comment %}
                         <div class="accordion-item">
-                            <h2 class="accordion-header" id="flush-heading_{{ form.source.auto_id }}">
+                            <h2 class="accordion-header" id="flush-heading_{{ form.datasource.auto_id }}">
                                 <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
                                     data-mdb-toggle="collapse"
-                                    data-mdb-target="#flush-collapse_{{ form.source.auto_id }}" aria-expanded="false"
-                                    aria-controls="flush-collapse_{{ form.source.auto_id }}">
+                                    data-mdb-target="#flush-collapse_{{ form.datasource.auto_id }}" aria-expanded="false"
+                                    aria-controls="flush-collapse_{{ form.datasource.auto_id }}">
                                     Data Source
                                     <a
                                         tabindex="0"
@@ -181,16 +180,16 @@
                                     </a>
                                 </button>
                             </h2>
-                            <div id="flush-collapse_{{ form.source.auto_id }}"
-                                class="accordion-collapse {% if form.source.value %} {% else %}collapse{% endif %}"
-                                aria-labelledby="flush-heading_{{ form.source.auto_id }}"
+                            <div id="flush-collapse_{{ form.datasource.auto_id }}"
+                                class="accordion-collapse {% if form.datasource.value %} {% else %}collapse{% endif %}"
+                                aria-labelledby="flush-heading_{{ form.datasource.auto_id }}"
                                 data-mdb-parent="#accordionSignalFilters">
                                 <div class="accordion-body margin-top-1rem">
                                     <div class="bulk-select form-check">
                                         <input type="checkbox" class="form-check-input" id="select-all">
                                         <label class="form-check-label" for="select-all">Select all</label>
                                     </div>
-                                    {{ form.source|as_crispy_field }}
+                                    {{ form.datasource|as_crispy_field }}
                                 </div>
                             </div>
                         </div>
@@ -257,7 +256,7 @@
                                     {{ form.signal_availability_days|as_crispy_field }}
                                 </div>
                             </div>
-                        </div> {% endcomment %}
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2 mt-3">
@@ -316,7 +315,7 @@
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                        {{ signal.signal_display_name }}
+                                        {{ signal.name }}
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal' pk=signal.id %}';">
@@ -328,7 +327,7 @@
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                        {{ signal.datasource_display_name }}
+                                        {{ signal.datasource }}
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal' pk=signal.id %}';">

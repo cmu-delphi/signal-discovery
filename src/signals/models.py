@@ -320,7 +320,7 @@ class Signal(TimeStampedModel):
         help_text=_("Geographic scope of the signal."),
         on_delete=models.PROTECT,
     )
-    available_geographies: models.ManyToManyField = models.ManyToManyField(
+    available_geography: models.ManyToManyField = models.ManyToManyField(
         "signals.Geography",
         related_name="signals",
         help_text=_("Available geographies for the signal."),
@@ -432,9 +432,9 @@ class Signal(TimeStampedModel):
 
 class SignalsDbView(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    signal_display_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     active = models.BooleanField()
-    datasource_display_name = models.CharField(max_length=255)
+    datasource = models.CharField(max_length=255)
     description = models.TextField()
     geographic_scope = models.CharField(max_length=255)
     temporal_scope_start = models.CharField(max_length=255)
@@ -448,7 +448,7 @@ class SignalsDbView(models.Model):
     missingness = models.TextField()
     license = models.CharField(max_length=255)
     restrictions = models.TextField()
-    available_geographies = models.CharField(max_length=255)
+    available_geography = models.CharField(max_length=255)
     pathogens = models.CharField(max_length=255)
 
     class Meta:
@@ -457,7 +457,7 @@ class SignalsDbView(models.Model):
 
     @property
     def get_available_geographies(self):
-        return self.available_geographies.split(",")
+        return self.available_geography.split(",")
 
     @property
     def get_pathogens(self):
