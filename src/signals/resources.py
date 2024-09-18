@@ -140,6 +140,45 @@ def process_available_geographies(row) -> None:
                 signal_geography.save()
 
 
+def process_base(row) -> None:
+    if row["Signal BaseName"]:
+        source: SourceSubdivision = SourceSubdivision.objects.get(
+            name=row["Source Subdivision"]
+        )
+        base_signal: Signal = Signal.objects.get(
+            name=row["Signal BaseName"], source=source
+        )
+        row["base"] = base_signal.id
+
+
+class SignalBaseResource(resources.ModelResource):
+    """
+    Resource class for importing Signals base.
+    """
+
+    name = Field(attribute="name", column_name="Signal")
+    display_name = Field(attribute="display_name", column_name="Name")
+    ase = Field(
+        attribute="base",
+        column_name="base",
+        widget=widgets.ForeignKeyWidget(Signal, field="id"),
+    )
+    source = Field(
+        attribute="source",
+        column_name="Source Subdivision",
+        widget=widgets.ForeignKeyWidget(SourceSubdivision, field="name"),
+    )
+
+    class Meta:
+        model = Signal
+        fields: list[str] = ["base", "name", "source", "display_name"]
+        import_id_fields: list[str] = ["name", "source", "display_name"]
+
+    def before_import_row(self, row, **kwargs) -> None:
+        """Post-processes each row after importing."""
+        process_base(row)
+
+
 class SignalResource(resources.ModelResource):
     """
     Resource class for importing and exporting Signal models

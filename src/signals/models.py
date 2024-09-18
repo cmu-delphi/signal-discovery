@@ -401,6 +401,15 @@ class Signal(TimeStampedModel):
         help_text=_("Signal Availability Days"), null=True, blank=True
     )
 
+    base: models.ForeignKey = models.ForeignKey(
+        "self",
+        related_name="base_for",
+        help_text=_("Base signal"),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
     class Meta:
         unique_together = ["name", "source"]
         ordering: list[str] = ["modified"]

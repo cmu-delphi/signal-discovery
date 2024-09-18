@@ -3,7 +3,7 @@ from typing import Literal
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 
-from signals.resources import SignalResource
+from signals.resources import SignalResource, SignalBaseResource
 
 
 from signals.models import (
@@ -94,7 +94,7 @@ class SignalAdmin(ImportExportModelAdmin):
         Literal['name'], Literal['signal_type__name'], Literal['format_type__name'], Literal['category__name'], Literal[
             'geographic_scope__name']] = (
         'name', 'signal_type__name', 'format_type__name', 'category__name', 'geographic_scope__name')
-    resource_classes: list[type[SignalResource]] = [SignalResource]
+    resource_classes: list[type[SignalResource]] = [SignalResource, SignalBaseResource]
 
 
 @admin.register(SignalGeography)
