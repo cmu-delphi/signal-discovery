@@ -191,6 +191,17 @@
                                     </td>
                                 </tr>
                                 {% endif %}
+                                <tr>
+                                    <th scope="row">Related signals (signals with the same base)</th>
+                                    <td>
+                                        {% for signal in signal.same_base_signals %}
+                                        <a href="{% url 'signal' pk=signal.id %}" target="_blank">
+                                            <span class="badge rounded-pill bg-dark">
+                                                {{ signal.display_name }}
+                                            </span>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -198,136 +209,6 @@
             </div>
         </div>
     </section>
-    {% if signal.base %}
-    <h5>Signals with same base</h5>
-    <section class="section">
-        <div class="row">
-            <div class="card">
-                <div class="card-body table-responsive" data-fl-scrolls='{"orientation": "horizontal"}'>
-                    <table class="table table-borderless table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Ongoing</th>
-                                <th scope="col">Data Source</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Geographic Scope</th>
-                                <th scope="col">Geographic Granularity, aka Geo-Level</th>
-                                <th scope="col">Available Since</th>
-                                <th scope="col">Available Until</th>
-                                <th scope="col">Temporal Granularity</th>
-                                <th scope="col">Reporting Cadence</th>
-                                <th scope="col">Reporting Lag(nominal)</th>
-                                <th scope="col">Revision Cadence</th>
-                                <th scope="col">Demographic Scope</th>
-                                <!--<th scope="col">Demographic Disaggregation</th> -->
-                                <th scope="col">Pathogen / Syndrome</th>
-                                <th scope="col">Severity Pyramid Rungs</th>
-                                <th scope="col">Missingness</th>
-                                <th scope="col">License / Data Use Restrictions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for signal in signal.same_base_signals %}
-                            <tr>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.display_name }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {% if signal.active == True%}
-                                    <i class="fas fa-circle" style="color: green;"></i>
-                                    {% else %}
-                                    <i class="fas fa-circle" style="color:red;"></i>
-                                    {% endif %}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.source.external_name }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.description }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.geographic_scope.name }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {% for geography in signal.geography_signals.all %}
-                                    <span class="badge rounded-pill bg-dark">
-                                        {{ geography.display_name }}
-                                    </span>
-                                    {% endfor %}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.temporal_scope_start }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.temporal_scope_end }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.time_type }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.reporting_cadence }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.typical_reporting_lag }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.typical_revision_cadence }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {% for demographic_scope in signal.demographic_scope.all %}
-                                    <span>
-                                        {{ demographic_scope }}
-                                    </span>
-                                    {% endfor %}
-                                </td>
-                                <!-- <td class="clickable-table-cell" onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                                Place for Demographic Disaggregation
-                                            </td> -->
-                                <td cla ss="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {% for pathogen in signal.pathogen.all %}
-                                    <span class="badge rounded-pill bg-dark">
-                                        {{ pathogen|title }}
-                                    </span>
-                                    {% endfor %}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.severity_pyramid_rungs }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.missingness }}
-                                </td>
-                                <td class="clickable-table-cell"
-                                    onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                    {{ signal.license }}
-                                    <br>
-                                    {{ signal.restrictions }}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </section>
-    {% endif %}
     {% include "signals/data_visualization_export.html"%}
     <h5>Related links</h5>
     <section class="section">

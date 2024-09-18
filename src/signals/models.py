@@ -419,7 +419,7 @@ class Signal(TimeStampedModel):
         """
         Returns the signals that have the same base signal.
         """
-        return self.base.base_for.all() if self.base else None
+        return self.base.base_for.exclude(id=self.id) if self.base else None
 
     def __str__(self) -> str:
         """
