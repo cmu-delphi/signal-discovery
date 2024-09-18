@@ -1,24 +1,68 @@
 {% extends "index.html" %}
 
-
 {% load i18n %}
+
 
 {% block content %}
     {% for datasource in datasource_list %}
-        <div class="card">
-            <div class="card-body">
+    <div class="card">
+        <div class="card-body">
             <h5 class="card-title">{{ datasource.display_name }}</h5>
-                <p class="card-text">{{ datasource.description }}</p>
+            <p class="card-text">{{ datasource.description }}</p>
+            <div class="accordion" id="accordion-{{ datasource.name }}">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="heading-{{ datasource.name }}">
+                    <button
+                      data-mdb-collapse-init
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-mdb-target="#collapse-{{ datasource.name }}"
+                      aria-expanded="false"
+                      aria-controls="collapse-{{ datasource.name }}"
+                    >
+                      Source Subdivisions
+                    </button>
+                  </h2>
+                  <div id="collapse-{{ datasource.name }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ datasource.name }}" data-mdb-parent="#accordion-{{ datasource.name }}">
+                    <div class="accordion-body">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Signals</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for subdivision in datasource.source_subdivisions.all %}
+                                    <tr class="tableformat">
+                                        <td>{{ subdivision }}</td>
+                                        <td>
+                                            {% for signal in subdivision.signals.all %}
+                                                <a href="{% url 'signal' signal.pk %}">
+                                                    <span class="badge rounded-pill bg-dark">
+                                                        {{ signal }}
+                                                    </span>
+                                                </a>
+                                            {% endfor %}
+                                        </td>
+                                    <tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
             </div>
-            {% for subdivision in datasource.source_subdivisions.all %}
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between">
-                        <a  href="{% url 'signals' %}?source={{ subdivision.pk }}">
-                            <div>{{ subdivision }}</div>
-                        </a>
-                    </li>
-                </ul>
-            {% endfor %}
         </div>
+        {% comment %} {% for subdivision in datasource.source_subdivisions.all %}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between">
+                <a href="{% url 'signals' %}?source={{ subdivision.pk }}">
+                    <div>{{ subdivision }}</div>
+                </a>
+            </li>
+        </ul>
+        {% endfor %} {% endcomment %}
+    </div>
     {% endfor %}
 {% endblock %}
