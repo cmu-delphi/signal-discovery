@@ -1,6 +1,5 @@
 from django.urls import path
 from django.urls.resolvers import URLPattern
-from django.views.decorators.cache import cache_page
 
 from signals.views import (
     SignalsDetailView,
