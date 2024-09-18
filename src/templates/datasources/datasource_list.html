@@ -38,7 +38,7 @@
                                         <td>{{ subdivision }}</td>
                                         <td>
                                             {% for signal in subdivision.signals.all %}
-                                                <a href="{% url 'signal' signal.pk %}">
+                                                <a href="{% url 'signal' signal.pk %}" target="_blank">
                                                     <span class="badge rounded-pill bg-dark">
                                                         {{ signal }}
                                                     </span>
