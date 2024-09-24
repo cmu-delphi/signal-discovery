@@ -1,7 +1,6 @@
 import logging
 
 import django_filters
-from django_filters.filters import NumberFilter
 from django_filters.widgets import BooleanWidget, QueryArrayWidget
 
 from signals.models import (
@@ -17,12 +16,6 @@ logger = logging.getLogger(__name__)
 
 
 class SignalFilter(django_filters.FilterSet):
-    id = NumberFilter(
-        field_name="id",
-        lookup_expr="in",
-        widget=QueryArrayWidget,
-    )
-
     active = django_filters.BooleanFilter(
         field_name="active",
         widget=BooleanWidget(),
@@ -84,7 +77,6 @@ class SignalFilter(django_filters.FilterSet):
     class Meta:
         model = SignalsDbView
         fields: list[str] = [
-            "id",
             "active",
             "pathogens",
             "geographic_scope",

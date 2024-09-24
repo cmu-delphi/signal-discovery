@@ -264,20 +264,18 @@
                     </div>
                 </div>
             </div>
-        </form>
+        
     </div>
     <div class="col-9">
-        <form methog="GET" id="orderByForm">
-            <div class="row d-flex justify-content-end">
-                <div class="col-6">
-                    <div class="input-group mb-3 d-flex justify-content-start">
-                        <span class="pt-05">
-                            Showing {{ signals|length }} row{{ signals|length|pluralize:"s" }}.
-                        </span>
-                    </div>
+        <div class="row d-flex justify-content-end">
+            <div class="col-6">
+                <div class="input-group mb-3 d-flex justify-content-start">
+                    <span class="pt-05">
+                        Showing {{ signals|length }} row{{ signals|length|pluralize:"s" }}.
+                    </span>
                 </div>
             </div>
-        </form>
+        </div>
         <div class="row">
             <div class="card">
                 <div class="card-body">
@@ -310,7 +308,6 @@
                                 <tr>
                                     <td>
                                         <input type="checkbox" name="id" value="{{ signal.id }}">
-                                        {{ form.id|as_crispy_field }}
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal' pk=signal.id %}';">
@@ -402,6 +399,7 @@
                 </div>
             </div>
         </div>
+    </form>
     </div>
 </div>
 

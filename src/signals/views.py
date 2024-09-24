@@ -26,6 +26,8 @@ class SignalsListView(ListView):
     def get_queryset(self) -> QuerySet[Any]:
         try:
             queryset = SignalsDbView.objects.all()
+            if self.request.GET.getlist("id"):
+                queryset = queryset.filter(id__in=self.request.GET.getlist("id"))
             f = SignalFilter(self.request.GET, queryset=queryset)
             return f.qs
         except Exception as e:
@@ -34,7 +36,7 @@ class SignalsListView(ListView):
 
     def get_url_params(self):
         url_params_dict = {
-            "id": self.request.GET.get("id"),
+            "id": [int(el) for el in self.request.GET.getlist("id")] if self.request.GET.getlist("id") else None,
             "search": self.request.GET.get("search"),
             "order_by": self.request.GET.get("order_by"),
             "pathogens": [int(el) for el in self.request.GET.getlist("pathogens")],

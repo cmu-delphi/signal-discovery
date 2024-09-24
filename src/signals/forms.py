@@ -3,7 +3,6 @@ from django.utils.translation import gettext_lazy as _
 
 from signals.models import (
     Pathogen,
-    Signal,
     GeographicScope,
     Geography,
     SeverityPyramidRung,
@@ -15,10 +14,6 @@ from datasources.models import SourceSubdivision
 
 class SignalFilterForm(forms.ModelForm):
 
-    id = forms.ModelMultipleChoiceField(
-        queryset=Signal.objects.all(),
-        widget=forms.MultipleHiddenInput,
-    )
     active = forms.TypedMultipleChoiceField(
         choices=[(True, "Ongoing Surveillance Only")],
         coerce=bool,
@@ -73,7 +68,6 @@ class SignalFilterForm(forms.ModelForm):
         model = SignalsDbView
 
         fields: list[str] = [
-            "id",
             "active",
             "pathogens",
             "geographic_scope",
@@ -104,6 +98,8 @@ class SignalFilterForm(forms.ModelForm):
             field.required = False
             field.help_text = ""
             field.label = ""
-        self.fields['from_date'].label = _('Available Since')
-        self.fields['to_date'].label = _('Available Until')
-        self.fields['signal_availability_days'].label = _('Available for at least (days)')
+        self.fields["from_date"].label = _("Available Since")
+        self.fields["to_date"].label = _("Available Until")
+        self.fields["signal_availability_days"].label = _(
+            "Available for at least (days)"
+        )
