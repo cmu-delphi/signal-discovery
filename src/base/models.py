@@ -28,3 +28,5 @@ class Link(TimeStampedModel):
         :rtype: str
         """
         return str(self.url)
+    
+
