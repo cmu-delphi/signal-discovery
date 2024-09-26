@@ -14,15 +14,35 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
+
+from base.views import (BadRequestErrorView, ForbiddenErrorView,
+                        InternalServerErrorView, NotFoundErrorView)
+
+handler400 = BadRequestErrorView.as_view()
+handler403 = ForbiddenErrorView.as_view()
+handler404 = NotFoundErrorView.as_view()
+handler500 = InternalServerErrorView.as_view()
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     # signals
-    path(f'{settings.MAIN_PAGE}/' if settings.MAIN_PAGE else '', include('signals.urls')),
+    path(
+        f"{settings.MAIN_PAGE}/" if settings.MAIN_PAGE else "", include("signals.urls")
+    ),
     # datasources
-    path(f'{settings.MAIN_PAGE}/datasources' if settings.MAIN_PAGE else 'datasources', include('datasources.urls')),
-    path('__debug__/', include('debug_toolbar.urls')),
+    path(
+        f"{settings.MAIN_PAGE}/datasources" if settings.MAIN_PAGE else "datasources",
+        include("datasources.urls"),
+    ),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
+
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # type: ignore
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  # type: ignore
