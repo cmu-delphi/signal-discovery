@@ -158,7 +158,7 @@ class SignalBaseResource(resources.ModelResource):
 
     name = Field(attribute="name", column_name="Signal")
     display_name = Field(attribute="display_name", column_name="Name")
-    ase = Field(
+    base = Field(
         attribute="base",
         column_name="base",
         widget=widgets.ForeignKeyWidget(Signal, field="id"),
