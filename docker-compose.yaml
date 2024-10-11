@@ -26,11 +26,11 @@ services:
           - ./.env
       container_name: signal-discovery-sdwebapp
       restart: on-failure
-      command:
-          sh -c "python3 /usr/src/signal_documentation/src/manage.py migrate --noinput &&
-          python3 /usr/src/signal_documentation/src/manage.py collectstatic --noinput &&
-          python3 /usr/src/signal_documentation/src/manage.py loaddata ./fixtures/* &&
-          python3 /usr/src/signal_documentation/src/manage.py runserver 0.0.0.0:8000"
+      command: sh -c  "python3 /usr/src/signal_documentation/src/manage.py migrate --noinput &&
+                       python3 /usr/src/signal_documentation/src/manage.py collectstatic --noinput &&
+                       python3 /usr/src/signal_documentation/src/manage.py loaddata ./fixtures/* &&
+                       python3 /usr/src/signal_documentation/src/manage.py initadmin &&
+                       python3 /usr/src/signal_documentation/src/manage.py runserver 0.0.0.0:8000"
       volumes:
           - .:/usr/src/signal_documentation
       ports:
