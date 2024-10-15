@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from datasources.models import DataSource
+
 
 class SignalSetGeography(models.Model):
     geography = models.ForeignKey(
@@ -61,10 +63,12 @@ class SignalSet(models.Model):
         blank=True,
     )
 
-    data_source: models.CharField = models.CharField(
-        verbose_name="Data Source",
+    data_source: models.ForeignKey = models.ForeignKey(
+        DataSource,
+        verbose_name=_("Data Source"),
         max_length=255,
-        blank=True,
+        related_name="signal_sets",
+        on_delete=models.PROTECT,
     )
 
     language: models.CharField = models.CharField(
@@ -115,7 +119,7 @@ class SignalSet(models.Model):
         blank=True,
     )
 
-    geographic_granulalarity: models.CharField = models.CharField(
+    geographic_granularity: models.CharField = models.CharField(
         verbose_name="Geographic Granularity",
         max_length=255,
         blank=True,

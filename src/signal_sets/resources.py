@@ -3,6 +3,7 @@ from import_export.fields import Field, widgets
 
 from signal_sets.models import SignalSet
 from signals.models import GeographicScope, Pathogen, SeverityPyramidRung, Geography
+from datasources.models import DataSource
 
 
 def process_pathogens(row) -> None:
@@ -51,6 +52,18 @@ def process_avaliable_geographies(row) -> None:
             )
 
 
+def process_datasources(row) -> None:
+    """
+    Processes data source.
+    """
+    if row["Data Source"]:
+        data_source = row["Data Source"]
+        data_source_obj, _ = DataSource.objects.get_or_create(
+            name=data_source
+        )
+        row["Data Source"] = data_source_obj
+
+
 class SignalSetResource(resources.ModelResource):
 
     name = Field(attribute="name", column_name="Dataset Name* ")
@@ -67,6 +80,7 @@ class SignalSetResource(resources.ModelResource):
     data_source = Field(
         attribute="data_source",
         column_name="Data Source",
+        widget=widgets.ForeignKeyWidget(DataSource, field="name"),
     )
     language = Field(attribute="language", column_name="Language (likely English) ")
     version_number = Field(
@@ -142,6 +156,7 @@ class SignalSetResource(resources.ModelResource):
             "origin_datasource",
             "data_type",
             "geographic_scope",
+            "geographic_granularity",
             "preprocessing_description",
             "temporal_scope_start",
             "temporal_scope_end",
@@ -166,6 +181,7 @@ class SignalSetResource(resources.ModelResource):
         process_severity_pyramid_rungs(row)
         process_geographic_scope(row)
         process_avaliable_geographies(row)
+        process_datasources(row)
 
     def after_import_row(self, row, row_result, **kwargs):
         signal_set_obj = SignalSet.objects.get(id=row_result.object_id)

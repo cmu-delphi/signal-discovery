@@ -16,6 +16,7 @@ class DataSource(TimeStampedModel):
     display_name: models.CharField = models.CharField(
         verbose_name=_('Display Name'),
         max_length=128,
+        blank=True
     )
     description: models.TextField = models.TextField(
         verbose_name=_('Description'),
