@@ -207,13 +207,13 @@
                                         {% for signal in signalset.signals.all %}
                                         <a href="{% url 'signal' pk=signal.id %}" target="_blank">
                                             <span class="badge rounded-pill bg-dark">
-                                                {{ signal.display_name }}
+                                                {{ signal.name }}
                                             </span>
                                         </a>
                                         {% endfor %}
-                                        <a href="№" target="_blank">
+                                        {% comment %} <a href="" target="_blank">
                                             Show all
-                                        </a>
+                                        </a> {% endcomment %}
                                     </td>
                                 </tr>
                             </tbody>
