@@ -34,7 +34,7 @@ handler500 = InternalServerErrorView.as_view()
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path(f'{settings.MAIN_PAGE}/admin/' if settings.MAIN_PAGE else 'admin/', admin.site.urls),
     # signal_sets
     path(
         f"{settings.MAIN_PAGE}/signal_sets" if settings.MAIN_PAGE else "",
