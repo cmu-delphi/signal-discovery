@@ -110,7 +110,7 @@
                                     <td>
                                         <ul class="no-padding">
                                             {% for geography in signalset.available_geographies.all %}
-                                            <a href="{% url 'signals' %}?available_geography={{ pathogen.id }}">
+                                            <a href="{% url 'signals' %}?available_geography={{ geography.id }}">
                                                 <span class="badge rounded-pill bg-dark">
                                                     {{ geography }}
                                                 </span>
@@ -165,7 +165,7 @@
                                     <th scope="row">Severity Pyramid Rung(s)</th>
                                     <td>
                                         {% for severity_pyramid_rung in signalset.severity_pyramid_rungs.all %}
-                                            <a href="{% url 'signals' %}?severity_pyramid_rung={{ pathogen.id }}">
+                                            <a href="{% url 'signals' %}?severity_pyramid_rung={{ severity_pyramid_rung.id }}">
                                                 <span class="badge rounded-pill bg-dark">
                                                     {{ severity_pyramid_rung }}
                                                 </span>
