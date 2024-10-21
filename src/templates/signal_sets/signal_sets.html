@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Filters</h5>
-                    <div class="accordion accordion-flush" id="accordionSignalFilters">
+                    <div class="accordion accordion-flush" id="accordionSignalSetFilters">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-heading_{{ form.pathogens.auto_id }}">
                                 <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
@@ -30,7 +30,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Pathogen, syndrome, or disease area for which the signal applies."
+                                        data-mdb-content="Pathogen, syndrome, or disease area for which the signal set applies."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -39,7 +39,7 @@
                             <div id="flush-collapse_{{ form.pathogens.auto_id }}"
                                 class="accordion-collapse {% if form.pathogens.value %} {% else %}collapse{% endif %}"
                                 aria-labelledby="flush-heading_{{ form.pathogens.auto_id }}"
-                                data-mdb-parent="#accordionSignalFilters">
+                                data-mdb-parent="#accordionSignalSetFilters">
                                 <div class="accordion-body margin-top-1rem">
                                     <div class="bulk-select form-check">
                                         <input type="checkbox" class="form-check-input" id="select-all">
@@ -70,7 +70,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Country for which signal is available."
+                                        data-mdb-content="Country for which signal set is available."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -79,7 +79,7 @@
                             <div id="flush-collapse_{{ form.geographic_scope.auto_id }}"
                                 class="accordion-collapse {% if form.geographic_scope.value %} {% else %}collapse{% endif %}"
                                 aria-labelledby="flush-heading_{{ form.geographic_scope.auto_id }}"
-                                data-mdb-parent="#accordionSignalFilters">
+                                data-mdb-parent="#accordionSignalSetFilters">
                                 <div class="accordion-body margin-top-1rem">
                                     <div class="bulk-select form-check">
                                         <input type="checkbox" class="form-check-input" id="select-all">
@@ -106,7 +106,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Spatial resolution of the signal (e.g., county, hospital referral region, metropolitan statistical area, designated market area, state)."
+                                        data-mdb-content="Spatial resolution of the signal set (e.g., county, hospital referral region, metropolitan statistical area, designated market area, state)."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -115,7 +115,7 @@
                             <div id="flush-collapse_{{ form.available_geographies.auto_id }}"
                                 class="accordion-collapse {% if form.available_geographies.value %} {% else %}collapse{% endif %}"
                                 aria-labelledby="flush-heading_{{ form.available_geographies.auto_id }}"
-                                data-mdb-parent="#accordionSignalFilters">
+                                data-mdb-parent="#accordionSignalSetFilters">
                                 <div class="accordion-body margin-top-1rem">
                                     <div class="bulk-select form-check">
                                         <input type="checkbox" class="form-check-input" id="select-all">
@@ -142,7 +142,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="One or more rungs to which this signal best relates. See https://delphi.cmu.edu/epidemic-signals/."
+                                        data-mdb-content="One or more rungs to which this signal set best relates. See https://delphi.cmu.edu/epidemic-signals/."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -151,7 +151,7 @@
                             <div id="flush-collapse_{{ form.severity_pyramid_rungs.auto_id }}"
                                 class="accordion-collapse {% if form.severity_pyramid_rungs.value %} {% else %}collapse{% endif %}"
                                 aria-labelledby="flush-heading_{{ form.severity_pyramid_rungs.auto_id }}"
-                                data-mdb-parent="#accordionSignalFilters">
+                                data-mdb-parent="#accordionSignalSetFilters">
                                 <div class="accordion-body margin-top-1rem">
                                     <div class="bulk-select form-check">
                                         <input type="checkbox" class="form-check-input" id="select-all">
@@ -186,7 +186,7 @@
                             <div id="flush-collapse_{{ form.data_source.auto_id }}"
                                 class="accordion-collapse {% if form.data_source.value %} {% else %}collapse{% endif %}"
                                 aria-labelledby="flush-heading_{{ form.data_source.auto_id }}"
-                                data-mdb-parent="#accordionSignalFilters">
+                                data-mdb-parent="#accordionSignalSetFilters">
                                 <div class="accordion-body margin-top-1rem">
                                     <div class="bulk-select form-check">
                                         <input type="checkbox" class="form-check-input" id="select-all">
@@ -212,7 +212,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Units of time available for a given signal, e.g., day and week."
+                                        data-mdb-content="Units of time available for a given signal set, e.g., day and week."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -221,7 +221,7 @@
                             <div id="flush-collapse_{{ form.temporal_granularity.auto_id }}"
                                 class="accordion-collapse {% if form.temporal_granularity.value %} {% else %}collapse{% endif %}"
                                 aria-labelledby="flush-heading_{{ form.temporal_granularity.auto_id }}"
-                                data-mdb-parent="#accordionSignalFilters">
+                                data-mdb-parent="#accordionSignalSetFilters">
                                 <div class="accordion-body margin-top-1rem">
                                     {{ form.temporal_granularity|as_crispy_field }}
                                 </div>
