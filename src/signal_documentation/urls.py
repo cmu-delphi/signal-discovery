@@ -37,17 +37,17 @@ urlpatterns = [
     path(f'{settings.MAIN_PAGE}/admin/' if settings.MAIN_PAGE else 'admin/', admin.site.urls),
     # signal_sets
     path(
-        f"{settings.MAIN_PAGE}/signal_sets" if settings.MAIN_PAGE else "",
+        f"{settings.MAIN_PAGE}/" if settings.MAIN_PAGE else "",
         include("signal_sets.urls"),
     ),
     # signals
     path(
-        f"{settings.MAIN_PAGE}/" if settings.MAIN_PAGE else "signals",
+        f"{settings.MAIN_PAGE}/signals/" if settings.MAIN_PAGE else "signals/",
         include("signals.urls"),
     ),
     # datasources
     path(
-        f"{settings.MAIN_PAGE}/datasources" if settings.MAIN_PAGE else "datasources",
+        f"{settings.MAIN_PAGE}/datasources/" if settings.MAIN_PAGE else "datasources",
         include("datasources.urls"),
     ),
     path("__debug__/", include("debug_toolbar.urls")),
