@@ -410,6 +410,15 @@ class Signal(TimeStampedModel):
         blank=True,
     )
 
+    signal_set: models.ForeignKey = models.ForeignKey(
+        "signal_sets.SignalSet",
+        related_name="signals",
+        help_text=_("Signal Set"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
+
     class Meta:
         unique_together = ["name", "source"]
         ordering: list[str] = ["modified"]

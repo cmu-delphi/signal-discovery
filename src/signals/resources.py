@@ -5,17 +5,10 @@ from import_export.fields import Field, widgets
 
 from datasources.models import SourceSubdivision
 from datasources.resources import process_links
-from signals.models import (
-    Category,
-    FormatType,
-    GeographicScope,
-    Geography,
-    Pathogen,
-    SeverityPyramidRung,
-    Signal,
-    SignalGeography,
-    SignalType,
-)
+from signal_sets.models import SignalSet
+from signals.models import (Category, FormatType, GeographicScope, Geography,
+                            Pathogen, SeverityPyramidRung, Signal,
+                            SignalGeography, SignalType)
 
 
 def fix_boolean_fields(row) -> Any:
@@ -89,7 +82,7 @@ def process_category(row) -> None:
     Processes category.
     """
     if row["Category"]:
-        category = row["Category"]
+        category = row["Category"].strip()
         category_obj, _ = Category.objects.get_or_create(name=category)
         row["Category"] = category_obj
 
@@ -228,7 +221,7 @@ class SignalResource(resources.ModelResource):
     category = Field(
         attribute="category",
         column_name="Category",
-        widget=widgets.ForeignKeyWidget(Category, field="name"),
+        widget=widgets.ForeignKeyWidget(Category, "name"),
     )
     geographic_scope = Field(
         attribute="geographic_scope",
@@ -274,6 +267,11 @@ class SignalResource(resources.ModelResource):
     )
     license = Field(attribute="license", column_name="License")
     restrictions = Field(attribute="restrictions", column_name="Use Restrictions")
+    signal_set = Field(
+        attribute="signal_set",
+        column_name="Signal Set",
+        widget=widgets.ForeignKeyWidget(SignalSet, field="name"),
+    )
 
     class Meta:
         model = Signal
@@ -311,6 +309,7 @@ class SignalResource(resources.ModelResource):
             "license",
             "restrictions",
             "time_type",
+            "signal_set",
         ]
         import_id_fields: list[str] = ["name", "source", "display_name"]
         store_instance = True
