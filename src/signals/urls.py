@@ -9,6 +9,6 @@ from signals.views import (
 
 urlpatterns: list[URLPattern] = [
     path("", SignalsListView.as_view(), name="signals"),
-    path("signals/<int:pk>/", SignalsDetailView.as_view(), name="signal"),
-    path("signals/<pk>/", SignalsDetailView.as_view(), name="signal"),
+    path("signal/<int:pk>/", SignalsDetailView.as_view(), name="signal"),
+    path("signal/<pk>/", SignalsDetailView.as_view(), name="signal"),
 ]

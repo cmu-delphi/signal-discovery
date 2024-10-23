@@ -20,8 +20,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from base.views import (BadRequestErrorView, ForbiddenErrorView,
-                        InternalServerErrorView, NotFoundErrorView)
+from base.views import (
+    BadRequestErrorView,
+    ForbiddenErrorView,
+    InternalServerErrorView,
+    NotFoundErrorView,
+)
 
 handler400 = BadRequestErrorView.as_view()
 handler403 = ForbiddenErrorView.as_view()
@@ -30,14 +34,20 @@ handler500 = InternalServerErrorView.as_view()
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path(f'{settings.MAIN_PAGE}/admin/' if settings.MAIN_PAGE else 'admin/', admin.site.urls),
+    # signal_sets
+    path(
+        f"{settings.MAIN_PAGE}/" if settings.MAIN_PAGE else "",
+        include("signal_sets.urls"),
+    ),
     # signals
     path(
-        f"{settings.MAIN_PAGE}/" if settings.MAIN_PAGE else "", include("signals.urls")
+        f"{settings.MAIN_PAGE}/signals/" if settings.MAIN_PAGE else "signals/",
+        include("signals.urls"),
     ),
     # datasources
     path(
-        f"{settings.MAIN_PAGE}/datasources" if settings.MAIN_PAGE else "datasources",
+        f"{settings.MAIN_PAGE}/datasources/" if settings.MAIN_PAGE else "datasources",
         include("datasources.urls"),
     ),
     path("__debug__/", include("debug_toolbar.urls")),

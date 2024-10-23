@@ -1,7 +1,7 @@
 services:
   db:
       image: mysql:latest
-      container_name: signal_documentation-db
+      container_name: signal-discovery-db
       restart: always
       env_file:
           - ./.env
@@ -16,21 +16,21 @@ services:
           - "3306:3306"
 
   # Production service - "service", "image", and "container_name" should all contain the same
-  # reference, based on the name of the service.
+  # reference based on the name of the service.
   sdwebapp:
-      image: ${REGISTRY}signal_documentation-sdwebapp${TAG}
+      image: ${REGISTRY}signal-discovery-sdwebapp${TAG}
       build:
           context: .
 
       env_file:
           - ./.env
-      container_name: signal_documentation-sdwebapp
+      container_name: signal-discovery-sdwebapp
       restart: on-failure
-      command:
-          sh -c "python3 /usr/src/signal_documentation/src/manage.py migrate --noinput &&
-          python3 /usr/src/signal_documentation/src/manage.py collectstatic --noinput &&
-          python3 /usr/src/signal_documentation/src/manage.py loaddata ./fixtures/* &&
-          python3 /usr/src/signal_documentation/src/manage.py runserver 0.0.0.0:8000"
+      command: sh -c  "python3 /usr/src/signal_documentation/src/manage.py migrate --noinput &&
+                       python3 /usr/src/signal_documentation/src/manage.py collectstatic --noinput &&
+                       python3 /usr/src/signal_documentation/src/manage.py loaddata ./fixtures/* &&
+                       python3 /usr/src/signal_documentation/src/manage.py initadmin &&
+                       python3 /usr/src/signal_documentation/src/manage.py runserver 0.0.0.0:8000"
       volumes:
           - .:/usr/src/signal_documentation
       ports:
@@ -41,11 +41,11 @@ services:
   # Production service - "service", "image", and "container_name" should all contain the same
   # reference, based on the name of the service.
   sdnginx:
-      image: ${REGISTRY}signal_documentation-sdnginx${TAG}
+      image: ${REGISTRY}signal-discovery-sdnginx${TAG}
       build: ./nginx
       env_file:
           - ./.env
-      container_name: signal_documentation-sdnginx
+      container_name: signal-discovery-sdnginx
       restart: on-failure
       volumes:
           - ./src/staticfiles:/staticfiles
