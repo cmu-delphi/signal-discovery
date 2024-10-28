@@ -201,18 +201,6 @@
                                     <th scope="row">Link to data dictionary</th>
                                     <td>{{ signalset.link_to_dictionary }}</td>
                                 </tr>
-                                <tr>
-                                    <th scope="row">Related signals</th>
-                                    <td>
-                                        {% for signal in signalset.signals.all %}
-                                        <a href="{% url 'signal' pk=signal.id %}" target="_blank">
-                                            <span class="badge rounded-pill bg-dark">
-                                                {{ signal.name }}
-                                            </span>
-                                        </a>
-                                        {% endfor %}
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -220,8 +208,63 @@
             </div>
         </div>
     </section>
-
+    <h5>Related signals</h5>
+    <section>
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive" data-fl-scrolls='{"orientation": "horizontal"}'>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Display Name</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Active</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Pathogen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for signal in signalset.signals.all %}
+                                <tr>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.display_name }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.name }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {% if signal.active == True%}
+                                        <i class="fas fa-circle" style="color:green;"></i>
+                                        {% else %}
+                                        <i class="fas fa-circle" style="color:red;"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {{ signal.description }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                        {% for pathogen in signal.pathogen.all %}
+                                            {{ pathogen }}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <h5>Plot / Export data</h5>
     <script>
+        
         if (!library)
             var library = {};
 
