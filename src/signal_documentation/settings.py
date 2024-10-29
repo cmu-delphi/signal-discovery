@@ -105,6 +105,7 @@ LOCAL_APPS: list[str] = [
     'datasources',
     'signals',
     'signal_sets',
+    'rest_api',
 ]
 
 INSTALLED_APPS: list[str] = DEFAULT_APPS + EXTERNAL_APPS + LOCAL_APPS

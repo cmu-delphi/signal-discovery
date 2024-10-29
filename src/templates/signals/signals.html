@@ -314,6 +314,7 @@
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal' pk=signal.id %}';">
                                         {{ signal.name }}
+                                        {% url 'api_signal_detail' pk=signal.id %}
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal' pk=signal.id %}';">

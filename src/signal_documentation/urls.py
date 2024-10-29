@@ -47,8 +47,13 @@ urlpatterns = [
     ),
     # datasources
     path(
-        f"{settings.MAIN_PAGE}/datasources/" if settings.MAIN_PAGE else "datasources",
+        f"{settings.MAIN_PAGE}/datasources/" if settings.MAIN_PAGE else "datasources/",
         include("datasources.urls"),
+    ),
+    # rest_api
+    path(
+        f"{settings.MAIN_PAGE}/rest_api/" if settings.MAIN_PAGE else "rest_api/",
+        include("rest_api.urls"),
     ),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
