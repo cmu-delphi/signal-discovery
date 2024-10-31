@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SlugRelatedField
 
-from signals.models import Signal
+from signals.models import Signal, Geography
 
 
 class SignalSerializer(ModelSerializer):
@@ -14,9 +14,14 @@ class SignalSerializer(ModelSerializer):
 
     class Meta:
         model = Signal
-        fields = [
-            "name",
-            "source",
-            "signal_type",
-            "available_geography",
-        ]
+        fields = ["name", "source", "signal_type", "available_geography", "time_type"]
+
+
+class AvailableGeographySerializer(ModelSerializer):
+    """
+    Serializer for the AvailableGeography model.
+    """
+
+    class Meta:
+        model = Geography
+        fields = ["name", "display_name"]
