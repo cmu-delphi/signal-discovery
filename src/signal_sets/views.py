@@ -1,9 +1,12 @@
 import logging
 from typing import Any, Dict
 
+from django.conf import settings
 from django.db.models.query import QuerySet
 from django.views.generic import ListView, DetailView
 
+
+from signals.models import Geography
 from signal_sets.models import SignalSet
 from signal_sets.filters import SignalSetFilter
 from signal_sets.forms import SignalSetFilterForm
@@ -40,7 +43,9 @@ class SignalSetListView(ListView):
                 else None
             ),
             "data_source": [el for el in self.request.GET.getlist("data_source")],
-            "temporal_granularity": [el for el in self.request.GET.getlist("temporal_granularity")],
+            "temporal_granularity": [
+                el for el in self.request.GET.getlist("temporal_granularity")
+            ],
         }
         url_params_str = ""
         for param_name, param_value in url_params_dict.items():
@@ -72,4 +77,22 @@ class SignalSetDetailedView(DetailView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context: Dict[str, Any] = super().get_context_data(**kwargs)
+        context["epivis_url"] = settings.EPIVIS_URL
+        context["data_export_url"] = settings.DATA_EXPORT_URL
+        context["covidcast_url"] = settings.COVIDCAST_URL
+        context["data_source"] = (
+            self.object.signals.all()
+            .values_list("source__name", flat=True)
+            .distinct()
+            .order_by()
+            .first()
+        )
+        context["available_geographies"] = Geography.objects.filter(
+            id__in=self.object.signals.all()
+            .values_list("available_geography")
+            .distinct()
+            .order_by()
+        )
+        context["time_type"] = self.object.signals.all().values_list("time_type", flat=True).distinct().order_by().first()
+
         return context
