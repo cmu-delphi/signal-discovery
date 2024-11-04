@@ -66,12 +66,12 @@ def process_datasources(row) -> None:
 
 class SignalSetResource(resources.ModelResource):
 
-    name = Field(attribute="name", column_name="Dataset Name* ")
-    data_description = Field(
-        attribute="data_description", column_name="Description of data*"
+    name = Field(attribute="name", column_name="Signal Set name* ")
+    description = Field(
+        attribute="description", column_name="Signal Set description*"
     )
     maintainer_name = Field(
-        attribute="maintainer_name", column_name="Name of maintainer/\nkey contact *"
+        attribute="maintainer_name", column_name="Maintainer/\nKey Contact *"
     )
     maintainer_email = Field(
         attribute="maintainer_email", column_name="Email of maintainer/\nkey contact *"
@@ -138,15 +138,15 @@ class SignalSetResource(resources.ModelResource):
     dataset_location = Field(
         attribute="dataset_location", column_name="Dataset Location"
     )
-    link_to_dictionary = Field(
-        attribute="link_to_dictionary", column_name="Link to data dictionary"
+    link_to_documentation = Field(
+        attribute="link_to_documentation", column_name="Link to documentation"
     )
 
     class Meta:
         model = SignalSet
         fields: list[str] = [
             "name",
-            "data_description",
+            "description",
             "maintainer_name",
             "maintainer_email",
             "organization",
@@ -171,7 +171,7 @@ class SignalSetResource(resources.ModelResource):
             "dua_required",
             "license",
             "dataset_location",
-            "link_to_dictionary",
+            "link_to_documentation",
         ]
         import_id_fields = ["name", "data_source"]
         store_instance = True
