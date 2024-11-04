@@ -7,6 +7,6 @@ from signal_sets.models import SignalSet
 
 @admin.register(SignalSet)
 class SignalSetAdmin(ImportExportModelAdmin):
-    list_display = ('name', 'data_description', 'maintainer_name', 'maintainer_email', 'organization')
+    list_display = ('name', 'description', 'maintainer_name', 'maintainer_email', 'organization')
     search_fields = ('name', 'maintainer_name', 'maintainer_email', 'organization')
     resource_class = SignalSetResource

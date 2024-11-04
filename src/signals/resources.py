@@ -6,9 +6,17 @@ from import_export.fields import Field, widgets
 from datasources.models import SourceSubdivision
 from datasources.resources import process_links
 from signal_sets.models import SignalSet
-from signals.models import (Category, FormatType, GeographicScope, Geography,
-                            Pathogen, SeverityPyramidRung, Signal,
-                            SignalGeography, SignalType)
+from signals.models import (
+    Category,
+    FormatType,
+    GeographicScope,
+    Geography,
+    Pathogen,
+    SeverityPyramidRung,
+    Signal,
+    SignalGeography,
+    SignalType,
+)
 
 
 def fix_boolean_fields(row) -> Any:
@@ -324,6 +332,10 @@ class SignalResource(resources.ModelResource):
         process_geographic_scope(row)
         process_source(row)
         process_links(row, dua_column_name="Link to DUA", link_column_name="Link")
+        if not row["Signal Set"]:
+            self.skip_row(row, None, row, None)
+        if not row["Source Subdivision"]:
+            row["Source Subdivision"] = None
 
     def after_import_row(self, row, row_result, **kwargs):
         signal_obj = Signal.objects.get(id=row_result.object_id)
@@ -333,3 +345,15 @@ class SignalResource(resources.ModelResource):
         signal_obj.severity_pyramid_rung = row["Severity Pyramid Rungs"]
         signal_obj.format_type = row["Format"]
         signal_obj.save()
+
+    def import_data(self, *args, **kwargs):
+        self.signal = kwargs.get(
+            "signal"
+        )  # Here, we are assigning the requested signal to the `ModelResource` object.
+        return super().import_data(*args, **kwargs)
+
+    def skip_row(self, instance, original, row, import_validation_errors=None):
+        if row["Source Subdivision"] is None:
+            return True
+        if row["Signal Set"] is None:
+            return True
