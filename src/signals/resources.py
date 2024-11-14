@@ -3,6 +3,7 @@ from typing import Any
 from import_export import resources
 from import_export.results import RowResult
 from import_export.fields import Field, widgets
+from import_export.results import RowResult
 
 from datasources.models import SourceSubdivision
 from datasources.resources import process_links
