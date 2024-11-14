@@ -15,7 +15,8 @@ class Migration(migrations.Migration):
             CREATE OR REPLACE VIEW signals_signal_view AS (
                 SELECT
                 ss.id,
-                ss.display_name AS "name",
+                ss.name as "name",
+                ss.display_name AS "display_name",
                 ss.active AS "active",
                 ds.display_name AS "datasource",
                 ss.description AS "description",
@@ -24,7 +25,7 @@ class Migration(migrations.Migration):
                 ss.temporal_scope_end AS "temporal_scope_end",
                 ss.time_type AS "time_type",
                 GROUP_CONCAT(DISTINCT CONCAT(signal_geo.name, '', IF(ss2.aggregated_by_delphi, '(by Delphi)', ''))) AS "available_geography", 
-                GROUP_CONCAT(DISTINCT sp.name) AS "pathogens", 
+                GROUP_CONCAT(DISTINCT sp.name) AS "pathogens",
                 ss.reporting_cadence AS "reporting_cadence",
                 ss.typical_reporting_lag AS "typical_reporting_lag",
                 ss.typical_revision_cadence AS "typical_revision_cadence",

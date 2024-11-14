@@ -229,11 +229,27 @@ class Signal(TimeStampedModel):
         max_length=255,
         verbose_name=_("display name"),
         help_text=_("Display name of the signal."),
+        null=True,
+        blank=True
+    )
+    member_name: models.CharField = models.CharField(
+        max_length=255,
+        verbose_name=_("member name"),
+        help_text=_("Member name of the signal."),
+        null=True,
+        blank=True
+    )
+    member_description: models.TextField = models.TextField(
+        verbose_name=_("member description"),
+        help_text=_("Member description of the signal."),
+        null=True,
+        blank=True
     )
     pathogen: models.ManyToManyField = models.ManyToManyField(
         "signals.Pathogen",
         related_name="signals",
         help_text=_("Pathogen/Disease area"),
+        blank=True
     )
     signal_type: models.ForeignKey = models.ForeignKey(
         "signals.SignalType",
@@ -247,10 +263,14 @@ class Signal(TimeStampedModel):
         default=False,
         verbose_name=_("active"),
         help_text=_("Ongoing"),
+        null=True,
+        blank=True
     )
     description: models.TextField = models.TextField(
         verbose_name=_("description"),
         help_text=_("Description of the signal."),
+        null=True,
+        blank=True
     )
     short_description: models.TextField = models.TextField(
         verbose_name=_("short description"),
@@ -270,30 +290,42 @@ class Signal(TimeStampedModel):
         max_length=255,
         verbose_name=_("time type"),
         help_text=_("Time type of the signal."),
+        null=True,
+        blank=True
     )
     time_label: models.CharField = models.CharField(
         max_length=255,
         verbose_name=_("time label"),
         help_text=_("Time label of the signal."),
+        null=True,
+        blank=True
     )
     reporting_cadence: models.CharField = models.CharField(
         max_length=255,
         verbose_name=_("reporting cadence"),
         help_text=_("Reporting cadence of the signal."),
+        null=True,
+        blank=True
     )
     typical_reporting_lag: models.CharField = models.CharField(
         max_length=255,
         verbose_name=_("typical reporting lag"),
         help_text=_("Typical reporting lag of the signal."),
+        null=True,
+        blank=True
     )
     typical_revision_cadence: models.TextField = models.TextField(
         verbose_name=_("typical revision cadence"),
         help_text=_("Typical revision cadence of the signal."),
+        null=True,
+        blank=True
     )
     demographic_scope: models.CharField = models.CharField(
         max_length=255,
         verbose_name=_("demographic scope"),
         help_text=_("Demographic scope of the signal."),
+        null=True,
+        blank=True
     )
     severity_pyramid_rung: models.ForeignKey = models.ForeignKey(
         "signals.SeverityPyramidRung",
@@ -308,67 +340,90 @@ class Signal(TimeStampedModel):
         related_name="signals",
         help_text=_("Category of the signal."),
         on_delete=models.PROTECT,
+        null=True,
+        blank=True
     )
     related_links: models.ManyToManyField = models.ManyToManyField(
         "base.Link",
         related_name="signals",
         help_text=_("Related signal links."),
+        blank=True
     )
     geographic_scope: models.ForeignKey = models.ForeignKey(
         "signals.GeographicScope",
         related_name="signals",
         help_text=_("Geographic scope of the signal."),
         on_delete=models.PROTECT,
+        null=True,
+        blank=True
     )
     available_geography: models.ManyToManyField = models.ManyToManyField(
         "signals.Geography",
         related_name="signals",
         help_text=_("Available geographies for the signal."),
         through="signals.SignalGeography",
+        blank=True
     )
     temporal_scope_start: models.CharField = models.CharField(
         max_length=255,
         verbose_name=_("temporal scope start"),
         help_text=_("Temporal scope start of the signal."),
+        null=True,
+        blank=True
     )
     temporal_scope_start_note: models.TextField = models.TextField(
         verbose_name=_("temporal scope start note"),
         help_text=_("Temporal scope start note of the signal."),
+        null=True,
+        blank=True
     )
     temporal_scope_end: models.CharField = models.CharField(
         max_length=255,
         verbose_name=_("temporal scope end"),
         help_text=_("Temporal scope end of the signal."),
+        null=True,
+        blank=True
     )
     temporal_scope_end_note: models.TextField = models.TextField(
         verbose_name=_("temporal scope end note"),
         help_text=_("Temporal scope end note of the signal."),
+        null=True,
+        blank=True
     )
     is_smoothed: models.BooleanField = models.BooleanField(
         default=False,
         verbose_name=_("is smoothed"),
         help_text=_("Is smoothed"),
+        null=True,
+        blank=True
     )
     is_weighted: models.BooleanField = models.BooleanField(
-        default=False, verbose_name=_("is weighted"), help_text=_("Is weighted")
+        default=False, verbose_name=_("is weighted"), help_text=_("Is weighted"), null=True,
+        blank=True
     )
     is_cumulative: models.BooleanField = models.BooleanField(
-        default=False, verbose_name=_("is cumulative"), help_text=_("Is cumulative")
+        default=False, verbose_name=_("is cumulative"), help_text=_("Is cumulative"), null=True,
+        blank=True
     )
     has_stderr: models.BooleanField = models.BooleanField(
-        default=False, verbose_name=_("has stderr"), help_text=_("Has stderr")
+        default=False, verbose_name=_("has stderr"), help_text=_("Has stderr"), null=True,
+        blank=True
     )
     has_sample_size: models.BooleanField = models.BooleanField(
-        default=False, verbose_name=_("has sample size"), help_text=_("Has sample size")
+        default=False, verbose_name=_("has sample size"), help_text=_("Has sample size"), null=True,
+        blank=True
     )
     high_values_are: models.CharField = models.CharField(
-        max_length=128, help_text=_("High values are")
+        max_length=128, help_text=_("High values are"), null=True,
+        blank=True
     )
     source: models.ForeignKey = models.ForeignKey(
         "datasources.SourceSubdivision",
         related_name="signals",
         help_text=_("Source Subdivision"),
         on_delete=models.PROTECT,
+        null=True,
+        blank=True
     )
     data_censoring: models.TextField = models.TextField(
         help_text=_("Data censoring"), null=True, blank=True
@@ -379,10 +434,14 @@ class Signal(TimeStampedModel):
     organization_access_list: models.CharField = models.CharField(
         max_length=128,
         help_text=_("Organisations Access List. Who may access this signal?"),
+        null=True,
+        blank=True
     )
     organization_sharing_list: models.CharField = models.CharField(
         max_length=128,
         help_text=_("Organisations Sharing List. Who may share this signal?"),
+        null=True,
+        blank=True
     )
     license: models.CharField = models.CharField(max_length=128, help_text=_("License"))
     restrictions: models.TextField = models.TextField(
@@ -475,8 +534,8 @@ class SignalsDbView(models.Model):
 
     @property
     def get_available_geographies(self):
-        return self.available_geography.split(",")
+        return self.available_geography.split(",") if self.available_geography else []
 
     @property
     def get_pathogens(self):
-        return self.pathogens.split(",")
+        return self.pathogens.split(",") if self.pathogens else []
