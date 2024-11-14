@@ -1,9 +1,11 @@
+from typing import Any
+
 from import_export import resources
 from import_export.fields import Field, widgets
 
-from signal_sets.models import SignalSet
-from signals.models import GeographicScope, Pathogen, SeverityPyramidRung, Geography
 from datasources.models import DataSource
+from signal_sets.models import SignalSet
+from signals.models import GeographicScope, Geography, Pathogen, SeverityPyramidRung
 
 
 def process_pathogens(row) -> None:
@@ -58,18 +60,29 @@ def process_datasources(row) -> None:
     """
     if row["Data Source"]:
         data_source = row["Data Source"]
-        data_source_obj, _ = DataSource.objects.get_or_create(
-            name=data_source
-        )
+        data_source_obj, _ = DataSource.objects.get_or_create(name=data_source)
         row["Data Source"] = data_source_obj
+
+
+def fix_boolean_fields(row) -> Any:
+    """
+    Fixes boolean fields.
+    """
+    fields = [
+        "Include in signal app",
+    ]
+    for k in fields:
+        if row[k] == "TRUE":
+            row[k] = True
+        if row[k] == "FALSE" or row[k] == "":
+            row[k] = False
+    return row
 
 
 class SignalSetResource(resources.ModelResource):
 
     name = Field(attribute="name", column_name="Signal Set name* ")
-    description = Field(
-        attribute="description", column_name="Signal Set description*"
-    )
+    description = Field(attribute="description", column_name="Signal Set description*")
     maintainer_name = Field(
         attribute="maintainer_name", column_name="Maintainer/\nKey Contact *"
     )
@@ -177,24 +190,32 @@ class SignalSetResource(resources.ModelResource):
         store_instance = True
 
     def before_import_row(self, row, **kwargs):
+        fix_boolean_fields(row)
         process_pathogens(row)
         process_severity_pyramid_rungs(row)
         process_geographic_scope(row)
         process_avaliable_geographies(row)
         process_datasources(row)
 
-    def after_import_row(self, row, row_result, **kwargs):
-        signal_set_obj = SignalSet.objects.get(id=row_result.object_id)
-        for pathogen in row["Disease(s)/Pathogen(s)/Syndrome(s)"].split(","):
-            pathogen = Pathogen.objects.get(name=pathogen)
-            signal_set_obj.pathogens.add(pathogen)
-        for severity_pyramid_rung in row["Severity Pyramid Rung(s)"].split(","):
-            severity_pyramid_rung = SeverityPyramidRung.objects.filter(
-                name=severity_pyramid_rung
-            ).first()
-            signal_set_obj.severity_pyramid_rungs.add(severity_pyramid_rung)
+    def skip_row(self, instance, original, row, import_validation_errors=None):
+        if not row["Include in signal app"]:
+            return True
 
-        for available_geography in row["Geographic Granularity - Delphi"].split(","):
-            available_geography = Geography.objects.get(name=available_geography)
-            signal_set_obj.available_geographies.add(available_geography)
-        signal_set_obj.save()
+    def after_import_row(self, row, row_result, **kwargs):
+        try:
+            signal_set_obj = SignalSet.objects.get(id=row_result.object_id)
+            for pathogen in row["Disease(s)/Pathogen(s)/Syndrome(s)"].split(","):
+                pathogen = Pathogen.objects.get(name=pathogen)
+                signal_set_obj.pathogens.add(pathogen)
+            for severity_pyramid_rung in row["Severity Pyramid Rung(s)"].split(","):
+                severity_pyramid_rung = SeverityPyramidRung.objects.filter(
+                    name=severity_pyramid_rung
+                ).first()
+                signal_set_obj.severity_pyramid_rungs.add(severity_pyramid_rung)
+
+            for available_geography in row["Geographic Granularity - Delphi"].split(","):
+                available_geography = Geography.objects.get(name=available_geography)
+                signal_set_obj.available_geographies.add(available_geography)
+            signal_set_obj.save()
+        except SignalSet.DoesNotExist as e:
+            print(f"SignalSet.DoesNotExist: {e}")

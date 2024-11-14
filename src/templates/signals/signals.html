@@ -313,7 +313,11 @@
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                        {{ signal.name }}
+                                        {% if signal.display_name %}
+                                            {{ signal.display_name }}
+                                        {% else %}
+                                            {{ signal.name }}
+                                        {% endif %}
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal' pk=signal.id %}';">
