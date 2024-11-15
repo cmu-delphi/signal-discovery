@@ -511,6 +511,7 @@ class SignalsDbView(models.Model):
     id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     active = models.BooleanField()
+    display_name = models.CharField(max_length=255)
     datasource = models.CharField(max_length=255)
     description = models.TextField()
     geographic_scope = models.CharField(max_length=255)
@@ -527,6 +528,9 @@ class SignalsDbView(models.Model):
     restrictions = models.TextField()
     available_geography = models.CharField(max_length=255)
     pathogens = models.CharField(max_length=255)
+    from_date = models.DateField()
+    to_date = models.DateField()
+    signal_availability_days = models.IntegerField()
 
     class Meta:
         managed = False
