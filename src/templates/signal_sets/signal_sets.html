@@ -45,11 +45,7 @@
                                         <input type="checkbox" class="form-check-input" id="select-all">
                                         <label class="form-check-label" for="select-all">Select all</label>
                                     </div>
-                                    <div id="div_id_pathogen" class="mb-3">
-                                        <div>
-                                            {{ form.pathogens|as_crispy_field }}
-                                        </div>
-                                    </div>
+                                    {{ form.pathogens|as_crispy_field }}
                                 </div>
                             </div>
                         </div>
