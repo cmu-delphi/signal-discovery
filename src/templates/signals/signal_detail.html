@@ -12,7 +12,11 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">
-                        {{ signal.display_name }}
+                        {% if signal.display_name %}
+                            {{ signal.display_name }}
+                        {% else %}
+                            {{ signal.name }}
+                        {% endif %}
                         <span class="badge rounded-pill text-bg-primary">{{ signal.source.name }}</span>
                     </h5>
                     <hr class="no-margin" />
@@ -99,7 +103,7 @@
                                     <th scope="row">Signal Type</th>
                                     <td>
                                         <ul class="no-padding">
-                                            <a href="{% url 'signals' %}?signal_type={{ signal.signal_type.id }}">
+                                            <a {% if signal.signal_type %} href="{% url 'signals' %}?signal_type={{ signal.signal_type.id }} {% else %} {% endif %}">
                                                 <span class="badge rounded-pill bg-dark">
                                                     {{ signal.signal_type }}
                                                 </span>
@@ -195,17 +199,23 @@
                                     </td>
                                 </tr>
                                 {% endif %}
+                                {% if signal.same_base_signals|length > 0 %}
                                 <tr>
                                     <th scope="row">Related signals (signals with the same base)</th>
                                     <td>
                                         {% for signal in signal.same_base_signals %}
                                         <a href="{% url 'signal' pk=signal.id %}" target="_blank">
                                             <span class="badge rounded-pill bg-dark">
-                                                {{ signal.display_name }}
+                                                {% if signal.display_name %}
+                                                    {{ signal.display_name }}
+                                                {% else %}
+                                                    {{ signal.name }}
+                                                {% endif %}
                                             </span>
                                         {% endfor %}
                                     </td>
                                 </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>

@@ -1,6 +1,7 @@
 from typing import Any
 
 from import_export import resources
+from import_export.results import RowResult
 from import_export.fields import Field, widgets
 from import_export.results import RowResult
 
@@ -31,6 +32,7 @@ def fix_boolean_fields(row) -> Any:
         "Is Cumulative",
         "Has StdErr",
         "Has Sample Size",
+        "Include in signal app",
     ]
     for k in fields:
         if row[k] == "TRUE":
@@ -69,6 +71,8 @@ def process_format_type(row) -> None:
         format_type = row["Format"]
         format_type_obj, _ = FormatType.objects.get_or_create(name=format_type)
         row["Format"] = format_type_obj
+    else:
+        row["Format"] = None
 
 
 def process_severity_pyramid_rungs(row) -> None:
@@ -84,6 +88,8 @@ def process_severity_pyramid_rungs(row) -> None:
                 name=severity_pyramid_rung
             )
         row["Severity Pyramid Rungs"] = severity_pyramid_rung_obj
+    else:
+        row["Severity Pyramid Rungs"] = None
 
 
 def process_category(row) -> None:
@@ -167,7 +173,10 @@ class ModelResource(resources.ModelResource):
             row, instance_loader, **kwargs
         )
 
-        if import_result.import_type in [RowResult.IMPORT_TYPE_ERROR, RowResult.IMPORT_TYPE_INVALID]:
+        if import_result.import_type in [
+            RowResult.IMPORT_TYPE_ERROR,
+            RowResult.IMPORT_TYPE_INVALID,
+        ]:
             import_result.diff = [row.get(name, "") for name in self.get_field_names()]
 
             # Add a column with the error message
@@ -202,7 +211,7 @@ class SignalBaseResource(ModelResource):
     class Meta:
         model = Signal
         fields: list[str] = ["base", "name", "source", "display_name"]
-        import_id_fields: list[str] = ["name", "source", "display_name"]
+        import_id_fields: list[str] = ["name", "source"]
 
     def before_import_row(self, row, **kwargs) -> None:
         """Post-processes each row after importing."""
@@ -216,6 +225,10 @@ class SignalResource(ModelResource):
 
     name = Field(attribute="name", column_name="Signal")
     display_name = Field(attribute="display_name", column_name="Name")
+    member_name = Field(attribute="member_name", column_name="Member Name")
+    member_description = Field(
+        attribute="member_description", column_name="Member Description"
+    )
     pathogen = Field(
         attribute="pathogen",
         column_name="Pathogen/\nDisease Area",
@@ -315,6 +328,8 @@ class SignalResource(ModelResource):
         fields: list[str] = [
             "name",
             "display_name",
+            "member_name",
+            "member_description",
             "pathogen",
             "signal_type",
             "active",
@@ -348,7 +363,7 @@ class SignalResource(ModelResource):
             "time_type",
             "signal_set",
         ]
-        import_id_fields: list[str] = ["name", "source", "display_name"]
+        import_id_fields: list[str] = ["name", "source"]
         store_instance = True
 
     def before_import_row(self, row, **kwargs) -> None:
@@ -361,28 +376,23 @@ class SignalResource(ModelResource):
         process_geographic_scope(row)
         process_source(row)
         process_links(row, dua_column_name="Link to DUA", link_column_name="Link")
-        if not row["Signal Set"]:
-            self.skip_row(row, None, row, None)
-        if not row["Source Subdivision"]:
+        if not row.get("Signal Set"):
+            row["Signal Set"] = None
+        if not row.get("Source Subdivision"):
             row["Source Subdivision"] = None
 
+    # def skip_row(self, instance, original, row, import_validation_errors=None):
+    #     if not row["Include in signal app"]:
+    #         return True
+
     def after_import_row(self, row, row_result, **kwargs):
-        signal_obj = Signal.objects.get(id=row_result.object_id)
-        for link in row["Links"]:
-            signal_obj.related_links.add(link)
-        process_available_geographies(row)
-        signal_obj.severity_pyramid_rung = row["Severity Pyramid Rungs"]
-        signal_obj.format_type = row["Format"]
-        signal_obj.save()
-
-    def import_data(self, *args, **kwargs):
-        self.signal = kwargs.get(
-            "signal"
-        )  # Here, we are assigning the requested signal to the `ModelResource` object.
-        return super().import_data(*args, **kwargs)
-
-    def skip_row(self, instance, original, row, import_validation_errors=None):
-        if row["Source Subdivision"] is None:
-            return True
-        if row["Signal Set"] is None:
-            return True
+        try:
+            signal_obj = Signal.objects.get(id=row_result.object_id)
+            for link in row["Links"]:
+                signal_obj.related_links.add(link)
+            process_available_geographies(row)
+            signal_obj.severity_pyramid_rung = row["Severity Pyramid Rungs"]
+            signal_obj.format_type = row["Format"]
+            signal_obj.save()
+        except Signal.DoesNotExist as e:
+            print(f"Signal.DoesNotExist: {e}")
