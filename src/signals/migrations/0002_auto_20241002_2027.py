@@ -33,7 +33,10 @@ class Migration(migrations.Migration):
                 ss3.display_name AS "severity_pyramid_rung",
                 ss.missingness AS "missingness",
                 ss.license AS "license",
-                ss.restrictions AS "restrictions"
+                ss.restrictions AS "restrictions",
+                ss.from_date AS "from_date",
+                ss.to_date AS "to_date",
+                ss.signal_availability_days AS "signal_availability_days"
             FROM signals_signal ss
             LEFT JOIN datasources_sourcesubdivision ds
             ON ss.source_id = ds.id
