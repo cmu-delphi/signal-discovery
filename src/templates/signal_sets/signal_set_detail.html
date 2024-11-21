@@ -361,7 +361,7 @@
     function initGeographicValueSelect(mode, geographicType = null) {
         var maximumSelectionLength = 1;
         if (mode === 'epivis') {
-            maximumSelectionLength = 1;
+            maximumSelectionLength = 5;
         } else {
             maximumSelectionLength = 10;
         }
@@ -495,18 +495,21 @@
         if (currentMode === 'epivis') {
             var epiVisUrl = "{{ epivis_url }}";
             var dataSets = [];
+            var geographicValues = geographicValue.split(',');
             dataSignals.forEach((signal) => {
-                dataSets.push({
-                    color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
-                    title: "value",
-                    params: {
-                        _endpoint: '{{ signalset.endpoint }}',
-                        data_source: dataSource,
-                        signal: signal,
-                        time_type: timeType,
-                        geo_type: geographicType,
-                        geo_value: geographicValue
-                    }
+                geographicValues.forEach((geographicValue) => {
+                    dataSets.push({
+                        color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
+                        title: "value",
+                        params: {
+                            _endpoint: '{{ signalset.endpoint }}',
+                            data_source: dataSource,
+                            signal: signal,
+                            time_type: timeType,
+                            geo_type: geographicType,
+                            geo_value: geographicValue
+                        }
+                    });
                 });
             });
             
