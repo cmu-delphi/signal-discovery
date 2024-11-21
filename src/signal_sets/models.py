@@ -228,6 +228,14 @@ class SignalSet(models.Model):
         blank=True,
     )
 
+    endpoint: models.CharField = models.CharField(
+        max_length=255,
+        verbose_name=_("endpoint"),
+        help_text=_("Endpoint of the signal set."),
+        null=True,
+        blank=True,
+    )
+
     class Meta:
         unique_together = ("name", "data_source")
         ordering = ["name"]

@@ -168,156 +168,141 @@
         </div>
     </section>
     {% if signalset.signals.all|length > 0%}
-        <h5>Related signals</h5>
+        <h5>Signal members</h5>
         <section>
             <div class="row">
                 <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive" data-fl-scrolls='{"orientation": "horizontal"}'>
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Active</th>
-                                        <th scope="col">Description</th>
-                                        <th scope="col">Pathogen</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for signal in signalset.signals.all %}
-                                    <tr>
-                                        <td class="clickable-table-cell"
-                                            onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                            {% if signal.member_name %}
-                                                {{ signal.member_name }}
-                                            {% else %}
-                                                {{ signal.name }}
-                                            {% endif %}
-                                        </td>
-                                        <td class="clickable-table-cell"
-                                            onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                            {% if signal.active == True%}
-                                            <i class="fas fa-circle" style="color:green;"></i>
-                                            {% else %}
-                                            <i class="fas fa-circle" style="color:red;"></i>
-                                            {% endif %}
-                                        </td>
-                                        <td class="clickable-table-cell"
-                                            onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                            {{ signal.member_description }}
-                                        </td>
-                                        <td class="clickable-table-cell"
-                                            onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                            {% for pathogen in signal.pathogen.all %}
-                                                {{ pathogen }}
-                                            {% endfor %}
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <div class="row">
+                            <div class="table-responsive" data-fl-scrolls='{"orientation": "horizontal"}'>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Active</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Pathogen</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for signal in signalset.signals.all %}
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="selectedSignal" value="{{ signal.name }}">
+                                            </td>
+                                            <td class="clickable-table-cell"
+                                                onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                                {% if signal.member_name %}
+                                                    {{ signal.member_name }}
+                                                {% else %}
+                                                    {{ signal.name }}
+                                                {% endif %}
+                                            </td>
+                                            <td class="clickable-table-cell"
+                                                onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                                {% if signal.active == True%}
+                                                <i class="fas fa-circle" style="color:green;"></i>
+                                                {% else %}
+                                                <i class="fas fa-circle" style="color:red;"></i>
+                                                {% endif %}
+                                            </td>
+                                            <td class="clickable-table-cell"
+                                                onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                                {{ signal.member_description }}
+                                            </td>
+                                            <td class="clickable-table-cell"
+                                                onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                                {% for pathogen in signal.pathogen.all %}
+                                                    {{ pathogen }}
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <br>
+                                <form class="margin-top-1rem" onsubmit="submitMode(event)" id="dataForm">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <label class="form-label"
+                                                >Select mode:</label
+                                            >
+                                        </div>
+                                        <div class="col-10">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="modes" id="preview" value="preview" checked>
+                                                <label class="form-check-label" for="preview">Preview data</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="modes" id="epivis" value="epivis">
+                                                <label class="form-check-label" for="epivis">Plot data</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="modes" id="export" value="export">
+                                                <label class="form-check-label" for="export">Export data</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row margin-top-1rem">
+                                        <div class="col-2">
+                                            <label for="geographic_type" class="form-label"
+                                                >Geographic Type:</label
+                                            >
+                                        </div>
+                                        <div class="col-10">
+                                            <select id="geographic_type" name="geographic_type" class="form-select">
+                                                <option selected>Choose...</option>
+                                                {% for geography in available_geographies %}
+                                                <option value="{{ geography.name }}">{{ geography }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row margin-top-1rem">
+                                        <div class="col-2">
+                                            <label for="geographic_value" class="col-form-label">Geographic Value:</label>
+                                        </div>
+                                        <div class="col-10">
+                                            <select id="geographic_value" name="geographic_value" class="form-select" multiple="multiple"></select>
+                                        </div>
+                                    </div>
+                                    <div class="row margin-top-1rem" name="choose_date">
+                                        <div class="col-2">
+                                            <label for="start_date" class="form-label">
+                                                Start Date:
+                                            </label>
+                                        </div>
+                                        <div class="col-10">
+                                            <input type="date" class="form-control" id="start_date" name="start_date" value="2016-01-01">
+                                        </div>
+                                    </div>
+                                    <div class="row margin-top-1rem" name="choose_date">
+                                        <div class="col-2">
+                                            <label for="end_date" class="form-label">
+                                                End Date:
+                                            </label>
+                                        </div>
+                                        <div class="col-10">
+                                            <input type="date" class="form-control" id="end_date" name="end_date" value="2029-01-01">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <button type="submit" value="Submit" class="btn btn-primary margin-top-1rem">
+                                            Submit
+                                        </button>
+                                    </div>
+                                    <div class="row margin-top-1rem">
+                                        <pre class="margin-top-1rem"><code id="modeSubmitResult"></code></pre>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        <h5>Plot / Export data</h5>
-        <section class="section">
-            <div class="row">
-                <div class="card">
-                    <div class="card-body">
-                        <form class="margin-top-1rem" onsubmit="submitMode(event)" id="dataForm">
-                            <div class="row">
-                                <div class="col-2">
-                                    <label class="form-label"
-                                        >Select mode:</label
-                                    >
-                                </div>
-                                <div class="col-10">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="modes" id="preview" value="preview" checked>
-                                        <label class="form-check-label" for="preview">Preview data</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="modes" id="epivis" value="epivis">
-                                        <label class="form-check-label" for="epivis">Plot data</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="modes" id="export" value="export">
-                                        <label class="form-check-label" for="export">Export data</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row margin-top-1rem">
-                                <div class="col-2">
-                                    <label for="signal" class="form-label"
-                                        >Data Signal:</label
-                                    >
-                                </div>
-                                <div class="col-10">
-                                    <select id="signal" name="signal" class="form-select">
-                                        {% for signal in signalset.signals.all %}
-                                            <option>{{ signal.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row margin-top-1rem">
-                                <div class="col-2">
-                                    <label for="geographic_type" class="form-label"
-                                        >Geographic Type:</label
-                                    >
-                                </div>
-                                <div class="col-10">
-                                    <select id="geographic_type" name="geographic_type" class="form-select">
-                                        <option selected>Choose...</option>
-                                        {% for geography in available_geographies %}
-                                        <option value="{{ geography.name }}">{{ geography }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row margin-top-1rem">
-                                <div class="col-2">
-                                    <label for="geographic_value" class="col-form-label">Geographic Value:</label>
-                                </div>
-                                <div class="col-10">
-                                    <select id="geographic_value" name="geographic_value" class="form-select" multiple="multiple"></select>
-                                </div>
-                            </div>
-                            <div class="row margin-top-1rem" name="choose_date">
-                                <div class="col-2">
-                                    <label for="start_date" class="form-label">
-                                        Start Date:
-                                    </label>
-                                </div>
-                                <div class="col-10">
-                                    <input type="date" class="form-control" id="start_date" name="start_date">
-                                </div>
-                            </div>
-                            <div class="row margin-top-1rem" name="choose_date">
-                                <div class="col-2">
-                                    <label for="end_date" class="form-label">
-                                        End Date:
-                                    </label>
-                                </div>
-                                <div class="col-10">
-                                    <input type="date" class="form-control" id="end_date" name="end_date">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <button type="submit" value="Submit" class="btn btn-primary margin-top-1rem">
-                                    Submit
-                                </button>
-                            </div>
-                            <div class="row margin-top-1rem">
-                                <pre class="margin-top-1rem"><code id="modeSubmitResult"></code></pre>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
+
     {% endif %}
     <script>
         
@@ -406,7 +391,6 @@
         $('#modeSubmitResult').html('');
 
         var choose_dates = document.getElementsByName('choose_date');
-        //var time_type = document.getElementById('timeTypeDiv');
 
         if (mode === 'epivis') {
             currentMode = 'epivis';
@@ -414,20 +398,17 @@
                 el.style.display = 'none';
             });
             $('#modeSubmitResult').html('');
-            //time_type.style.display = 'none';
         } else if (mode === 'export') {
             currentMode = 'export';
             choose_dates.forEach((el) => {
                 el.style.display = 'flex';
             });
             $('#modeSubmitResult').html('');
-            //time_type.style.display = 'none';
         } else {
             currentMode = 'preview';
             choose_dates.forEach((el) => {
                 el.style.display = 'flex';
             });
-            //time_type.style.display = 'flex';
         }
         document.getElementsByName("modes").forEach((el) => {
             if (currentMode === el.value) {
@@ -498,7 +479,7 @@
 
         const dataSource = "{{ data_source }}";
         const timeType = "{{ time_type }}";
-        var dataSignal = document.getElementById('signal').value;
+        var dataSignals = Array.from(document.getElementsByName('selectedSignal'), (signal) => (signal.checked) ? signal.value : null).filter((el) => el !== null);
         var geographicType = document.getElementById('geographic_type').value;
         {% comment %} var timeType = "{{ signal.time_type }}"; {% endcomment %}
         // geographicValue is a comma separated string of geographic values. type can be string or integer
@@ -513,7 +494,24 @@
 
         if (currentMode === 'epivis') {
             var epiVisUrl = "{{ epivis_url }}";
-            var urlParamsEncoded = btoa(`{"datasets":[{"color":"#415742","title":"value","params":{"_endpoint":"covidcast","data_source":"${dataSource}","signal":"${dataSignal}","time_type":"${timeType}","geo_type":"${geographicType}","geo_value":"${geographicValue}"}}]}`);
+            var dataSets = [];
+            dataSignals.forEach((signal) => {
+                dataSets.push({
+                    color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
+                    title: "value",
+                    params: {
+                        _endpoint: '{{ signalset.endpoint }}',
+                        data_source: dataSource,
+                        signal: signal,
+                        time_type: timeType,
+                        geo_type: geographicType,
+                        geo_value: geographicValue
+                    }
+                });
+            });
+            
+
+            var urlParamsEncoded = btoa(`{"datasets":${JSON.stringify(dataSets)}}`);
 
             epiVisUrl += `#${urlParamsEncoded}`;
             window.open(epiVisUrl, '_blank').focus();
@@ -528,17 +526,14 @@
 
             var dataExportUrl = "{{ data_export_url }}";
 
-            if (startDate === '' || endDate === '') {
-                showWarningAlert("Start Date or End Date is not selected.")
-                return;
-            }
-
-            dataExportUrl += `?signal=${dataSource}:${dataSignal}&start_day=${startDate}&end_day=${endDate}&geo_type=${geographicType}&geo_values=${geographicValue}`;
-            $('#modeSubmitResult').html(`Manually fetch data: \n\nwget --content-disposition "${dataExportUrl}"`);
-            window.open(dataExportUrl, '_blank').focus();
+            
+            var fetchCommands = [];
+            dataSignals.forEach((signal) => {
+                var fetchDataCommand = `${dataExportUrl}?signal=${dataSource}:${signal}&start_day=${startDate}&end_day=${endDate}&geo_type=${geographicType}&geo_values=${geographicValue}`;
+                fetchCommands.push(`wget --content-disposition "${fetchDataCommand}"`);
+            });
+            $('#modeSubmitResult').html(`Manually fetch data: \n\n${fetchCommands.join("\n")}`);
         } else {
-            //var timeType = document.getElementById('time_type').value;
-
             var startDate = document.getElementById('start_date').value;
             var endDate = document.getElementById('end_date').value;
 
@@ -557,7 +552,7 @@
                         'time_type': timeType,
                         'time_values': `${startDate}--${endDate}`,
                         'data_source': dataSource,
-                        'signal': dataSignal,
+                        'signal': dataSignals.join(","),
                         'geo_type': geographicType,
                         'geo_values': geographicValue
                     },
