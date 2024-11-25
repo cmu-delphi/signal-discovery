@@ -180,9 +180,7 @@
                                         <tr>
                                             <th scope="col"></th>
                                             <th scope="col">Name</th>
-                                            <th scope="col">Active</th>
                                             <th scope="col">Description</th>
-                                            <th scope="col">Pathogen</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -201,21 +199,7 @@
                                             </td>
                                             <td class="clickable-table-cell"
                                                 onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                                {% if signal.active == True%}
-                                                <i class="fas fa-circle" style="color:green;"></i>
-                                                {% else %}
-                                                <i class="fas fa-circle" style="color:red;"></i>
-                                                {% endif %}
-                                            </td>
-                                            <td class="clickable-table-cell"
-                                                onClick="location.href='{% url 'signal' pk=signal.id %}';">
                                                 {{ signal.member_description }}
-                                            </td>
-                                            <td class="clickable-table-cell"
-                                                onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                                {% for pathogen in signal.pathogen.all %}
-                                                    {{ pathogen }}
-                                                {% endfor %}
                                             </td>
                                         </tr>
                                         {% endfor %}
