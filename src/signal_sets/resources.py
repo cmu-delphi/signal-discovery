@@ -154,6 +154,7 @@ class SignalSetResource(resources.ModelResource):
     link_to_documentation = Field(
         attribute="link_to_documentation", column_name="Link to documentation"
     )
+    endpoint = Field(attribute="endpoint", column_name="Endpoint")
 
     class Meta:
         model = SignalSet
@@ -185,6 +186,7 @@ class SignalSetResource(resources.ModelResource):
             "license",
             "dataset_location",
             "link_to_documentation",
+            "endpoint",
         ]
         import_id_fields = ["name", "data_source"]
         store_instance = True
