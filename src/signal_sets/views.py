@@ -62,6 +62,7 @@ class SignalSetListView(ListView):
         url_params_dict, url_params_str = self.get_url_params()
         context["url_params_dict"] = url_params_dict
         context["url_params_str"] = url_params_str
+        context['epivis_url'] = settings.EPIVIS_URL
         context["form"] = SignalSetFilterForm(initial=url_params_dict)
         context["filter"] = SignalSetFilter(
             self.request.GET, queryset=self.get_queryset()
