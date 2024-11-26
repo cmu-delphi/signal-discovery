@@ -1,5 +1,6 @@
 {% extends 'index.html' %}
 {% load i18n %}
+{% load static %}
 
 {% block title %} {{ signalset.name }} {% endblock %}
 
@@ -187,7 +188,7 @@
                                         {% for signal in signalset.signals.all %}
                                         <tr>
                                             <td>
-                                                <input type="checkbox" name="selectedSignal" value="{{ signal.name }}">
+                                                <input type="checkbox" name="selectedSignal" value="{{ signal.name }}" data-id="{{ signal.id }}" data-member-name="{{ signal.member_name }}" data-member-description="{{ signal.member_description }}">
                                             </td>
                                             <td class="clickable-table-cell"
                                                 onClick="location.href='{% url 'signal' pk=signal.id %}';">
@@ -204,7 +205,37 @@
                                         </tr>
                                         {% endfor %}
                                     </tbody>
+                                    
                                 </table>
+                                <br>
+                                <div class="row">
+                                    <div class="row margin-top-1rem">
+                                        <div class="col-2">
+                                            <label for="geographic_type" class="form-label"
+                                                >Geographic Type:</label
+                                            >
+                                        </div>
+                                        <div class="col-10">
+                                            <select id="geographic_type" name="geographic_type" class="form-select">
+                                                <option selected>Choose...</option>
+                                                {% for geography in available_geographies %}
+                                                <option value="{{ geography.name }}">{{ geography }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row margin-top-1rem">
+                                        <div class="col-2">
+                                            <label for="geographic_value" class="col-form-label">Geographic Value:</label>
+                                        </div>
+                                        <div class="col-10">
+                                            <select id="geographic_value" name="geographic_value" class="form-select" multiple="multiple"></select>
+                                        </div>
+                                        <button type="submit" value="Submit" class="btn btn-primary margin-top-1rem" id="proceedSelectedSignals">
+                                            Proceed selected signals
+                                        </button>
+                                    </div>
+                                </div>
                                 <br>
                                 <form class="margin-top-1rem" onsubmit="submitMode(event)" id="dataForm">
                                     <div class="row">
@@ -218,10 +249,10 @@
                                                 <input class="form-check-input" type="radio" name="modes" id="preview" value="preview" checked>
                                                 <label class="form-check-label" for="preview">Preview data</label>
                                             </div>
-                                            <div class="form-check form-check-inline">
+                                            <!--<div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="modes" id="epivis" value="epivis">
                                                 <label class="form-check-label" for="epivis">Plot data</label>
-                                            </div>
+                                            </div>-->
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="modes" id="export" value="export">
                                                 <label class="form-check-label" for="export">Export data</label>
@@ -288,6 +319,9 @@
         </section>
 
     {% endif %}
+
+    <script src="{% static 'js/select_signals.js' %}"></script>
+
     <script>
         
         if (!library)
@@ -417,6 +451,12 @@
             {% endfor %}
         {% endfor %}
 
+        if (localStorage.getItem("selectedSignals")) {
+            $("#showSelectedSignalsButton").show();
+        } else {
+            $("#showSelectedSignalsButton").hide();
+        }
+
         $('#geographic_value').select2({
             data: [],
             minimumInputLength: 0,
@@ -458,14 +498,16 @@
         return `${year}${weekNumber}`;
     }
 
+    const dataSource = "{{ data_source }}";
+    const timeType = "{{ time_type }}";
+    const signalSetEndpoint = "{{ signalset.endpoint }}";
+
     function submitMode(event) {
         event.preventDefault();
 
-        const dataSource = "{{ data_source }}";
-        const timeType = "{{ time_type }}";
+        
         var dataSignals = Array.from(document.getElementsByName('selectedSignal'), (signal) => (signal.checked) ? signal.value : null).filter((el) => el !== null);
         var geographicType = document.getElementById('geographic_type').value;
-        {% comment %} var timeType = "{{ signal.time_type }}"; {% endcomment %}
         // geographicValue is a comma separated string of geographic values. type can be string or integer
         // in case of string, it should be converted to lowercase
         // else it will be treated as integer
@@ -477,7 +519,6 @@
         }
 
         if (currentMode === 'epivis') {
-            var epiVisUrl = "{{ epivis_url }}";
             var dataSets = [];
             var geographicValues = geographicValue.split(',');
             dataSignals.forEach((signal) => {
@@ -486,7 +527,7 @@
                         color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
                         title: "value",
                         params: {
-                            _endpoint: '{{ signalset.endpoint }}',
+                            _endpoint: signalSetEndpoint,
                             data_source: dataSource,
                             signal: signal,
                             time_type: timeType,
@@ -500,8 +541,8 @@
 
             var urlParamsEncoded = btoa(`{"datasets":${JSON.stringify(dataSets)}}`);
 
-            epiVisUrl += `#${urlParamsEncoded}`;
-            window.open(epiVisUrl, '_blank').focus();
+            var linkToEpivis = `${epivisUrl}#${urlParamsEncoded}`;
+            window.open(linkToEpivis, '_blank').focus();
         } else if (currentMode === 'export') {
             var startDate = document.getElementById('start_date').value;
             var endDate = document.getElementById('end_date').value;
@@ -560,7 +601,20 @@
             };
         }
     }
+
+    var proceedSelectedSignals = document.getElementById('proceedSelectedSignals');
+    proceedSelectedSignals.addEventListener('click', function() {
+        addSelectedSignals(dataSource, timeType, signalSetEndpoint);
+        $("")
+    });
+
+
+
+    
+    
+    
     </script>
+    
 </main>
 
 {% endblock %}

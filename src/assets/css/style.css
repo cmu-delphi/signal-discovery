@@ -1368,3 +1368,13 @@ h6 {
 .tableformat td:nth-child(1){
     width: 10rem;
 }
+
+
+.float{
+	position:fixed;
+	width:150px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	text-align:center;
+}

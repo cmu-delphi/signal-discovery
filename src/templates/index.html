@@ -1,4 +1,5 @@
-{% load static %} {% load i18n %}
+{% load static %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -156,13 +157,53 @@
             </div>
         </div>
 
-        <button
+        <!--<button
         type="button"
         class="btn btn-danger btn-floating btn-lg"
         id="btn-back-to-top"
         >
             <i class="fas fa-arrow-up"></i>
-        </button>
+        </button> -->
+
+        <!-- Button trigger modal -->
+        <div class="float" id="showSelectedSignalsButton" style="display:none;">
+            <a type="button" class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#selectedSignalsModal">
+                Show selected signals
+            </a>
+        </div>
+        
+        
+        <!-- Modal -->
+        <div class="modal fade" id="selectedSignalsModal" tabindex="-1" aria-labelledby="selectedSignalsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="selectedSignalsModalLabel">Selected signals</h5>
+                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Signal name</th>
+                            <th scope="col">Signal description</th>
+                            <th scope="col">Data Source</th>
+                            <th scope="col">Signal tech name</th>
+                            <th scope="col">Time Type</th>
+                            <th scope="col">Geo Type</th>
+                            <th scope="col">Geo Value</th>
+                          </tr>
+                        </thead>
+                        <tbody id="selectedSignalsList"></tbody>
+                      </table>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="clearSelectedSignals" data-mdb-ripple-init >Reset selected signals</button>
+                <button type="button" class="btn btn-primary" id="plotSelectedSignals" data-mdb-ripple-init>Show plot</button>
+                </div>
+            </div>
+            </div>
+        </div>
 
         <footer class="py-3 my-4">
             <ul class="nav justify-content-center border-bottom pb-3 mb-3">
@@ -196,6 +237,38 @@
 
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-        <script src="{% static 'js/back_to_top.js' %}"></script>
+        <script src="{% static 'js/select_signals.js' %}"></script>
+
+        <script>
+            const epivisUrl = "{{ epivis_url }}";
+            $(document).ready(function () {
+                if (localStorage.getItem("selectedSignals")) {
+                    $("#showSelectedSignalsButton").show();
+                } else {
+                    $("#showSelectedSignalsButton").hide();
+                }
+            });
+
+
+            var plotSelectedSignals = document.getElementById('plotSelectedSignals');
+            plotSelectedSignals.addEventListener('click', function() {
+                plotData(epivisUrl);
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var clearButton = document.getElementById('clearSelectedSignals');
+        
+                clearButton.addEventListener('click', function() {
+                    localStorage.removeItem('selectedSignals');
+                    selectedSignals = {};  // Replace 'selectedSignals' with the key you want to remove
+                    $("#selectedSignalsList").empty();
+                    $("#showSelectedSignalsButton").hide();
+                    alert('Selected signals have been cleared from localStorage.');
+                });
+            });
+        </script>
+
+
+        <!--<script src="{% static 'js/back_to_top.js' %}"></script> -->
     </body>
 </html>
