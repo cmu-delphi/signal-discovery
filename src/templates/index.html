@@ -174,7 +174,7 @@
         
         
         <!-- Modal -->
-        <div class="modal fade" id="selectedSignalsModal" tabindex="-1" aria-labelledby="selectedSignalsModalLabel" aria-hidden="true">
+        <div class="modal fade" id="selectedSignalsModal" tabindex="-1" aria-labelledby="selectedSignalsModalLabel">
             <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
             <div class="modal-content">
                 <div class="modal-header">
@@ -186,19 +186,39 @@
                         <thead>
                           <tr>
                             <th scope="col">Signal name</th>
-                            <th scope="col">Signal description</th>
-                            <th scope="col">Data Source</th>
-                            <th scope="col">Signal tech name</th>
-                            <th scope="col">Time Type</th>
-                            <th scope="col">Geo Type</th>
-                            <th scope="col">Geo Value</th>
+                            <th scope="col">Signal name</th>
                           </tr>
                         </thead>
                         <tbody id="selectedSignalsList"></tbody>
                       </table>
+                      
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="clearSelectedSignals" data-mdb-ripple-init >Reset selected signals</button>
+                    <div class="row">
+                        <div class="row margin-top-1rem">
+                            <div class="col-2">
+                                <label for="geographic_type" class="form-label"
+                                    >Geographic Type:</label
+                                >
+                            </div>
+                            <div class="col-10">
+                                <select id="geographic_type" name="geographic_type" class="form-select">
+                                    <option selected>Choose...</option>
+                                    {% for geography in available_geographies %}
+                                    <option value="{{ geography.name }}">{{ geography }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row margin-top-1rem">
+                            <div class="col-2">
+                                <label for="geographic_value" class="col-form-label">Geographic Value:</label>
+                            </div>
+                            <div class="col-10">
+                                <select id="geographic_value" name="geographic_value" class="form-select" multiple="multiple"></select>
+                            </div>
+                        </div>
+                    </div>
                 <button type="button" class="btn btn-primary" id="plotSelectedSignals" data-mdb-ripple-init>Show plot</button>
                 </div>
             </div>
@@ -241,31 +261,55 @@
 
         <script>
             const epivisUrl = "{{ epivis_url }}";
-            $(document).ready(function () {
-                if (localStorage.getItem("selectedSignals")) {
-                    $("#showSelectedSignalsButton").show();
+            var geoValues = [];
+
+            function getFilteredGeographicValues(geographicType) {
+                var data = geoValues.reduce((data, geoValue) => {
+                    if (geoValue.geoType === geographicType) {
+                        data.push(geoValue);
+                    }
+                    return data;
+                }, []);
+                return data;
+            }
+
+            function initGeographicValueSelect(geographicType = null) {
+                if (geographicType) {
+                    var data = getFilteredGeographicValues(geographicType);
                 } else {
-                    $("#showSelectedSignalsButton").hide();
+                    data = [];
                 }
-            });
-
-
-            var plotSelectedSignals = document.getElementById('plotSelectedSignals');
-            plotSelectedSignals.addEventListener('click', function() {
-                plotData(epivisUrl);
-            });
-
-            document.addEventListener('DOMContentLoaded', function() {
-                var clearButton = document.getElementById('clearSelectedSignals');
         
-                clearButton.addEventListener('click', function() {
-                    localStorage.removeItem('selectedSignals');
-                    selectedSignals = {};  // Replace 'selectedSignals' with the key you want to remove
-                    $("#selectedSignalsList").empty();
-                    $("#showSelectedSignalsButton").hide();
-                    alert('Selected signals have been cleared from localStorage.');
+        
+                $('#geographic_value').select2({
+                    data: data,
+                    minimumInputLength: 0,
+                    maximumSelectionLength: 5,
+                });
+            }
+
+            document.getElementById('geographic_type').addEventListener("change", (event) => {
+                $('#geographic_value').empty();
+                $('#modeSubmitResult').html('');
+                initGeographicValueSelect(event.target.value);
+            })
+
+            $(document).ready(function () {
+                {% for geography in available_geographies %}
+                    {% for unit in geography.geography_units.all %}
+                        geoValues.push({'id': '{{ unit.geo_id }}', 'geoType': '{{ unit.geography.name }}', 'text': '{{ unit.display_name }}'});
+                    {% endfor %}
+                {% endfor %}
+
+                var plotSelectedSignals = document.getElementById('plotSelectedSignals');
+                    plotSelectedSignals.addEventListener('click', function() {
+                        plotData(epivisUrl);
                 });
             });
+
+            
+
+
         </script>
 
 

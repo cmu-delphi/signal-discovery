@@ -1349,6 +1349,10 @@ h6 {
     padding-left: 0px!important;
 }
 
+.select2-dropdown {
+    z-index: 9999!important;
+}
+
 .popover {
     max-width: 50%;
 }

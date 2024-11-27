@@ -79,16 +79,7 @@ function addSelectedSignals(dataSource, timeType, signalSetEndpoint) {
     $("#showSelectedSignalsButton").show();
 }
 
-function plotData(epivisUrl) {
-    var dataSets = [];
-    for (const signal in JSON.parse(localStorage.getItem("selectedSignals"))) {
-        dataSets.push(JSON.parse(localStorage.getItem("selectedSignals"))[signal]['epivis']);
-    }
-    var urlParamsEncoded = btoa(`{"datasets":${JSON.stringify(dataSets)}}`);
-    
-    var linkToEpivis = `${epivisUrl}#${urlParamsEncoded}`
-    window.open(linkToEpivis, '_blank').focus();
-}
+
 
 document.addEventListener('DOMContentLoaded', function() {
     // Call the function to update the modal content when the page loads
