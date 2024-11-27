@@ -249,6 +249,7 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th scope="col"></th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Description of data*</th>
                                     <th scope="col">Name of maintainer/key contact*</th>
@@ -284,6 +285,9 @@
                             <tbody>
                                 {% for signal_set in signal_sets %}
                                 <tr>
+                                    <td>
+                                        <input type="checkbox" name="showSignalMembers" value="{{ signal_set.id }}">
+                                    </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
                                         {{ signal_set.name }}
@@ -428,6 +432,38 @@
                                         {{ signal_set.link_to_documentation }}
                                         <br>
                                     </td>
+                                    <tr style="display: none;">
+                                        <td colspan="2"></td>
+                                        <td colspan="5">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0 caption-top">
+                                                    <caption>
+                                                        Select Signal Set Members
+                                                    </caption>
+                                                    <thead>
+                                                        <th scope="col"></th>
+                                                        <th scope="col">Signal Name</th>
+                                                        <th scope="col">Signal description</th>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for signal in signal_set.signals.all %}
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="checkbox" name="selectedSignal" data-signalDisplayName="{{ signal.display_name }}" data-signalSet="{{ signal_set.name }}" data-endpoint="{{ signal_set.endpoint }}" data-dataSource="{{ signal.source.name }}" data-signal="{{ signal.name }}" data-timeType="{{ signal.time_type }}">
+                                                                </td>
+                                                                <td>
+                                                                    {{ signal.member_name}}
+                                                                </td>
+                                                                <td>
+                                                                    {{ signal.member_description }}
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                          </td>
+                                    </tr>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -457,6 +493,99 @@
             event.target.innerText = 'Show more...';
         }
     }
+
+    let showSignalMembers = document.getElementsByName("showSignalMembers");
+    showSignalMembers.forEach((checkbox) => {
+        checkbox.addEventListener('change', function(event) {
+            let signalSetMembersTable = this.parentElement.parentElement.nextElementSibling;
+            signalSetMembersTable.style.display = this.checked ? 'table-row' : 'none';
+        });
+    })
+
+
+
+    let checkedSignalMembers = []
+
+        // Function to update the modal content
+    function updateSelectedSignals(signalSet, signal) {
+        var selectedSignalsList = document.getElementById('selectedSignalsList');
+
+        var tr = document.createElement('tr');
+        tr.setAttribute('id', `${signalSet}_${signal}`);
+        var signalSetName = document.createElement('td');
+        signalSetName.textContent = signalSet;
+        tr.appendChild(signalSetName);
+        var signalName = document.createElement('td');
+        signalName.textContent = signal;
+        tr.appendChild(signalName);
+        selectedSignalsList.appendChild(tr);
+    }
+
+    let dataSignals = Array.from(document.getElementsByName('selectedSignal'));
+    dataSignals.forEach((checkbox) => {
+        checkbox.addEventListener('change', function(event) {
+            if (this.checked) {
+                checkedSignalMembers.push({
+                    _endpoint: this.dataset.endpoint,
+                    data_source: this.dataset.datasource,
+                    signal: this.dataset.signal,
+                    time_type: this.dataset.timetype,
+                });
+                updateSelectedSignals(this.dataset.signalset, this.dataset.signaldisplayname);
+            } else {
+                checkedSignalMembers = checkedSignalMembers.filter(signal => signal["params"]["signal"] !== this.dataset.signal);
+                document.getElementById(`${this.dataset.signalset}_${this.dataset.signal}`).remove();
+            }
+
+
+            if (checkedSignalMembers.length > 0) {
+                $("#showSelectedSignalsButton").show();
+            } else {
+                $("#showSelectedSignalsButton").hide();
+            }
+        });
+    });
+
+    function plotData(epivisUrl) {
+        var dataSets = {};
+
+        var geographicType = document.getElementById('geographic_type').value;
+        var geographicValues = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id);
+        if (geographicType === 'Choose...' || geographicValues.length === 0) {
+            showWarningAlert("Geographic Type or Geographic Value is not selected.");
+            return;
+        }
+
+        checkedSignalMembers.forEach((signal) => {
+            geographicValues.forEach((geoValue) => {
+                dataSets[`${signal["signal"]}_${geoValue}`] = {
+                    color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
+                    title: "value",
+                    params: {
+                        _endpoint: signal["_endpoint"],
+                        data_source: signal["data_source"],
+                        signal: signal["signal"],
+                        time_type: signal["time_type"],
+                        geo_type: geographicType,
+                        geo_value: geoValue
+                    }
+                }
+            })
+            
+        });
+        
+        var requestParams = [];
+        for (var key in dataSets) {
+            requestParams.push(dataSets[key]);
+        }
+
+        var urlParamsEncoded = btoa(`{"datasets":${JSON.stringify(requestParams)}}`);
+        
+        var linkToEpivis = `${epivisUrl}#${urlParamsEncoded}`
+        window.open(linkToEpivis, '_blank').focus();
+    }
+
+    
 
 
 

@@ -68,6 +68,7 @@ class SignalSetListView(ListView):
             self.request.GET, queryset=self.get_queryset()
         )
         context["signal_sets"] = self.get_queryset()
+        context["available_geographies"] = Geography.objects.all()
         return context
 
 
