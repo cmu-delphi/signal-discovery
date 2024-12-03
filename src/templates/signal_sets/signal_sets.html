@@ -8,7 +8,7 @@
 {% block content %}
 
 <div class="row">
-    <div class="col-3">
+    <div class="col-2">
         <form method="GET" id="filterSignalSetsForm">
             <div class="card">
                 <div class="card-body">
@@ -20,7 +20,7 @@
                                     data-mdb-toggle="collapse"
                                     data-mdb-target="#flush-collapse_{{ form.pathogens.auto_id }}" aria-expanded="false"
                                     aria-controls="flush-collapse_{{ form.pathogens.auto_id }}">
-                                    Pathogen / Syndrome
+                                    Pathogens/Syndromes
                                     <a
                                         tabindex="0"
                                         type="button"
@@ -56,7 +56,7 @@
                                     data-mdb-target="#flush-collapse_{{ form.geographic_scope.auto_id }}"
                                     aria-expanded="false"
                                     aria-controls="flush-collapse_{{ form.geographic_scope.auto_id }}">
-                                    Country
+                                    Geographic Scope
                                     <a
                                         tabindex="0"
                                         type="button"
@@ -92,7 +92,7 @@
                                     data-mdb-target="#flush-collapse_{{ form.available_geographies.auto_id }}"
                                     aria-expanded="false"
                                     aria-controls="flush-collapse_{{ form.available_geographies.auto_id }}">
-                                    Geo-level
+                                    Geographic Granularity
                                     <a
                                         tabindex="0"
                                         type="button"
@@ -118,6 +118,37 @@
                                         <label class="form-check-label" for="select-all">Select all</label>
                                     </div>
                                     {{ form.available_geographies|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading_{{ form.temporal_granularity.auto_id }}">
+                                <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
+                                    data-mdb-toggle="collapse"
+                                    data-mdb-target="#flush-collapse_{{ form.temporal_granularity.auto_id }}" aria-expanded="false"
+                                    aria-controls="flush-collapse_{{ form.temporal_granularity.auto_id }}">
+                                    Temporal Granularity
+                                    <a
+                                        tabindex="0"
+                                        type="button"
+                                        class="info-button filter-description-popover"
+                                        data-mdb-container="body"
+                                        data-mdb-ripple-init
+                                        data-mdb-popover-init
+                                        data-mdb-trigger="hover"
+                                        data-mdb-placement="right"
+                                        data-mdb-content="Units of time available for a given signal set, e.g., day and week."
+                                        >
+                                        <i class="far fa-circle-question"></i>
+                                    </a>
+                                </button>
+                            </h2>
+                            <div id="flush-collapse_{{ form.temporal_granularity.auto_id }}"
+                                class="accordion-collapse {% if form.temporal_granularity.value %} {% else %}collapse{% endif %}"
+                                aria-labelledby="flush-heading_{{ form.temporal_granularity.auto_id }}"
+                                data-mdb-parent="#accordionSignalSetFilters">
+                                <div class="accordion-body margin-top-1rem">
+                                    {{ form.temporal_granularity|as_crispy_field }}
                                 </div>
                             </div>
                         </div>
@@ -192,37 +223,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="flush-heading_{{ form.temporal_granularity.auto_id }}">
-                                <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
-                                    data-mdb-toggle="collapse"
-                                    data-mdb-target="#flush-collapse_{{ form.temporal_granularity.auto_id }}" aria-expanded="false"
-                                    aria-controls="flush-collapse_{{ form.temporal_granularity.auto_id }}">
-                                    Temporal Granularity
-                                    <a
-                                        tabindex="0"
-                                        type="button"
-                                        class="info-button filter-description-popover"
-                                        data-mdb-container="body"
-                                        data-mdb-ripple-init
-                                        data-mdb-popover-init
-                                        data-mdb-trigger="hover"
-                                        data-mdb-placement="right"
-                                        data-mdb-content="Units of time available for a given signal set, e.g., day and week."
-                                        >
-                                        <i class="far fa-circle-question"></i>
-                                    </a>
-                                </button>
-                            </h2>
-                            <div id="flush-collapse_{{ form.temporal_granularity.auto_id }}"
-                                class="accordion-collapse {% if form.temporal_granularity.value %} {% else %}collapse{% endif %}"
-                                aria-labelledby="flush-heading_{{ form.temporal_granularity.auto_id }}"
-                                data-mdb-parent="#accordionSignalSetFilters">
-                                <div class="accordion-body margin-top-1rem">
-                                    {{ form.temporal_granularity|as_crispy_field }}
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div> 
                     <div class="card-body">
                         <div class="d-grid gap-2 mt-3">
@@ -232,7 +233,7 @@
                 </div>
             </div>
     </div>
-    <div class="col-9">
+    <div class="col-10">
         <div class="row d-flex justify-content-end">
             <div class="col-6">
                 <div class="input-group mb-3 d-flex justify-content-start">
@@ -245,41 +246,51 @@
         <div class="row">
             <div class="card">
                 <div class="card-body">
-                    <div class="table-responsive" data-fl-scrolls='{"orientation": "horizontal"}'>
+                    <div class="table-responsive" data-fl-scrolls='{"orientation": "horizontal"}' style="max-height: 80vh; overflow-y: auto;">
+                        <style>
+                            table {
+                                border-collapse: collapse;
+                                width: 100%;
+                            }
+                            
+                            thead {
+                                position: sticky;
+                                top: 0;
+                                background-color: white; /* Ensure the background color matches your design */
+                                z-index: 1; /* Ensure the header stays above the table rows */
+                            }
+                            
+                            th, td {
+                                padding: 8px;
+                                text-align: left;
+                                border-bottom: 1px solid #ddd;
+                            }
+                        </style>
                         <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th scope="col"></th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Description of data*</th>
-                                    <th scope="col">Name of maintainer/key contact*</th>
-                                    <th scope="col">Email of maintainer/key contact*</th>
-                                    <th scope="col">Organization</th>
-                                    <th scope="col">Data Source</th>
-                                    <th scope="col">Language (likely English)</th>
-                                    <th scope="col">Version Number (if applicable)</th>
-                                    <th scope="col">Source dataset from which data was derived (for aggregates or processed data)</th>
-                                    <th scope="col">Disease(s)/Pathogen(s)/Syndrome(s)</th>
-                                    <th scope="col">Type(s) of data*</th>
-                                    <th scope="col">Geographic Scope*</th>
-                                    <th scope="col">Geographic Granularity - Delphi</th>
-                                    <th scope="col">Geographic Granularity*</th>
-                                    <th scope="col">Description of pre-processing (if any)</th>
+                                    <th scope="col">Name</th> # TODO: add tooltip on hover with description here
+                                    <th scope="col">Pathogen(s)/Syndrome(s)</th>
+                                    <th scope="col">Type(s) of Data</th>
+                                    <th scope="col">Geographic Scope</th>
+                                    <th scope="col">Geographic Granularity</th>
                                     <th scope="col">Temporal scope Start</th>
                                     <th scope="col">Temporal Scope End</th>
                                     <th scope="col">Temporal Granularity</th>
                                     <th scope="col">Reporting Cadence</th>
                                     <th scope="col">Reporting Lag(nominal)</th>
                                     <th scope="col">Revision Cadence</th>
-                                    <th scope="col">Demographic scope*</th>
-                                    <th scope="col">Demographic Granularity*</th>
+                                    <th scope="col">Demographic scope</th>
+                                    <th scope="col">Demographic Granularity</th>                              
                                     <th scope="col">Severity Pyramid Rung(s)</th>
+                                    <th scope="col">Data Source</th>
+                                    <th scope="col">Description of pre-processing</th>
                                     <th scope="col">Censoring</th>
                                     <th scope="col">Missingness</th>
                                     <th scope="col">DUA required</th>
                                     <th scope="col">License</th>
-                                    <th scope="col">Dataset Location</th>
-                                    <th scope="col">Link to dictionary</th>
+                                    <th scope="col">Documentation</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -291,38 +302,6 @@
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
                                         {{ signal_set.name }}
-                                    </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.description }}
-                                    </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.maintainer_name }}
-                                    </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.maintainer_email }}
-                                    </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.organization }}
-                                    </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.data_source }}
-                                    </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.language }}
-                                    </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.version_number }}
-                                    </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.origin_datasource }}
                                     </td>
                                     <td cla ss="clickable-table-cell"
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
@@ -341,20 +320,8 @@
                                         {{ signal_set.geographic_scope }}
                                     </td>
                                     <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal' pk=signal_set.id %}';">
-                                        {% for geography in signal_set.available_geographies.all %}
-                                        <span class="badge rounded-pill bg-dark">
-                                            {{ geography }}
-                                        </span>
-                                        {% endfor %}
-                                    </td>
-                                    <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
                                         {{ signal_set.geographic_granularity }}
-                                    </td>                        
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.preprocessing_description }}
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
@@ -404,6 +371,14 @@
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                        {{ signal_set.data_source }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                        {{ signal_set.preprocessing_description }}
+                                    </td>
+                                    <td class="clickable-table-cell"
+                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
                                         {{ signal_set.censoring }}
                                         <br>
                                     </td>
@@ -420,11 +395,6 @@
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
                                         {{ signal_set.license }}
-                                        <br>
-                                    </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.dataset_location }}
                                         <br>
                                     </td>
                                     <td class="clickable-table-cell"

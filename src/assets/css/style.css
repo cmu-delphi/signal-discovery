@@ -1382,3 +1382,7 @@ h6 {
 	right:40px;
 	text-align:center;
 }
+
+.form-check > label.form-check-label {
+    display: block!important; /* Ensure the label takes up the full width */
+}

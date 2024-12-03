@@ -12,8 +12,8 @@ def process_pathogens(row) -> None:
     """
     Processes pathogen.
     """
-    if row["Disease(s)/Pathogen(s)/Syndrome(s)"]:
-        pathogens = row["Disease(s)/Pathogen(s)/Syndrome(s)"].split(",")
+    if row["Pathogen(s)/Syndrome(s)"]:
+        pathogens = row["Pathogen(s)/Syndrome(s)"].split(",")
         for pathogen in pathogens:
             pathogen = pathogen.strip()
             pathogen_obj, _ = Pathogen.objects.get_or_create(name=pathogen)
@@ -206,7 +206,7 @@ class SignalSetResource(resources.ModelResource):
     def after_import_row(self, row, row_result, **kwargs):
         try:
             signal_set_obj = SignalSet.objects.get(id=row_result.object_id)
-            for pathogen in row["Disease(s)/Pathogen(s)/Syndrome(s)"].split(","):
+            for pathogen in row["Pathogen(s)/Syndrome(s)"].split(","):
                 pathogen = Pathogen.objects.get(name=pathogen)
                 signal_set_obj.pathogens.add(pathogen)
             for severity_pyramid_rung in row["Severity Pyramid Rung(s)"].split(","):
