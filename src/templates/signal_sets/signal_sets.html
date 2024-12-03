@@ -247,25 +247,6 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive" data-fl-scrolls='{"orientation": "horizontal"}' style="max-height: 80vh; overflow-y: auto;">
-                        <style>
-                            table {
-                                border-collapse: collapse;
-                                width: 100%;
-                            }
-                            
-                            thead {
-                                position: sticky;
-                                top: 0;
-                                background-color: white; /* Ensure the background color matches your design */
-                                z-index: 1; /* Ensure the header stays above the table rows */
-                            }
-                            
-                            th, td {
-                                padding: 8px;
-                                text-align: left;
-                                border-bottom: 1px solid #ddd;
-                            }
-                        </style>
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -477,11 +458,11 @@
     let checkedSignalMembers = []
 
         // Function to update the modal content
-    function updateSelectedSignals(signalSet, signal) {
+    function updateSelectedSignals(dataSoure, signal, signalSet) {
         var selectedSignalsList = document.getElementById('selectedSignalsList');
 
         var tr = document.createElement('tr');
-        tr.setAttribute('id', `${signalSet}_${signal}`);
+        tr.setAttribute('id', `${dataSoure}_${signal}`);
         var signalSetName = document.createElement('td');
         signalSetName.textContent = signalSet;
         tr.appendChild(signalSetName);
@@ -501,10 +482,10 @@
                     signal: this.dataset.signal,
                     time_type: this.dataset.timetype,
                 });
-                updateSelectedSignals(this.dataset.signalset, this.dataset.signaldisplayname);
+                updateSelectedSignals(this.dataset.datasource, this.dataset.signal, this.dataset.signalset);
             } else {
-                checkedSignalMembers = checkedSignalMembers.filter(signal => signal["params"]["signal"] !== this.dataset.signal);
-                document.getElementById(`${this.dataset.signalset}_${this.dataset.signal}`).remove();
+                checkedSignalMembers = checkedSignalMembers.filter(signal => signal.signal !== this.dataset.signal);
+                document.getElementById(`${this.dataset.datasource}_${this.dataset.signal}`).remove();
             }
 
 
