@@ -280,11 +280,11 @@
                                     <td>
                                         <input type="checkbox" name="showSignalMembers" value="{{ signal_set.id }}">
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.name }}
+                                    <td>
+                                        <a data-mdb-tooltip-init title="{{ signal_set.description }}">{{ signal_set.name }}</a>
+                                        
                                     </td>
-                                    <td cla ss="clickable-table-cell"
+                                    <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
                                         {% for pathogen in signal_set.pathogens.all %}
                                         <span class="badge rounded-pill bg-dark">
