@@ -82,7 +82,7 @@ def fix_boolean_fields(row) -> Any:
 class SignalSetResource(resources.ModelResource):
 
     name = Field(attribute="name", column_name="Signal Set name* ")
-    description = Field(attribute="description", column_name="Signal Set description*")
+    description = Field(attribute="description", column_name="Signal Set Description*")
     maintainer_name = Field(
         attribute="maintainer_name", column_name="Maintainer/\nKey Contact *"
     )
