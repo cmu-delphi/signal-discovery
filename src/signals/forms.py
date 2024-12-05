@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from signals.models import (
+    Signal,
     Pathogen,
     GeographicScope,
     Geography,
@@ -21,20 +22,20 @@ class SignalFilterForm(forms.ModelForm):
     )
 
     pathogens = forms.ModelChoiceField(
-        queryset=Pathogen.objects.all(), widget=forms.CheckboxSelectMultiple()
+        queryset=Pathogen.objects.filter(id__in=Signal.objects.values_list("pathogen", flat=True)), widget=forms.CheckboxSelectMultiple()
     )
 
     geographic_scope = forms.ModelChoiceField(
-        queryset=GeographicScope.objects.all(), widget=forms.CheckboxSelectMultiple()
+        queryset=GeographicScope.objects.filter(id__in=Signal.objects.values_list("geographic_scope", flat=True)), widget=forms.CheckboxSelectMultiple()
     )
 
     available_geography = forms.ModelChoiceField(
-        queryset=Geography.objects.all().order_by("display_order_number"),
+        queryset=Geography.objects.filter(id__in=Signal.objects.values_list("available_geography", flat=True)).order_by("display_order_number"),
         widget=forms.CheckboxSelectMultiple(),
     )
 
     severity_pyramid_rung = forms.ModelChoiceField(
-        queryset=SeverityPyramidRung.objects.all(),
+        queryset=SeverityPyramidRung.objects.filter(id__in=Signal.objects.values_list("severity_pyramid_rung", flat=True)),
         widget=forms.CheckboxSelectMultiple(),
     )
 
@@ -88,7 +89,7 @@ class SignalFilterForm(forms.ModelForm):
 
         try:
             self.fields["datasource"].choices = set(
-                SourceSubdivision.objects.values_list("display_name", "display_name")
+                SourceSubdivision.objects.filter(id__in=Signal.objects.values_list("source", flat=True)).values_list("display_name", "display_name")
             )
         except SourceSubdivision.DoesNotExist:
             self.fields["datasource"].choices = []
