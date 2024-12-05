@@ -362,6 +362,9 @@ class SignalResource(ModelResource):
             "restrictions",
             "time_type",
             "signal_set",
+            "format_type",
+            "severity_pyramid_rung",
+
         ]
         import_id_fields: list[str] = ["name", "source"]
         store_instance = True

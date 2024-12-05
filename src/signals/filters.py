@@ -11,6 +11,7 @@ from signals.models import (
     Geography,
     SignalsDbView,
     SeverityPyramidRung,
+    Signal
 )
 from datasources.models import SourceSubdivision
 
@@ -42,7 +43,7 @@ class SignalFilter(django_filters.FilterSet):
     )
 
     datasource = django_filters.ModelMultipleChoiceFilter(
-        queryset=SourceSubdivision.objects.all(),
+        queryset=SourceSubdivision.objects.filter(id__in=Signal.objects.values_list("source", flat=True)),
         field_name="datasource",
         to_field_name="display_name",
     )
