@@ -12,6 +12,16 @@
         <form method="GET" id="filterSignalSetsForm">
             <div class="card">
                 <div class="card-body">
+                    <h5 class="card-title">Location Search:</h5>
+                    <div class="input-group">
+                        <input class="form-control border" data-mdb-ripple-init data-mdb-tooltip-init
+                            data-mdb-placement="bottom"
+                            title="Coming soon..." type="search"
+                            name="" id="searchSignalInput" placeholder="Coming soon..."
+                            title="Enter search keyword"
+                            value=""
+                            disabled/>
+                    </div>
                     <h5 class="card-title">Filters</h5>
                     <div class="accordion accordion-flush" id="accordionSignalSetFilters">
                         <div class="accordion-item">
@@ -223,7 +233,9 @@
                                 </div>
                             </div>
                         </div>
-                        
+                        <div class="input-group margin-top-1rem">
+                            {{ form.temporal_scope_end|as_crispy_field }}
+                        </div>
                     </div> 
                     <div class="card-body">
                         <div class="d-grid gap-2 mt-3">

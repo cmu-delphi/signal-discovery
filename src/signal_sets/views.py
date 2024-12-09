@@ -46,6 +46,7 @@ class SignalSetListView(ListView):
             "temporal_granularity": [
                 el for el in self.request.GET.getlist("temporal_granularity")
             ],
+            "temporal_scope_end": self.request.GET.get("temporal_scope_end"),
         }
         url_params_str = ""
         for param_name, param_value in url_params_dict.items():

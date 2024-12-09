@@ -103,7 +103,7 @@ class SignalSetResource(resources.ModelResource):
         attribute="origin_datasource",
         column_name="Source dataset from which data was derived (for aggregates or processed data) ",
     )
-    data_type = Field(attribute="data_type", column_name="Type(s) of data*")
+    data_type = Field(attribute="data_type", column_name="Type(s) of Data*")
     geographic_scope = Field(
         attribute="geographic_scope",
         column_name="Geographic Scope*",
@@ -146,7 +146,7 @@ class SignalSetResource(resources.ModelResource):
     )
     censoring = Field(attribute="censoring", column_name="Censoring")
     missingness = Field(attribute="missingness", column_name="Missingness")
-    dua_required = Field(attribute="dua_required", column_name="DUA required (yes/no) ")
+    dua_required = Field(attribute="dua_required", column_name="DUA required?")
     license = Field(attribute="license", column_name="License ")
     dataset_location = Field(
         attribute="dataset_location", column_name="Dataset Location"

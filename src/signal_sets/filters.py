@@ -52,6 +52,13 @@ class SignalSetFilter(django_filters.FilterSet):
         lookup_expr="icontains",
     )
 
+    temporal_scope_end = django_filters.MultipleChoiceFilter(
+        field_name="temporal_scope_end",
+        choices=[
+            ("Ongoing", "Ongoing Surveillance Only"),
+        ],
+    )
+
     class Meta:
         model = SignalSet
         fields: list[str] = [
@@ -60,5 +67,6 @@ class SignalSetFilter(django_filters.FilterSet):
             "available_geographies",
             "severity_pyramid_rungs",
             "data_source",
-            "temporal_granularity"
+            "temporal_granularity",
+            "temporal_scope_end",
         ]
