@@ -1,6 +1,8 @@
 import logging
 
 import django_filters
+from django.db.models import Q
+import ast
 from django_filters.widgets import BooleanWidget, QueryArrayWidget
 
 from signals.models import (
@@ -9,6 +11,7 @@ from signals.models import (
     Geography,
     SignalsDbView,
     SeverityPyramidRung,
+    Signal
 )
 from datasources.models import SourceSubdivision
 
@@ -21,32 +24,26 @@ class SignalFilter(django_filters.FilterSet):
         widget=BooleanWidget(),
     )
 
-    pathogens = django_filters.ModelMultipleChoiceFilter(
-        field_name="pathogens",
-        queryset=Pathogen.objects.all(),
+    pathogens = django_filters.CharFilter(
+        method="filter_pathogens", widget=QueryArrayWidget
+    )
+
+    geographic_scope = django_filters.CharFilter(
+        method="filter_geographic_scope", widget=QueryArrayWidget
+    )
+
+    available_geography = django_filters.CharFilter(
+        method="filter_available_geography",
         widget=QueryArrayWidget,
     )
 
-    geographic_scope = django_filters.ModelMultipleChoiceFilter(
-        field_name="geographic_scope",
-        queryset=GeographicScope.objects.all(),
-        widget=QueryArrayWidget,
-    )
-
-    available_geography = django_filters.ModelMultipleChoiceFilter(
-        field_name="available_geography",
-        queryset=Geography.objects.all().order_by("display_order_number"),
-        widget=QueryArrayWidget,
-    )
-
-    severity_pyramid_rung = django_filters.ModelMultipleChoiceFilter(
-        field_name="severity_pyramid_rung",
-        queryset=SeverityPyramidRung.objects.all(),
+    severity_pyramid_rung = django_filters.CharFilter(
+        method="filter_severity_pyramid_rung",
         widget=QueryArrayWidget,
     )
 
     datasource = django_filters.ModelMultipleChoiceFilter(
-        queryset=SourceSubdivision.objects.all(),
+        queryset=SourceSubdivision.objects.filter(id__in=Signal.objects.values_list("source", flat=True)),
         field_name="datasource",
         to_field_name="display_name",
     )
@@ -88,3 +85,69 @@ class SignalFilter(django_filters.FilterSet):
             "to_date",
             "signal_availability_days",
         ]
+
+    def filter_pathogens(self, queryset, name, value):
+        if not value:
+            return queryset
+        pathogens = list(
+            Pathogen.objects.filter(id__in=ast.literal_eval(value)).values_list(
+                "name", flat=True
+            )
+        )
+        queries: list[Q] = [Q((f"{name}__icontains", p)) for p in pathogens]
+        query: Q = queries.pop()
+
+        for item in queries:
+            query |= item
+
+        return queryset.filter(query)
+
+    def filter_geographic_scope(self, queryset, name, value):
+        if not value:
+            return queryset
+        geographic_scopes = list(
+            GeographicScope.objects.filter(id__in=ast.literal_eval(value)).values_list(
+                "name", flat=True
+            )
+        )
+        queries: list[Q] = [Q((f"{name}__icontains", g)) for g in geographic_scopes]
+        query: Q = queries.pop()
+
+        for item in queries:
+            query |= item
+
+        return queryset.filter(query)
+
+    def filter_available_geography(self, queryset, name, value):
+        if not value:
+            return queryset
+        available_geography = list(
+            Geography.objects.filter(id__in=ast.literal_eval(value)).values_list(
+                "name", flat=True
+            )
+        )
+        queries: list[Q] = [Q((f"{name}__icontains", ag)) for ag in available_geography]
+        query: Q = queries.pop()
+
+        for item in queries:
+            query |= item
+
+        return queryset.filter(query)
+
+    def filter_severity_pyramid_rung(self, queryset, name, value):
+        if not value:
+            return queryset
+        severity_pyramid_rungs = list(
+            SeverityPyramidRung.objects.filter(
+                id__in=ast.literal_eval(value)
+            ).values_list("name", flat=True)
+        )
+        queries: list[Q] = [
+            Q((f"{name}__icontains", s)) for s in severity_pyramid_rungs
+        ]
+        query: Q = queries.pop()
+
+        for item in queries:
+            query |= item
+
+        return queryset.filter(query)

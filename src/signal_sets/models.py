@@ -35,13 +35,13 @@ class SignalSetGeography(models.Model):
 
 class SignalSet(models.Model):
     name: models.CharField = models.CharField(
-        verbose_name="name",
+        verbose_name="Signal Set name",
         max_length=255,
         unique=True,
     )
 
-    data_description: models.TextField = models.TextField(
-        verbose_name="Data Description",
+    description: models.TextField = models.TextField(
+        verbose_name="Signal Set description",
         blank=True,
     )
 
@@ -220,10 +220,20 @@ class SignalSet(models.Model):
         help_text=_("Location of the dataset."),
     )
 
-    link_to_dictionary: models.CharField = models.CharField(
+    link_to_documentation: models.CharField = models.CharField(
         max_length=255,
-        verbose_name=_("link to dictionary"),
-        help_text=_("Link to the dictionary."),
+        verbose_name=_("Link to documentation"),
+        help_text=_("Link to documentation."),
+        null=True,
+        blank=True,
+    )
+
+    endpoint: models.CharField = models.CharField(
+        max_length=255,
+        verbose_name=_("endpoint"),
+        help_text=_("Endpoint of the signal set."),
+        null=True,
+        blank=True,
     )
 
     class Meta:

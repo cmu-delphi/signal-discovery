@@ -19,12 +19,12 @@
                     <div class="row">
                         <div class="col-9">
                             <p class="margin-top-1rem margin-bottom-0 overview" id="overview">
-                                {{ signalset.data_description|safe|truncatechars:300 }}
+                                {{ signalset.description|safe|truncatechars:300 }}
                             </p>
                             <p class="margin-top-1rem margin-bottom-0 full-text" id="full-text">
-                                {{ signalset.data_description|safe }}
+                                {{ signalset.description|safe }}
                             </p>
-                            {% if signalset.data_description|length > 300 %}
+                            {% if signalset.description|length > 300 %}
                             <a href="#" onclick="readMore(this);">Read more <i class="bi bi-arrow-bar-down"></i></a>
                             {% endif %}
                         </div>
@@ -37,46 +37,9 @@
                             <h5>{{ signalset.data_source }}</h5>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <h5>About this Signal Set </h5>
-    <section class="section signal">
-        <div class="row">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row margin-top-1rem">
+                    <div class="row">
                         <table class="table table-striped">
                             <tbody>
-                                <tr>
-                                    <th scope="row">Source</th>
-                                    <td>{{ signalset.data_source }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Signal Set Name</th>
-                                    <td>{{ signalset.name }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Maintainer</th>
-                                    <td>{{ signalset.maintainer_name }} ({{ signalset.maintainer_email }})</td>
-                                </tr>
-                                {% if signalset.organization %}
-                                <tr>
-                                    <th scope="row">Organization</th>
-                                    <td>{{ signalset.organization }}</td>
-                                </tr>
-                                {% endif %}
-                                <tr>
-                                    <th scope="row">Language</th>
-                                    <td>{{ signalset.language }}</td>
-                                </tr>
-                                {% if signalset.version_number %}
-                                <tr>
-                                    <th scope="row">Signal Set Name</th>
-                                    <td>{{ signalset.name }}</td>
-                                </tr>
-                                {% endif %}
                                 {% if signalset.origin_datasource != 'n/a' %}
                                 <tr>
                                     <th scope="row">Source dataset from which data was derived (for aggregates or processed data) </th>
@@ -88,7 +51,7 @@
                                     <td>
                                         <ul class="no-padding">
                                             {% for pathogen in signalset.pathogens.all %}
-                                            <a href="{% url 'signals' %}?pathogens={{ pathogen.id }}">
+                                            <a href="{% url 'signal_sets' %}?pathogens={{ pathogen.id }}">
                                                 <span class="badge rounded-pill bg-dark">
                                                     {{ pathogen|title }}
                                                 </span>
@@ -96,10 +59,6 @@
                                             {% endfor %}
                                         </ul>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Type(s) of data*</th>
-                                    <td>{{ signalset.data_type }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Geographic Scope*</th>
@@ -110,7 +69,7 @@
                                     <td>
                                         <ul class="no-padding">
                                             {% for geography in signalset.available_geographies.all %}
-                                            <a href="{% url 'signals' %}?available_geography={{ geography.id }}">
+                                            <a href="{% url 'signal_sets' %}?available_geography={{ geography.id }}">
                                                 <span class="badge rounded-pill bg-dark">
                                                     {{ geography }}
                                                 </span>
@@ -165,7 +124,7 @@
                                     <th scope="row">Severity Pyramid Rung(s)</th>
                                     <td>
                                         {% for severity_pyramid_rung in signalset.severity_pyramid_rungs.all %}
-                                            <a href="{% url 'signals' %}?severity_pyramid_rung={{ severity_pyramid_rung.id }}">
+                                            <a href="{% url 'signal_sets' %}?severity_pyramid_rung={{ severity_pyramid_rung.id }}">
                                                 <span class="badge rounded-pill bg-dark">
                                                     {{ severity_pyramid_rung }}
                                                 </span>
@@ -199,19 +158,7 @@
                                 </tr>
                                 <tr>
                                     <th scope="row">Link to data dictionary</th>
-                                    <td>{{ signalset.link_to_dictionary }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Related signals</th>
-                                    <td>
-                                        {% for signal in signalset.signals.all %}
-                                        <a href="{% url 'signal' pk=signal.id %}" target="_blank">
-                                            <span class="badge rounded-pill bg-dark">
-                                                {{ signal.name }}
-                                            </span>
-                                        </a>
-                                        {% endfor %}
-                                    </td>
+                                    <td>{{ signalset.link_to_documentation }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -220,8 +167,129 @@
             </div>
         </div>
     </section>
+    {% if signalset.signals.all|length > 0%}
+        <h5>Signal members</h5>
+        <section>
+            <div class="row">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="table-responsive" data-fl-scrolls='{"orientation": "horizontal"}'>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for signal in signalset.signals.all %}
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="selectedSignal" value="{{ signal.name }}">
+                                            </td>
+                                            <td class="clickable-table-cell"
+                                                onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                                {% if signal.member_name %}
+                                                    {{ signal.member_name }}
+                                                {% else %}
+                                                    {{ signal.name }}
+                                                {% endif %}
+                                            </td>
+                                            <td class="clickable-table-cell"
+                                                onClick="location.href='{% url 'signal' pk=signal.id %}';">
+                                                {{ signal.member_description }}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <br>
+                                <form class="margin-top-1rem" onsubmit="submitMode(event)" id="dataForm">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <label class="form-label"
+                                                >Select mode:</label
+                                            >
+                                        </div>
+                                        <div class="col-10">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="modes" id="preview" value="preview" checked>
+                                                <label class="form-check-label" for="preview">Preview data</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="modes" id="epivis" value="epivis">
+                                                <label class="form-check-label" for="epivis">Plot data</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="modes" id="export" value="export">
+                                                <label class="form-check-label" for="export">Export data</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row margin-top-1rem">
+                                        <div class="col-2">
+                                            <label for="geographic_type" class="form-label"
+                                                >Geographic Type:</label
+                                            >
+                                        </div>
+                                        <div class="col-10">
+                                            <select id="geographic_type" name="geographic_type" class="form-select">
+                                                <option selected>Choose...</option>
+                                                {% for geography in available_geographies %}
+                                                <option value="{{ geography.name }}">{{ geography }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row margin-top-1rem">
+                                        <div class="col-2">
+                                            <label for="geographic_value" class="col-form-label">Geographic Value:</label>
+                                        </div>
+                                        <div class="col-10">
+                                            <select id="geographic_value" name="geographic_value" class="form-select" multiple="multiple"></select>
+                                        </div>
+                                    </div>
+                                    <div class="row margin-top-1rem" name="choose_date">
+                                        <div class="col-2">
+                                            <label for="start_date" class="form-label">
+                                                Start Date:
+                                            </label>
+                                        </div>
+                                        <div class="col-10">
+                                            <input type="date" class="form-control" id="start_date" name="start_date" value="2016-01-01">
+                                        </div>
+                                    </div>
+                                    <div class="row margin-top-1rem" name="choose_date">
+                                        <div class="col-2">
+                                            <label for="end_date" class="form-label">
+                                                End Date:
+                                            </label>
+                                        </div>
+                                        <div class="col-10">
+                                            <input type="date" class="form-control" id="end_date" name="end_date" value="2029-01-01">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <button type="submit" value="Submit" class="btn btn-primary margin-top-1rem">
+                                            Submit
+                                        </button>
+                                    </div>
+                                    <div class="row margin-top-1rem">
+                                        <pre class="margin-top-1rem"><code id="modeSubmitResult"></code></pre>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+    {% endif %}
     <script>
+        
         if (!library)
             var library = {};
 
@@ -260,6 +328,235 @@
                 button.innerHTML = 'Read less <i class="bi bi-arrow-bar-up"></i>';
             }
         }
+
+        var geoValues = [];
+    var currentMode = 'preview';
+
+    function getFilteredGeographicValues(geographicType) {
+        var data = geoValues.reduce((data, geoValue) => {
+            if (geoValue.geoType === geographicType) {
+                data.push(geoValue);
+            }
+            return data;
+        }, []);
+        return data;
+    }
+
+    function initGeographicValueSelect(mode, geographicType = null) {
+        var maximumSelectionLength = 1;
+        if (mode === 'epivis') {
+            maximumSelectionLength = 5;
+        } else {
+            maximumSelectionLength = 10;
+        }
+        if (geographicType) {
+            var data = getFilteredGeographicValues(geographicType);
+        } else {
+            data = [];
+        }
+
+
+        $('#geographic_value').select2({
+            data: data,
+            minimumInputLength: 0,
+            maximumSelectionLength: maximumSelectionLength,
+        });
+    }
+
+    document.getElementById('geographic_type').addEventListener("change", (event) => {
+        $('#geographic_value').empty();
+        $('#modeSubmitResult').html('');
+        initGeographicValueSelect(currentMode, event.target.value);
+    })
+
+    function handleModeChange(mode) {
+        document.getElementById("dataForm").reset();
+        $('#geographic_value').empty();
+        $('#modeSubmitResult').html('');
+
+        var choose_dates = document.getElementsByName('choose_date');
+
+        if (mode === 'epivis') {
+            currentMode = 'epivis';
+            choose_dates.forEach((el) => {
+                el.style.display = 'none';
+            });
+            $('#modeSubmitResult').html('');
+        } else if (mode === 'export') {
+            currentMode = 'export';
+            choose_dates.forEach((el) => {
+                el.style.display = 'flex';
+            });
+            $('#modeSubmitResult').html('');
+        } else {
+            currentMode = 'preview';
+            choose_dates.forEach((el) => {
+                el.style.display = 'flex';
+            });
+        }
+        document.getElementsByName("modes").forEach((el) => {
+            if (currentMode === el.value) {
+                el.checked = true;
+            }
+        });
+    }
+
+    document.getElementsByName('modes').forEach((el) => {
+        el.addEventListener('change', (event) => {
+            currentMode = event.target.value;
+            initGeographicValueSelect(currentMode)
+            handleModeChange(currentMode);
+        });
+    });
+
+
+    $(document).ready(function () {
+        {% for geography in available_geographies %}
+            {% for unit in geography.geography_units.all %}
+                geoValues.push({'id': '{{ unit.geo_id }}', 'geoType': '{{ unit.geography.name }}', 'text': '{{ unit.display_name }}'});
+            {% endfor %}
+        {% endfor %}
+
+        $('#geographic_value').select2({
+            data: [],
+            minimumInputLength: 0,
+            maximumSelectionLength: 1,
+        });
+    });
+
+    $("#warning-alert").hide();
+
+    function showWarningAlert(warningMessage) {
+        $("#warning-alert").html(warningMessage);
+        $("#warning-alert").fadeTo(2000, 500).slideUp(1000, function() {
+            $("#warning-alert").slideUp(1000);
+        });
+    }
+
+    function getDateYearWeek(date) {
+        const currentDate =
+            (typeof date === 'object') ? date : new Date();
+        const januaryFirst =
+            new Date(currentDate.getFullYear(), 0, 1);
+        const daysToNextMonday =
+            (januaryFirst.getDay() === 1) ? 0 :
+            (7 - januaryFirst.getDay()) % 7;
+        const nextMonday =
+            new Date(currentDate.getFullYear(), 0,
+            januaryFirst.getDate() + daysToNextMonday);
+
+        var weekNumber = (currentDate < nextMonday) ? 52 :
+        (currentDate > nextMonday ? Math.ceil(
+        (currentDate - nextMonday) / (24 * 3600 * 1000) / 7) : 1);
+
+        if (weekNumber < 10) {
+            weekNumber = `0${weekNumber}`;
+        }
+
+        const year = currentDate.getFullYear()
+
+        return `${year}${weekNumber}`;
+    }
+
+    function submitMode(event) {
+        event.preventDefault();
+
+        const dataSource = "{{ data_source }}";
+        const timeType = "{{ time_type }}";
+        var dataSignals = Array.from(document.getElementsByName('selectedSignal'), (signal) => (signal.checked) ? signal.value : null).filter((el) => el !== null);
+        var geographicType = document.getElementById('geographic_type').value;
+        {% comment %} var timeType = "{{ signal.time_type }}"; {% endcomment %}
+        // geographicValue is a comma separated string of geographic values. type can be string or integer
+        // in case of string, it should be converted to lowercase
+        // else it will be treated as integer
+        var geographicValue = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(',');
+
+        if (geographicType === 'Choose...' || geographicValue === '') {
+            showWarningAlert("Geographic Type or Geographic Value is not selected.");
+            return;
+        }
+
+        if (currentMode === 'epivis') {
+            var epiVisUrl = "{{ epivis_url }}";
+            var dataSets = [];
+            var geographicValues = geographicValue.split(',');
+            dataSignals.forEach((signal) => {
+                geographicValues.forEach((geographicValue) => {
+                    dataSets.push({
+                        color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
+                        title: "value",
+                        params: {
+                            _endpoint: '{{ signalset.endpoint }}',
+                            data_source: dataSource,
+                            signal: signal,
+                            time_type: timeType,
+                            geo_type: geographicType,
+                            geo_value: geographicValue
+                        }
+                    });
+                });
+            });
+            var urlParamsEncoded = btoa(`{"datasets":${JSON.stringify(dataSets)}}`);
+            epiVisUrl += `#${urlParamsEncoded}`;
+            window.open(epiVisUrl, '_blank').focus();
+        } else if (currentMode === 'export') {
+            var startDate = document.getElementById('start_date').value;
+            var endDate = document.getElementById('end_date').value;
+
+            if (timeType === "week") {
+                startDate = getDateYearWeek(new Date(startDate));
+                endDate = getDateYearWeek(new Date(endDate));
+            };
+
+            var dataExportUrl = "{{ data_export_url }}";
+
+            
+            var fetchCommands = [];
+            dataSignals.forEach((signal) => {
+                var fetchDataCommand = `${dataExportUrl}?signal=${dataSource}:${signal}&start_day=${startDate}&end_day=${endDate}&geo_type=${geographicType}&geo_values=${geographicValue}`;
+                fetchCommands.push(`wget --content-disposition "${fetchDataCommand}"`);
+            });
+            $('#modeSubmitResult').html(`Manually fetch data: \n\n${fetchCommands.join("\n")}`);
+        } else {
+            var startDate = document.getElementById('start_date').value;
+            var endDate = document.getElementById('end_date').value;
+
+            if (timeType === "week") {
+                startDate = getDateYearWeek(new Date(startDate));
+                endDate = getDateYearWeek(new Date(endDate));
+            };
+
+            var requestSent = false;
+
+            if (!requestSent) {
+                $.ajax({
+                    url: '{{ covidcast_url }}',
+                    type: 'GET',
+                    data: {
+                        'time_type': timeType,
+                        'time_values': `${startDate}--${endDate}`,
+                        'data_source': dataSource,
+                        'signal': dataSignals.join(","),
+                        'geo_type': geographicType,
+                        'geo_values': geographicValue
+                    },
+                    success: function (result) {
+                        // Update the page with the response data.
+                        // This depends on the structure of your response data.
+                        // For example, if the response data is a string:
+                        if (result["epidata"].length > 1) {
+                            result = { epidata: result["epidata"].slice(0, 3), result: result["result"], message: result["message"] }
+                        } else {
+                            result = { epidata: result["epidata"], result: result["result"], message: result["message"] }
+                        }
+                        console.log('Request sent to: ' + this.url);
+                        $('#modeSubmitResult').html(library.json.prettyPrint(result));
+                    }
+                });
+                requestSent = true;
+            };
+        }
+    }
     </script>
 </main>
 

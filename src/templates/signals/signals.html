@@ -8,7 +8,7 @@
 {% block content %}
 
 <div class="row">
-    <div class="col-3">
+    <div class="col-2">
         <form method="GET" id="filterSignalsForm">
             <div class="card">
                 <div class="card-body">
@@ -268,7 +268,7 @@
             </div>
         
     </div>
-    <div class="col-9">
+    <div class="col-10">
         <div class="row d-flex justify-content-end">
             <div class="col-6">
                 <div class="input-group mb-3 d-flex justify-content-start">
@@ -313,7 +313,11 @@
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal' pk=signal.id %}';">
-                                        {{ signal.name }}
+                                        {% if signal.display_name %}
+                                            {{ signal.display_name }}
+                                        {% else %}
+                                            {{ signal.name }}
+                                        {% endif %}
                                     </td>
                                     <td class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal' pk=signal.id %}';">
