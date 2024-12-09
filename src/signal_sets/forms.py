@@ -8,26 +8,37 @@ from datasources.models import DataSource
 class SignalSetFilterForm(forms.ModelForm):
 
     pathogens = forms.ModelChoiceField(
-        queryset=Pathogen.objects.filter(id__in=SignalSet.objects.values_list("pathogens", flat="True")), widget=forms.CheckboxSelectMultiple()
+        queryset=Pathogen.objects.filter(
+            id__in=SignalSet.objects.values_list("pathogens", flat="True")
+        ),
+        widget=forms.CheckboxSelectMultiple(),
     )
 
     geographic_scope = forms.ModelChoiceField(
-        queryset=GeographicScope.objects.filter(id__in=SignalSet.objects.values_list("geographic_scope", flat="True")),
-        widget=forms.CheckboxSelectMultiple()
+        queryset=GeographicScope.objects.filter(
+            id__in=SignalSet.objects.values_list("geographic_scope", flat="True")
+        ),
+        widget=forms.CheckboxSelectMultiple(),
     )
 
     available_geographies = forms.ModelChoiceField(
-        queryset=Geography.objects.filter(id__in=SignalSet.objects.values_list("available_geographies", flat="True")).order_by("display_order_number"),
+        queryset=Geography.objects.filter(
+            id__in=SignalSet.objects.values_list("available_geographies", flat="True")
+        ).order_by("display_order_number"),
         widget=forms.CheckboxSelectMultiple(),
     )
 
     severity_pyramid_rungs = forms.ModelChoiceField(
-        queryset=SeverityPyramidRung.objects.filter(id__in=SignalSet.objects.values_list("severity_pyramid_rungs", flat="True")),
+        queryset=SeverityPyramidRung.objects.filter(
+            id__in=SignalSet.objects.values_list("severity_pyramid_rungs", flat="True")
+        ),
         widget=forms.CheckboxSelectMultiple(),
     )
 
     data_source = forms.ModelChoiceField(
-        queryset=DataSource.objects.filter(id__in=SignalSet.objects.values_list("data_source", flat="True")),
+        queryset=DataSource.objects.filter(
+            id__in=SignalSet.objects.values_list("data_source", flat="True")
+        ),
         widget=forms.CheckboxSelectMultiple(),
     )
 
@@ -40,6 +51,14 @@ class SignalSetFilterForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple(),
     )
 
+    temporal_scope_end = forms.ChoiceField(
+        choices=[
+            ("Ongoing", "Ongoing Surveillance Only"),
+        ],
+        required=False,
+        widget=forms.CheckboxSelectMultiple(),
+    )
+
     class Meta:
         model = SignalSet
         fields: list[str] = [
@@ -48,7 +67,8 @@ class SignalSetFilterForm(forms.ModelForm):
             "available_geographies",
             "severity_pyramid_rungs",
             "data_source",
-            "temporal_granularity"
+            "temporal_granularity",
+            "temporal_scope_end"
         ]
 
     def __init__(self, *args, **kwargs) -> None:
