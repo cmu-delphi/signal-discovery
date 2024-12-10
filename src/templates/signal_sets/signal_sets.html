@@ -272,9 +272,17 @@
                                     <th scope="col">Demographic Granularity</th>                              
                                     <th scope="col">Severity Pyramid Rung(s)</th>
                                     <th scope="col">Data Source</th>
-                                    <th scope="col">Description of pre-processing</th>
+                                    <th scope="col">Pre-processing</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
                                     <th scope="col">Censoring</th>
                                     <th scope="col">Missingness</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
                                     <th scope="col">DUA required</th>
                                     <th scope="col">License</th>
                                     <th scope="col">Documentation</th>
@@ -360,7 +368,7 @@
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
                                         {{ signal_set.data_source }}
                                     </td>
-                                    <td class="clickable-table-cell"
+                                    <td class="clickable-table-cell" colspan="5"
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
                                         {{ signal_set.preprocessing_description }}
                                     </td>
@@ -369,7 +377,7 @@
                                         {{ signal_set.censoring }}
                                         <br>
                                     </td>
-                                    <td class="clickable-table-cell"
+                                    <td colspan="5" class="clickable-table-cell"
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
                                         {{ signal_set.missingness }}
                                         <br>
