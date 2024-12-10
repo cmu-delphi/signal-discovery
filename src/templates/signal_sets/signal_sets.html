@@ -12,15 +12,9 @@
         <form method="GET" id="filterSignalSetsForm">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Location Search:</h5>
+                    <h5 class="card-title">Location Search: <span class="badge rounded-pill badge-primary">Coming soon</span></h5>
                     <div class="input-group">
-                        <input class="form-control border" data-mdb-ripple-init data-mdb-tooltip-init
-                            data-mdb-placement="bottom"
-                            title="Coming soon..." type="search"
-                            name="" id="searchSignalInput" placeholder="Coming soon..."
-                            title="Enter search keyword"
-                            value=""
-                            disabled/>
+                        <select id="location_search" name="location_search" class="form-select" multiple="multiple"></select>
                     </div>
                     <h5 class="card-title">Filters</h5>
                     <div class="accordion accordion-flush" id="accordionSignalSetFilters">
@@ -440,6 +434,21 @@
 </div>
 
 <script>
+
+    $(document).ready(function () {
+        var data = [];
+        {% for geography in available_geographies %}
+            {% for unit in geography.geography_units.all %}
+                data.push({'id': '{{ unit.geo_id }}', 'text': '{{ unit.display_name }}'});
+            {% endfor %}
+        {% endfor %}
+        
+        $('#location_search').select2({
+            data: data,
+            minimumInputLength: 0,
+            maximumSelectionLength: 5,
+        });
+    })
     function showAllOptions(event, parentDiv) {
         event.preventDefault();
         var childDivs = parentDiv.querySelectorAll('.form-check');
@@ -583,5 +592,9 @@
             }
         });
     });
+
+    
+
+    
 </script>
 {% endblock %}
