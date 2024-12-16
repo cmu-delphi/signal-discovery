@@ -298,102 +298,83 @@
                                         <a data-mdb-tooltip-init title="{{ signal_set.description }}">{{ signal_set.name }}</a>
                                         
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {% for pathogen in signal_set.pathogens.all %}
                                         <span class="badge rounded-pill bg-dark">
                                             {{ pathogen }}
                                         </span>
                                         {% endfor %}
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td>
                                         {{ signal_set.data_type }}
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.geographic_scope }}
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.geographic_granularity }}
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.temporal_scope_start }}
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.temporal_scope_end }}
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.temporal_granularity }}
                                         <br>
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.reporting_cadence }}
                                         <br>
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.reporting_lag }}
                                         <br>
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.revision_cadence }}
                                         <br>
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.demographic_scope }}
                                         <br>
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.demographic_granularity }}
                                         <br>
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {% for severity_pyramid_rung in signal_set.severity_pyramid_rungs.all %}
                                         <span class="badge rounded-pill bg-dark">
                                             {{ severity_pyramid_rung }}
                                         </span>
                                         {% endfor %}
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.data_source }}
                                     </td>
                                     <td class="clickable-table-cell" colspan="5"
                                         onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
                                         {{ signal_set.preprocessing_description }}
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.censoring }}
                                         <br>
                                     </td>
-                                    <td colspan="5" class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td colspan="5" >
                                         {{ signal_set.missingness }}
                                         <br>
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.dua_required }}
                                         <br>
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.license }}
                                         <br>
                                     </td>
-                                    <td class="clickable-table-cell"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
+                                    <td >
                                         {{ signal_set.link_to_documentation }}
                                         <br>
                                     </td>
