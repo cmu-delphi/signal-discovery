@@ -118,7 +118,7 @@ class SignalSetResource(resources.ModelResource):
         column_name="Pre-processing",
     )
     temporal_scope_start = Field(
-        attribute="temporal_scope_start", column_name="Temporal scope start"
+        attribute="temporal_scope_start", column_name="Temporal Scope Start"
     )
     temporal_scope_end = Field(
         attribute="temporal_scope_end", column_name="Temporal Scope End"
