@@ -240,8 +240,8 @@
             </div>
     </div>
     <div class="col-10">
-        <div class="row">
-            <table id="signalSetsTable" class="display" width="100%">
+        <div class="row table-responsive">
+            <table id="signalSetsTable" class="display cell-border" width="100%">
                 <thead>
                     <tr>
                         <th></th>
@@ -260,9 +260,9 @@
                         <th>Demographic Granularity</th>                              
                         <th>Severity Pyramid Rung(s)</th>
                         <th>Data Source</th>
-                        <th>Pre-processing</th>
+                        <th class="min-w-300">Pre-processing</th>
                         <th>Censoring</th>
-                        <th>Missingness</th>
+                        <th class="min-w-300">Missingness</th>
                         <th>DUA required</th>
                         <th>License</th>
                         <th>Documentation</th>
@@ -537,12 +537,22 @@
         paging: false,
         scrollCollapse: true,
         scrollX: true,
-        scrollY: 600,
+        scrollY: 550,
         fixedColumns: {
             left: 2
         },
         ordering: false,
         mark: true,
+        layout: {
+            topStart: {
+                buttons: [
+                    {
+                        extend: 'colvis',
+                        columns: 'th:nth-child(n+3)'
+                    }
+                ]
+            }
+        },
         language: {
             "info":           "Showing _TOTAL_ / _MAX_ Signal Sets",
             "infoEmpty":      "",
