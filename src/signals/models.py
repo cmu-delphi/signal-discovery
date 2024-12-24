@@ -239,6 +239,13 @@ class Signal(TimeStampedModel):
         null=True,
         blank=True
     )
+    member_short_name: models.CharField = models.CharField(
+        max_length=255,
+        verbose_name=_("member short name"),
+        help_text=_("Member short name of the signal."),
+        null=True,
+        blank=True
+    )
     member_description: models.TextField = models.TextField(
         verbose_name=_("member description"),
         help_text=_("Member description of the signal."),
@@ -505,6 +512,17 @@ class Signal(TimeStampedModel):
         """
         if Signal.objects.exists() and not self.base:
             raise ValidationError(_("Signal should have base."))
+
+    @property
+    def get_display_name(self):
+        if self.member_short_name:
+            return self.member_short_name
+        if self.member_name:
+            return self.member_name
+        if self.display_name:
+            return self.display_name
+        else:
+            return self.name
 
 
 class SignalsDbView(models.Model):

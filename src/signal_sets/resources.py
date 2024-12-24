@@ -1,4 +1,6 @@
 from typing import Any
+from django.db import IntegrityError, transaction
+
 
 from import_export import resources
 from import_export.fields import Field, widgets
@@ -192,6 +194,7 @@ class SignalSetResource(resources.ModelResource):
         ]
         import_id_fields = ["name", "data_source"]
         store_instance = True
+        skip_unchanged = True
 
     def before_import_row(self, row, **kwargs):
         fix_boolean_fields(row)
@@ -200,6 +203,13 @@ class SignalSetResource(resources.ModelResource):
         process_geographic_scope(row)
         process_avaliable_geographies(row)
         process_datasources(row)
+
+    def save_instance(self, instance, is_create, row, **kwargs):
+        try:
+            with transaction.atomic():
+                return super().save_instance(instance, is_create, row, **kwargs)
+        except IntegrityError:
+            pass
 
     def skip_row(self, instance, original, row, import_validation_errors=None):
         if not row["Include in signal app"]:
