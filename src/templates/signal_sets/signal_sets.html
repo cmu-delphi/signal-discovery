@@ -240,188 +240,120 @@
             </div>
     </div>
     <div class="col-10">
-        <div class="row d-flex justify-content-end">
-            <div class="col-6">
-                <div class="input-group mb-3 d-flex justify-content-start">
-                    <span class="pt-05">
-                        Showing {{ signal_sets|length }} Signal Set{{ signal_sets|length|pluralize:"s" }}.
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive" data-fl-scrolls='{"orientation": "horizontal"}' style="max-height: 80vh; overflow-y: auto;">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th scope="col"></th>
-                                    <th scope="col">Name</th> <!--# TODO: add tooltip on hover with description here -->
-                                    <th scope="col">Pathogen(s)/Syndrome(s)</th>
-                                    <th scope="col">Type(s) of Data</th>
-                                    <th scope="col">Geographic Scope</th>
-                                    <th scope="col">Geographic Granularity</th>
-                                    <th scope="col">Temporal scope Start</th>
-                                    <th scope="col">Temporal Scope End</th>
-                                    <th scope="col">Temporal Granularity</th>
-                                    <th scope="col">Reporting Cadence</th>
-                                    <th scope="col">Reporting Lag(nominal)</th>
-                                    <th scope="col">Revision Cadence</th>
-                                    <th scope="col">Demographic scope</th>
-                                    <th scope="col">Demographic Granularity</th>                              
-                                    <th scope="col">Severity Pyramid Rung(s)</th>
-                                    <th scope="col">Data Source</th>
-                                    <th scope="col">Pre-processing</th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col">Censoring</th>
-                                    <th scope="col">Missingness</th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col">DUA required</th>
-                                    <th scope="col">License</th>
-                                    <th scope="col">Documentation</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for signal_set in signal_sets %}
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" name="showSignalMembers" value="{{ signal_set.id }}">
-                                    </td>
-                                    <td>
-                                        <a data-mdb-tooltip-init title="{{ signal_set.description }}">{{ signal_set.name }}</a>
-                                        
-                                    </td>
-                                    <td >
-                                        {% for pathogen in signal_set.pathogens.all %}
-                                        <span class="badge rounded-pill bg-dark">
-                                            {{ pathogen }}
-                                        </span>
-                                        {% endfor %}
-                                    </td>
-                                    <td>
-                                        {{ signal_set.data_type }}
-                                    </td>
-                                    <td >
-                                        {{ signal_set.geographic_scope }}
-                                    </td>
-                                    <td >
-                                        {{ signal_set.geographic_granularity }}
-                                    </td>
-                                    <td >
-                                        {{ signal_set.temporal_scope_start }}
-                                    </td>
-                                    <td >
-                                        {{ signal_set.temporal_scope_end }}
-                                    </td>
-                                    <td >
-                                        {{ signal_set.temporal_granularity }}
-                                        <br>
-                                    </td>
-                                    <td >
-                                        {{ signal_set.reporting_cadence }}
-                                        <br>
-                                    </td>
-                                    <td >
-                                        {{ signal_set.reporting_lag }}
-                                        <br>
-                                    </td>
-                                    <td >
-                                        {{ signal_set.revision_cadence }}
-                                        <br>
-                                    </td>
-                                    <td >
-                                        {{ signal_set.demographic_scope }}
-                                        <br>
-                                    </td>
-                                    <td >
-                                        {{ signal_set.demographic_granularity }}
-                                        <br>
-                                    </td>
-                                    <td >
-                                        {% for severity_pyramid_rung in signal_set.severity_pyramid_rungs.all %}
-                                        <span class="badge rounded-pill bg-dark">
-                                            {{ severity_pyramid_rung }}
-                                        </span>
-                                        {% endfor %}
-                                    </td>
-                                    <td >
-                                        {{ signal_set.data_source }}
-                                    </td>
-                                    <td class="clickable-table-cell" colspan="5"
-                                        onClick="location.href='{% url 'signal_set' pk=signal_set.id %}';">
-                                        {{ signal_set.preprocessing_description }}
-                                    </td>
-                                    <td >
-                                        {{ signal_set.censoring }}
-                                        <br>
-                                    </td>
-                                    <td colspan="5" >
-                                        {{ signal_set.missingness }}
-                                        <br>
-                                    </td>
-                                    <td >
-                                        {{ signal_set.dua_required }}
-                                        <br>
-                                    </td>
-                                    <td >
-                                        {{ signal_set.license }}
-                                        <br>
-                                    </td>
-                                    <td >
-                                        <a href="{{ signal_set.link_to_documentation }}" target="_blank" >{{ signal_set.link_to_documentation }}</a>
-                                        <br>
-                                    </td>
-                                    <tr style="display: none;">
-                                        <td colspan="2"></td>
-                                        <td colspan="5">
-                                            <div class="table-responsive">
-                                                <table class="table mb-0 caption-top">
-                                                    <caption>
-                                                        Select Signal Set Members
-                                                    </caption>
-                                                    <thead>
-                                                        <th scope="col"></th>
-                                                        <th scope="col">Signal Name</th>
-                                                        <th scope="col">Signal description</th>
-                                                    </thead>
-                                                    <tbody>
-                                                        {% for signal in signal_set.signals.all %}
-                                                            <tr>
-                                                                <td>
-                                                                    <input type="checkbox" name="selectedSignal" data-signalDisplayName="{{ signal.display_name }}" data-signalSet="{{ signal_set.name }}" data-endpoint="{{ signal_set.endpoint }}" data-dataSource="{{ signal.source.name }}" data-signal="{{ signal.name }}" data-timeType="{{ signal.time_type }}">
-                                                                </td>
-                                                                <td>
-                                                                    {{ signal.member_name}}
-                                                                </td>
-                                                                <td>
-                                                                    {{ signal.member_description }}
-                                                                </td>
-                                                            </tr>
-                                                        {% endfor %}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                          </td>
-                                    </tr>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+        <div class="row table-responsive">
+            <table id="signalSetsTable" class="display cell-border" width="100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th> <!--# TODO: add tooltip on hover with description here -->
+                        <th>Pathogen(s)/Syndrome(s)</th>
+                        <th>Type(s) of Data</th>
+                        <th>Geographic Scope</th>
+                        <th>Geographic Granularity</th>
+                        <th>Temporal scope Start</th>
+                        <th>Temporal Scope End</th>
+                        <th>Temporal Granularity</th>
+                        <th>Reporting Cadence</th>
+                        <th>Reporting Lag(nominal)</th>
+                        <th>Revision Cadence</th>
+                        <th>Demographic scope</th>
+                        <th>Demographic Granularity</th>                              
+                        <th>Severity Pyramid Rung(s)</th>
+                        <th>Data Source</th>
+                        <th class="min-w-300">Pre-processing</th>
+                        <th>Censoring</th>
+                        <th class="min-w-300">Missingness</th>
+                        <th>DUA required</th>
+                        <th>License</th>
+                        <th>Documentation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for signal_set in signal_sets %}
+                    <tr data-id="{{ signal_set.id }}">
+                        <td class="dt-control"></td>
+                        <td>
+                            <a data-mdb-tooltip-init title="{{ signal_set.description }}">{{ signal_set.name }}</a>
+                        </td>
+                        <td>
+                            {% for pathogen in signal_set.pathogens.all %}
+                            <span class="badge rounded-pill bg-dark">
+                                {{ pathogen }}
+                            </span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {{ signal_set.data_type }}
+                        </td>
+                        <td>
+                            {{ signal_set.geographic_scope }}
+                        </td>
+                        <td >
+                            {{ signal_set.geographic_granularity }}
+                        </td>
+                        <td >
+                            {{ signal_set.temporal_scope_start }}
+                        </td>
+                        <td >
+                            {{ signal_set.temporal_scope_end }}
+                        </td>
+                        <td >
+                            {{ signal_set.temporal_granularity }}
+                        </td>
+                        <td>
+                            {{ signal_set.reporting_cadence }}
+                        </td>
+                        <td>
+                            {{ signal_set.reporting_lag }}
+                        </td>
+                        <td>
+                            {{ signal_set.revision_cadence }}
+                        </td>
+                        <td>
+                            {{ signal_set.demographic_scope }}
+                        </td>
+                        <td>
+                            {{ signal_set.demographic_granularity }}
+                        </td>
+                        <td >
+                            {% for severity_pyramid_rung in signal_set.severity_pyramid_rungs.all %}
+                            <span class="badge rounded-pill bg-dark">
+                                {{ severity_pyramid_rung }}
+                            </span>
+                            {% endfor %}
+                        </td>
+                        <td >
+                            {{ signal_set.data_source }}
+                        </td>
+                        <td>
+                            {{ signal_set.preprocessing_description }}
+                        </td>
+                        <td>
+                            {{ signal_set.censoring }}
+                        </td>
+                        <td>
+                            {{ signal_set.missingness }}
+                        </td>
+                        <td>
+                            {{ signal_set.dua_required }}
+                        </td>
+                        <td>
+                            {{ signal_set.license }}
+                        </td>
+                        <td>
+                            <a href="{{ signal_set.link_to_documentation }}" target="_blank" >{{ signal_set.link_to_documentation }}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </form>
     </div>
 </div>
 
+<script src="https://cdn.datatables.net/v/dt/dt-2.1.8/b-3.2.0/b-colvis-3.2.0/cr-2.0.4/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sp-2.3.3/sl-2.1.0/datatables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/g/mark.js(jquery.mark.min.js),datatables.mark.js"></script>
 <script>
 
     $(document).ready(function () {
@@ -437,6 +369,8 @@
             minimumInputLength: 0,
             maximumSelectionLength: 5,
         });
+
+        table.columns.adjust()
     })
     function showAllOptions(event, parentDiv) {
         event.preventDefault();
@@ -455,24 +389,16 @@
         }
     }
 
-    let showSignalMembers = document.getElementsByName("showSignalMembers");
-    showSignalMembers.forEach((checkbox) => {
-        checkbox.addEventListener('change', function(event) {
-            let signalSetMembersTable = this.parentElement.parentElement.nextElementSibling;
-            signalSetMembersTable.style.display = this.checked ? 'table-row' : 'none';
-        });
-    })
-
 
 
     let checkedSignalMembers = []
 
         // Function to update the modal content
-    function updateSelectedSignals(dataSoure, signal, signalSet) {
+    function updateSelectedSignals(dataSource, signal, signalSet) {
         var selectedSignalsList = document.getElementById('selectedSignalsList');
 
         var tr = document.createElement('tr');
-        tr.setAttribute('id', `${dataSoure}_${signal}`);
+        tr.setAttribute('id', `${dataSource}_${signal}`);
         var signalSetName = document.createElement('td');
         signalSetName.textContent = signalSet;
         tr.appendChild(signalSetName);
@@ -482,7 +408,29 @@
         selectedSignalsList.appendChild(tr);
     }
 
-    let dataSignals = Array.from(document.getElementsByName('selectedSignal'));
+    function addSelectedSignal(element) {
+        if (element.checked) {
+            checkedSignalMembers.push({
+                _endpoint: element.dataset.endpoint,
+                data_source: element.dataset.datasource,
+                signal: element.dataset.signal,
+                time_type: element.dataset.timetype,
+            });
+            updateSelectedSignals(element.dataset.datasource, element.dataset.signal, element.dataset.signalSet);
+        } else {
+            checkedSignalMembers = checkedSignalMembers.filter(signal => signal.signal !== element.dataset.signal);
+            document.getElementById(`${element.dataset.datasource}_${element.dataset.signal}`).remove();
+        }
+
+
+        if (checkedSignalMembers.length > 0) {
+            $("#showSelectedSignalsButton").show();
+        } else {
+            $("#showSelectedSignalsButton").hide();
+        }
+    }
+
+    {% comment %} let dataSignals = Array.from(document.getElementsByName('selectedSignal'));
     dataSignals.forEach((checkbox) => {
         checkbox.addEventListener('change', function(event) {
             if (this.checked) {
@@ -490,7 +438,7 @@
                     _endpoint: this.dataset.endpoint,
                     data_source: this.dataset.datasource,
                     signal: this.dataset.signal,
-                    time_type: this.dataset.timetype,
+                    time_type: this.dataset.timeType,
                 });
                 updateSelectedSignals(this.dataset.datasource, this.dataset.signal, this.dataset.signalset);
             } else {
@@ -505,7 +453,7 @@
                 $("#showSelectedSignalsButton").hide();
             }
         });
-    });
+    }); {% endcomment %}
 
     function plotData(epivisUrl) {
         var dataSets = {};
@@ -582,7 +530,81 @@
         });
     });
 
+    var relatedSignals = JSON.parse(JSON.stringify({{ related_signals|safe }}));
+
+    var table = new DataTable('#signalSetsTable', {
+        fixedHeader: true,
+        paging: false,
+        scrollCollapse: true,
+        scrollX: true,
+        scrollY: 550,
+        fixedColumns: {
+            left: 2
+        },
+        ordering: false,
+        mark: true,
+        layout: {
+            topStart: {
+                buttons: [
+                    {
+                        extend: 'colvis',
+                        columns: 'th:nth-child(n+3)'
+                    }
+                ]
+            }
+        },
+        language: {
+            "info":           "Showing _TOTAL_ / _MAX_ Signal Sets",
+            "infoEmpty":      "",
+            "infoFiltered":   "",
+        },
+    });
+
+
+    function format (signalSetId) {
+        var signals = relatedSignals.filter((signal) => signal.signal_set === signalSetId)
+
+        if (signals.length > 0) {
+            var tableMarkup = '<table class="table" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+                        '<thead>'+
+                            '<th></th>'+
+                            '<th>Signal Name</th>'+
+                            '<th>Signal Description</th>'+
+                            '<th></th>'+
+                        '</thead>'+
+                        '<tbody>'
+            signals.forEach((signal) => {
+                checked = checkedSignalMembers.filter((obj) => obj.data_source == signal.source && obj.signal == signal.name).length;
+                checked = checked ? "checked" : ""
+                tableMarkup += '<tr>'+
+                                    `<td><input type="checkbox" name="selectedSignal" onclick="addSelectedSignal(this)" data-signal-displayname="${signal.display_name}" data-endpoint="${signal.endpoint}" data-datasource="${signal.source}" data-signal="${signal.name}" data-time-type="${signal.time_type}" data-signal-set="${signal.signal_set_name}" ${checked}></td>`+
+                                    `<td>${signal.display_name}</td>`+
+                                    `<td>${signal.description}</td>`+
+                                    '<td style="width: 60%"></td>'+
+                                '</tr>'
+            }) 
+            tableMarkup += '</tbody></table>'
+        } else {
+            tableMarkup = "<p>No available signals yet.</p>"
+        }
+        return tableMarkup;
+    }
+
+    // Add event listener for opening and closing details
+    $('#signalSetsTable tbody').on('click', 'td.dt-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row(tr);
     
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            row.child.hide();
+        }
+        else {
+            // Open this row
+            row.child(format(tr.data('id'))).show();
+        }
+        
+    });
 
     
 </script>

@@ -1,5 +1,6 @@
 import logging
 from typing import Any, Dict
+import json
 
 from django.conf import settings
 from django.db.models.query import QuerySet
@@ -58,17 +59,37 @@ class SignalSetListView(ListView):
                     url_params_str = f"{url_params_str}&{param_name}={param_value}"
         return url_params_dict, url_params_str
 
+    def get_related_signals(self):
+        related_signals = []
+        for signal_set in self.get_queryset():
+            for signal in signal_set.signals.all():
+                related_signals.append(
+                    {
+                        "id": signal.id,
+                        "display_name": signal.display_name,
+                        "name": signal.name,
+                        "signal_set": signal_set.id,
+                        "signal_set_name": signal_set.name,
+                        "endpoint": signal_set.endpoint,
+                        "source": signal.source.name,
+                        "time_type": signal.time_type,
+                        "description": signal.description
+                    }
+                )
+        return related_signals
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         url_params_dict, url_params_str = self.get_url_params()
         context["url_params_dict"] = url_params_dict
         context["url_params_str"] = url_params_str
-        context['epivis_url'] = settings.EPIVIS_URL
+        context["epivis_url"] = settings.EPIVIS_URL
         context["form"] = SignalSetFilterForm(initial=url_params_dict)
         context["filter"] = SignalSetFilter(
             self.request.GET, queryset=self.get_queryset()
         )
         context["signal_sets"] = self.get_queryset()
+        context["related_signals"] = json.dumps(self.get_related_signals())
         context["available_geographies"] = Geography.objects.all()
         return context
 
@@ -96,6 +117,12 @@ class SignalSetDetailedView(DetailView):
             .distinct()
             .order_by()
         )
-        context["time_type"] = self.object.signals.all().values_list("time_type", flat=True).distinct().order_by().first()
+        context["time_type"] = (
+            self.object.signals.all()
+            .values_list("time_type", flat=True)
+            .distinct()
+            .order_by()
+            .first()
+        )
 
         return context
