@@ -430,31 +430,6 @@
         }
     }
 
-    {% comment %} let dataSignals = Array.from(document.getElementsByName('selectedSignal'));
-    dataSignals.forEach((checkbox) => {
-        checkbox.addEventListener('change', function(event) {
-            if (this.checked) {
-                checkedSignalMembers.push({
-                    _endpoint: this.dataset.endpoint,
-                    data_source: this.dataset.datasource,
-                    signal: this.dataset.signal,
-                    time_type: this.dataset.timeType,
-                });
-                updateSelectedSignals(this.dataset.datasource, this.dataset.signal, this.dataset.signalset);
-            } else {
-                checkedSignalMembers = checkedSignalMembers.filter(signal => signal.signal !== this.dataset.signal);
-                document.getElementById(`${this.dataset.datasource}_${this.dataset.signal}`).remove();
-            }
-
-
-            if (checkedSignalMembers.length > 0) {
-                $("#showSelectedSignalsButton").show();
-            } else {
-                $("#showSelectedSignalsButton").hide();
-            }
-        });
-    }); {% endcomment %}
-
     function plotData(epivisUrl) {
         var dataSets = {};
 

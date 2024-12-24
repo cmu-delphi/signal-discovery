@@ -66,7 +66,7 @@ class SignalSetListView(ListView):
                 related_signals.append(
                     {
                         "id": signal.id,
-                        "display_name": signal.display_name,
+                        "display_name": signal.get_display_name,
                         "name": signal.name,
                         "signal_set": signal_set.id,
                         "signal_set_name": signal_set.name,

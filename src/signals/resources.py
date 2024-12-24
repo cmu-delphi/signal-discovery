@@ -226,6 +226,7 @@ class SignalResource(ModelResource):
     name = Field(attribute="name", column_name="Signal")
     display_name = Field(attribute="display_name", column_name="Name")
     member_name = Field(attribute="member_name", column_name="Member Name")
+    member_short_name = Field(attribute="member_short_name", column_name="Member Short Name")
     member_description = Field(
         attribute="member_description", column_name="Member Description"
     )
