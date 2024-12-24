@@ -40,6 +40,12 @@ class SignalSet(models.Model):
         unique=True,
     )
 
+    short_name: models.CharField = models.CharField(
+        verbose_name="Signal Set short name",
+        max_length=255,
+        blank=True,
+    )
+
     description: models.TextField = models.TextField(
         verbose_name="Signal Set description",
         blank=True,

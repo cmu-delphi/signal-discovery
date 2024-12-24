@@ -82,6 +82,7 @@ def fix_boolean_fields(row) -> Any:
 class SignalSetResource(resources.ModelResource):
 
     name = Field(attribute="name", column_name="Signal Set name* ")
+    short_name = Field(attribute="short_name", column_name="Signal Set Short Name")
     description = Field(attribute="description", column_name="Signal Set Description*")
     maintainer_name = Field(
         attribute="maintainer_name", column_name="Maintainer/\nKey Contact *"
@@ -95,6 +96,7 @@ class SignalSetResource(resources.ModelResource):
         column_name="Data Source",
         widget=widgets.ForeignKeyWidget(DataSource, field="name"),
     )
+    endpoint = Field(attribute="endpoint", column_name="Endpoint")
     language = Field(attribute="language", column_name="Language (likely English) ")
     version_number = Field(
         attribute="version_number", column_name="Version Number \n(if applicable) "
@@ -154,12 +156,12 @@ class SignalSetResource(resources.ModelResource):
     link_to_documentation = Field(
         attribute="link_to_documentation", column_name="Link to documentation"
     )
-    endpoint = Field(attribute="endpoint", column_name="Endpoint")
 
     class Meta:
         model = SignalSet
         fields: list[str] = [
             "name",
+            "short_name",
             "description",
             "maintainer_name",
             "maintainer_email",
