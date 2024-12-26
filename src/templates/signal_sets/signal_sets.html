@@ -247,7 +247,6 @@
                         <th></th>
                         <th>Name</th> <!--# TODO: add tooltip on hover with description here -->
                         <th>Pathogen(s) <br> Syndrome(s)</th>
-                        <th>Type(s) of Data</th>
                         <th>Geographic Scope</th>
                         <th>Geographic Granularity</th>
                         <th>Temporal scope Start</th>
@@ -281,9 +280,6 @@
                                 {{ pathogen }}
                             </span>
                             {% endfor %}
-                        </td>
-                        <td>
-                            {{ signal_set.data_type }}
                         </td>
                         <td>
                             {{ signal_set.geographic_scope }}
@@ -371,6 +367,8 @@
         });
 
         table.columns.adjust()
+
+        
     })
     function showAllOptions(event, parentDiv) {
         event.preventDefault();
@@ -579,6 +577,12 @@
             row.child(format(tr.data('id'))).show();
         }
         
+    });
+
+
+    // Add event listener for filtering. 
+    window.addEventListener('beforeunload', () => {
+        document.getElementById('filterSignalSetsForm').reset();
     });
 
     
