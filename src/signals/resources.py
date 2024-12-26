@@ -370,6 +370,7 @@ class SignalResource(ModelResource):
         ]
         import_id_fields: list[str] = ["name", "source"]
         store_instance = True
+        skip_unchanged = True
 
     def before_import_row(self, row, **kwargs) -> None:
         fix_boolean_fields(row)
