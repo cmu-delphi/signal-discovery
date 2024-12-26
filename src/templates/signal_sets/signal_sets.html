@@ -367,6 +367,8 @@
         });
 
         table.columns.adjust()
+
+        
     })
     function showAllOptions(event, parentDiv) {
         event.preventDefault();
@@ -575,6 +577,12 @@
             row.child(format(tr.data('id'))).show();
         }
         
+    });
+
+
+    // Add event listener for filtering. 
+    window.addEventListener('beforeunload', () => {
+        document.getElementById('filterSignalSetsForm').reset();
     });
 
     
