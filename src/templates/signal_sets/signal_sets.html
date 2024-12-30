@@ -246,7 +246,7 @@
                     <tr>
                         <th></th>
                         <th>Name</th> <!--# TODO: add tooltip on hover with description here -->
-                        <th>Pathogen(s) <br> Syndrome(s)</th>
+                        <th>Pathogen(s) / <br> Syndrome(s)</th>
                         <th>Geographic Scope</th>
                         <th>Geographic Granularity</th>
                         <th>Temporal scope Start</th>
@@ -260,7 +260,7 @@
                         <th>Severity Pyramid Rung(s)</th>
                         <th>Data Source</th>
                         <th class="min-w-300">Pre-processing</th>
-                        <th>Censoring</th>
+                        <th class="min-w-300">Censoring</th>
                         <th class="min-w-300">Missingness</th>
                         <th>DUA required</th>
                         <th>License</th>
@@ -414,7 +414,8 @@
                 signal: element.dataset.signal,
                 time_type: element.dataset.timetype,
             });
-            updateSelectedSignals(element.dataset.datasource, element.dataset.signal, element.dataset.signalSet);
+            console.log(element.dataset);
+            updateSelectedSignals(element.dataset.datasource, element.dataset.signalDisplayname, element.dataset.signalSet);
         } else {
             checkedSignalMembers = checkedSignalMembers.filter(signal => signal.signal !== element.dataset.signal);
             document.getElementById(`${element.dataset.datasource}_${element.dataset.signal}`).remove();
@@ -550,7 +551,7 @@
                 checked = checkedSignalMembers.filter((obj) => obj.data_source == signal.source && obj.signal == signal.name).length;
                 checked = checked ? "checked" : ""
                 tableMarkup += '<tr>'+
-                                    `<td><input type="checkbox" name="selectedSignal" onclick="addSelectedSignal(this)" data-signal-displayname="${signal.display_name}" data-endpoint="${signal.endpoint}" data-datasource="${signal.source}" data-signal="${signal.name}" data-time-type="${signal.time_type}" data-signal-set="${signal.signal_set_name}" ${checked}></td>`+
+                                    `<td><input type="checkbox" name="selectedSignal" onclick="addSelectedSignal(this)" data-signal-displayname='${signal.display_name}' data-endpoint="${signal.endpoint}" data-datasource="${signal.source}" data-signal="${signal.name}" data-time-type="${signal.time_type}" data-signal-set="${signal.signal_set_name}" ${checked}></td>`+
                                     `<td>${signal.display_name}</td>`+
                                     `<td>${signal.description}</td>`+
                                     '<td style="width: 60%"></td>'+

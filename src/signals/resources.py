@@ -330,7 +330,7 @@ class SignalResource(ModelResource):
             "name",
             "display_name",
             "member_name",
-            "member+_short_name",
+            "member_short_name",
             "member_description",
             "pathogen",
             "signal_type",
@@ -387,9 +387,14 @@ class SignalResource(ModelResource):
         if not row.get("Source Subdivision"):
             row["Source Subdivision"] = None
 
-    # def skip_row(self, instance, original, row, import_validation_errors=None):
-    #     if not row["Include in signal app"]:
-    #         return True
+    def skip_row(self, instance, original, row, import_validation_errors=None):
+        if not row["Include in signal app"]:
+            try:
+                signal = Signal.objects.get(name=row["Signal"], source=row["Source Subdivision"])
+                signal.delete()
+            except Signal.DoesNotExist:
+                pass
+            return True
 
     def after_import_row(self, row, row_result, **kwargs):
         try:
