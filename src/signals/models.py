@@ -515,12 +515,10 @@ class Signal(TimeStampedModel):
 
     @property
     def get_display_name(self):
-        if self.member_short_name:
-            return self.member_short_name
-        if self.member_name:
-            return self.member_name
         if self.display_name:
             return self.display_name
+        if self.member_name:
+            return self.member_name
         else:
             return self.name
 

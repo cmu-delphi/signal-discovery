@@ -330,7 +330,7 @@ class SignalResource(ModelResource):
             "name",
             "display_name",
             "member_name",
-            "member+_short_name",
+            "member_short_name",
             "member_description",
             "pathogen",
             "signal_type",
