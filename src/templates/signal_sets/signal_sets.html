@@ -391,7 +391,6 @@
                 signal: element.dataset.signal,
                 time_type: element.dataset.timetype,
             });
-            console.log(element.dataset);
             updateSelectedSignals(element.dataset.datasource, element.dataset.signalDisplayname, element.dataset.signalSet, element.dataset.signal);
         } else {
             checkedSignalMembers = checkedSignalMembers.filter(signal => signal.signal !== element.dataset.signal);
