@@ -7,7 +7,7 @@ from django.db.models.query import QuerySet
 from django.views.generic import ListView, DetailView
 
 
-from signals.models import Geography
+from signals.models import Geography, GeographyUnit
 from signal_sets.models import SignalSet
 from signal_sets.filters import SignalSetFilter
 from signal_sets.forms import SignalSetFilterForm
@@ -90,7 +90,7 @@ class SignalSetListView(ListView):
         )
         context["signal_sets"] = self.get_queryset()
         context["related_signals"] = json.dumps(self.get_related_signals())
-        context["available_geographies"] = Geography.objects.all()
+        context["geographic_granularities"] = [{"id": str(geo_unit.id), "text": geo_unit.display_name} for geo_unit in GeographyUnit.objects.all()]
         return context
 
 

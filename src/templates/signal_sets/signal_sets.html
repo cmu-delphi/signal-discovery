@@ -245,7 +245,7 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Name</th> <!--# TODO: add tooltip on hover with description here -->
+                        <th>Name</th>
                         <th>Pathogen(s)/<br>Syndrome(s)</th>
                         <th>Geographic Scope</th>
                         <th>Geographic Granularity</th>
@@ -353,12 +353,7 @@
 <script>
 
     $(document).ready(function () {
-        var data = [];
-        {% for geography in available_geographies %}
-            {% for unit in geography.geography_units.all %}
-                data.push({'id': '{{ unit.geo_id }}', 'text': '{{ unit.display_name }}'});
-            {% endfor %}
-        {% endfor %}
+        var data = {{ geographic_granularities|safe }};
         
         $('#location_search').select2({
             data: data,
@@ -370,29 +365,11 @@
 
         
     })
-    function showAllOptions(event, parentDiv) {
-        event.preventDefault();
-        var childDivs = parentDiv.querySelectorAll('.form-check');
-        for (i = 5; i < childDivs.length; i++) {
-            if (childDivs[i].style.display === 'none') {
-                childDivs[i].style.display = 'block';
-            } else {
-                childDivs[i].style.display = 'none';
-            }
-        }
-        if (event.target.innerText === 'Show more...') {
-            event.target.innerText = 'Show less...';
-        } else {
-            event.target.innerText = 'Show more...';
-        }
-    }
-
-
 
     let checkedSignalMembers = []
 
         // Function to update the modal content
-    function updateSelectedSignals(dataSource, signal, signalSet) {
+    function updateSelectedSignals(dataSource, signalDisplayName, signalSet, signal) {
         var selectedSignalsList = document.getElementById('selectedSignalsList');
 
         var tr = document.createElement('tr');
@@ -401,7 +378,7 @@
         signalSetName.textContent = signalSet;
         tr.appendChild(signalSetName);
         var signalName = document.createElement('td');
-        signalName.textContent = signal;
+        signalName.textContent = signalDisplayName;
         tr.appendChild(signalName);
         selectedSignalsList.appendChild(tr);
     }
@@ -415,7 +392,7 @@
                 time_type: element.dataset.timetype,
             });
             console.log(element.dataset);
-            updateSelectedSignals(element.dataset.datasource, element.dataset.signalDisplayname, element.dataset.signalSet);
+            updateSelectedSignals(element.dataset.datasource, element.dataset.signalDisplayname, element.dataset.signalSet, element.dataset.signal);
         } else {
             checkedSignalMembers = checkedSignalMembers.filter(signal => signal.signal !== element.dataset.signal);
             document.getElementById(`${element.dataset.datasource}_${element.dataset.signal}`).remove();
