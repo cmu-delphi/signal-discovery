@@ -170,66 +170,6 @@
             <i class="fas fa-arrow-up"></i>
         </button> -->
 
-        <!-- Button trigger modal -->
-        <div class="float" id="showSelectedSignalsButton" style="display:none;">
-            <a type="button" class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#selectedSignalsModal">
-                Show selected signals
-            </a>
-        </div>
-        
-        
-        <!-- Modal -->
-        <div class="modal fade" id="selectedSignalsModal" tabindex="-1" aria-labelledby="selectedSignalsModalLabel">
-            <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="selectedSignalsModalLabel">Selected signals</h5>
-                <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
-                        <thead>
-                          <tr>
-                            <th scope="col">Signal Set name</th>
-                            <th scope="col">Signal name</th>
-                          </tr>
-                        </thead>
-                        <tbody id="selectedSignalsList"></tbody>
-                      </table>
-                      
-                </div>
-                <div class="modal-footer">
-                    <div class="row">
-                        <div class="row margin-top-1rem">
-                            <div class="col-2">
-                                <label for="geographic_type" class="form-label"
-                                    >Geographic Type:</label
-                                >
-                            </div>
-                            <div class="col-10">
-                                <select id="geographic_type" name="geographic_type" class="form-select">
-                                    <option selected>Choose...</option>
-                                    {% for geography in available_geographies %}
-                                    <option value="{{ geography.name }}">{{ geography }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row margin-top-1rem">
-                            <div class="col-2">
-                                <label for="geographic_value" class="col-form-label">Geographic Value:</label>
-                            </div>
-                            <div class="col-10">
-                                <select id="geographic_value" name="geographic_value" class="form-select" multiple="multiple"></select>
-                            </div>
-                        </div>
-                    </div>
-                <button type="button" class="btn btn-primary" id="plotSelectedSignals" data-mdb-ripple-init>Show plot</button>
-                </div>
-            </div>
-            </div>
-        </div>
-
         <footer class="py-3 my-4">
             <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                 <li class="nav-item">
@@ -261,61 +201,6 @@
         <script src="{% static 'floating-scrollbar/jquery.floatingscroll.min.js' %}"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-        <script src="{% static 'js/select_signals.js' %}"></script>
-
-        <script>
-            const epivisUrl = "{{ epivis_url }}";
-            var geoValues = [];
-
-            function getFilteredGeographicValues(geographicType) {
-                var data = geoValues.reduce((data, geoValue) => {
-                    if (geoValue.geoType === geographicType) {
-                        data.push(geoValue);
-                    }
-                    return data;
-                }, []);
-                return data;
-            }
-
-            function initGeographicValueSelect(geographicType = null) {
-                if (geographicType) {
-                    var data = getFilteredGeographicValues(geographicType);
-                } else {
-                    data = [];
-                }
-        
-        
-                $('#geographic_value').select2({
-                    data: data,
-                    minimumInputLength: 0,
-                    maximumSelectionLength: 5,
-                });
-            }
-
-            document.getElementById('geographic_type').addEventListener("change", (event) => {
-                $('#geographic_value').empty();
-                $('#modeSubmitResult').html('');
-                initGeographicValueSelect(event.target.value);
-            })
-
-            $(document).ready(function () {
-                {% for geography in available_geographies %}
-                    {% for unit in geography.geography_units.all %}
-                        geoValues.push({'id': '{{ unit.geo_id }}', 'geoType': '{{ unit.geography.name }}', 'text': '{{ unit.display_name }}'});
-                    {% endfor %}
-                {% endfor %}
-
-                var plotSelectedSignals = document.getElementById('plotSelectedSignals');
-                    plotSelectedSignals.addEventListener('click', function() {
-                        plotData(epivisUrl);
-                });
-            });
-
-            
-
-
-        </script>
 
     </body>
 </html>
