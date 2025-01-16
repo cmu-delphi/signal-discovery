@@ -18,7 +18,7 @@ def process_pathogens(row) -> None:
         pathogens = row["Pathogen(s)/Syndrome(s)"].split(",")
         for pathogen in pathogens:
             pathogen = pathogen.strip()
-            pathogen_obj, _ = Pathogen.objects.get_or_create(name=pathogen)
+            pathogen_obj, _ = Pathogen.objects.get_or_create(name=pathogen, used_in="signal_sets")
 
 
 def process_geographic_scope(row) -> None:
@@ -219,7 +219,7 @@ class SignalSetResource(resources.ModelResource):
         try:
             signal_set_obj = SignalSet.objects.get(id=row_result.object_id)
             for pathogen in row["Pathogen(s)/Syndrome(s)"].split(","):
-                pathogen = Pathogen.objects.get(name=pathogen)
+                pathogen = Pathogen.objects.get(name=pathogen, used_in="signal_sets")
                 signal_set_obj.pathogens.add(pathogen)
             for severity_pyramid_rung in row["Severity Pyramid Rung(s)"].split(","):
                 severity_pyramid_rung = SeverityPyramidRung.objects.filter(

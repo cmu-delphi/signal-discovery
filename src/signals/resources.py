@@ -50,7 +50,7 @@ def process_pathogen(row) -> None:
         pathogens = row["Pathogen/\nDisease Area"].split(",")
         for pathogen in pathogens:
             pathogen = pathogen.strip()
-            pathogen_obj, _ = Pathogen.objects.get_or_create(name=pathogen)
+            pathogen_obj, _ = Pathogen.objects.get_or_create(name=pathogen, defaults={"used_in": "signals"})
 
 
 def process_signal_type(row) -> None:

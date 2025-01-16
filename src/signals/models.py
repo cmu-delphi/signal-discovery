@@ -9,7 +9,6 @@ class Pathogen(TimeStampedModel):
 
     name: models.CharField = models.CharField(
         max_length=128,
-        unique=True,
         verbose_name=_("name"),
         help_text=_("Name of the pathogen."),
     )
@@ -17,6 +16,21 @@ class Pathogen(TimeStampedModel):
     display_name: models.CharField = models.CharField(
         max_length=128, null=True, blank=True
     )
+
+    USED_IN_CHICES = (
+        ("signals", "Signals"),
+        ("signal_sets", "Signal Sets"),
+    )
+
+    used_in: models.CharField = models.CharField(
+        max_length=11,
+        choices=USED_IN_CHICES,
+        default="signals",
+    )
+
+    class Meta:
+        verbose_name_plural: str = "Pathogens"
+        unique_together: list[str] = ["name", "used_in"]
 
     def __str__(self) -> str:
         """Returns the name of the signal type as a string."""

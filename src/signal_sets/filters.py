@@ -14,7 +14,10 @@ class SignalSetFilter(django_filters.FilterSet):
 
     pathogens = django_filters.ModelMultipleChoiceFilter(
         field_name="pathogens",
-        queryset=Pathogen.objects.filter(id__in=SignalSet.objects.values_list("pathogens", flat="True")),
+        queryset=Pathogen.objects.filter(
+            # id__in=SignalSet.objects.values_list("pathogens", flat="True")
+            used_in="signal_sets"
+        ),
         widget=QueryArrayWidget,
     )
 

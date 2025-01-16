@@ -22,7 +22,11 @@ class SignalFilterForm(forms.ModelForm):
     )
 
     pathogens = forms.ModelChoiceField(
-        queryset=Pathogen.objects.filter(id__in=Signal.objects.values_list("pathogen", flat=True)), widget=forms.CheckboxSelectMultiple()
+        queryset=Pathogen.objects.filter(
+            # id__in=Signal.objects.values_list("pathogen", flat=True)
+            used_in="signals"
+        ),
+        widget=forms.CheckboxSelectMultiple()
     )
 
     geographic_scope = forms.ModelChoiceField(

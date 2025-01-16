@@ -9,7 +9,8 @@ class SignalSetFilterForm(forms.ModelForm):
 
     pathogens = forms.ModelChoiceField(
         queryset=Pathogen.objects.filter(
-            id__in=SignalSet.objects.values_list("pathogens", flat="True")
+            # id__in=SignalSet.objects.values_list("pathogens", flat="True")
+            used_in="signal_sets"
         ),
         widget=forms.CheckboxSelectMultiple(),
     )
