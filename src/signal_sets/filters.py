@@ -23,7 +23,10 @@ class SignalSetFilter(django_filters.FilterSet):
 
     geographic_scope = django_filters.ModelMultipleChoiceFilter(
         field_name="geographic_scope",
-        queryset=GeographicScope.objects.filter(id__in=SignalSet.objects.values_list("geographic_scope", flat="True")),
+        queryset=GeographicScope.objects.filter(
+            # id__in=SignalSet.objects.values_list("geographic_scope", flat="True")
+            used_in="signal_sets"
+        ),
         widget=QueryArrayWidget,
     )
 

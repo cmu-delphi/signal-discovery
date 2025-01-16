@@ -25,12 +25,12 @@ def process_geographic_scope(row) -> None:
     """
     Processes geographic scope.
     """
-    if row["Geographic Scope*"]:
-        geographic_scope = row["Geographic Scope*"]
+    if row["Geo Scope with index"]:
+        geographic_scope = row["Geo Scope with index"]
         geographic_scope_obj, _ = GeographicScope.objects.get_or_create(
-            name=geographic_scope
+            name=geographic_scope, used_in="signal_sets"
         )
-        row["Geographic Scope*"] = geographic_scope_obj
+        row["Geo Scope with index"] = geographic_scope_obj.id
 
 
 def process_severity_pyramid_rungs(row) -> None:
@@ -110,8 +110,8 @@ class SignalSetResource(resources.ModelResource):
     data_type = Field(attribute="data_type", column_name="Type(s) of Data*")
     geographic_scope = Field(
         attribute="geographic_scope",
-        column_name="Geographic Scope*",
-        widget=widgets.ForeignKeyWidget(GeographicScope, field="name"),
+        column_name="Geo Scope with index",
+        widget=widgets.ForeignKeyWidget(GeographicScope),
     )
     geographic_granularity = Field(
         attribute="geographic_granularity",

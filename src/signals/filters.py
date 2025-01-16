@@ -91,8 +91,7 @@ class SignalFilter(django_filters.FilterSet):
             return queryset
         pathogens = list(
             Pathogen.objects.filter(
-                # id__in=ast.literal_eval(value)
-                used_in="signals"
+                id__in=ast.literal_eval(value)
             ).values_list("name", flat=True)
         )
         queries: list[Q] = [Q((f"{name}__icontains", p)) for p in pathogens]

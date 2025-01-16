@@ -17,7 +17,8 @@ class SignalSetFilterForm(forms.ModelForm):
 
     geographic_scope = forms.ModelChoiceField(
         queryset=GeographicScope.objects.filter(
-            id__in=SignalSet.objects.values_list("geographic_scope", flat="True")
+            # id__in=SignalSet.objects.values_list("geographic_scope", flat="True")
+            used_in="signal_sets"
         ),
         widget=forms.CheckboxSelectMultiple(),
     )

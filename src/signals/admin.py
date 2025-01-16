@@ -42,8 +42,8 @@ class GeographicScopeAdmin(admin.ModelAdmin):
     """
     Admin interface for managing geographic scope objects.
     """
-    list_display: tuple[Literal['name'], Literal['display_name']] = ('name',)
-    search_fields: tuple[Literal['name']] = ('name',)
+    list_display: tuple[Literal['name'], Literal['display_name']] = ('name', 'used_in')
+    search_fields: tuple[Literal['name']] = ('name', 'used_in')
 
 
 @admin.register(Geography)
@@ -60,8 +60,8 @@ class PathogenAdmin(admin.ModelAdmin):
     """
     Admin interface for managing pathogen objects.
     """
-    list_display: tuple[Literal['name']] = ('name',)
-    search_fields: tuple[Literal['name']] = ('name',)
+    list_display: tuple[Literal['name']] = ('name', 'used_in')
+    search_fields: tuple[Literal['name']] = ('name', 'used_in')
 
 
 @admin.register(SeverityPyramidRung)

@@ -3,7 +3,6 @@ from typing import Any
 from import_export import resources
 from import_export.results import RowResult
 from import_export.fields import Field, widgets
-from import_export.results import RowResult
 
 from datasources.models import SourceSubdivision
 from datasources.resources import process_links
@@ -50,7 +49,7 @@ def process_pathogen(row) -> None:
         pathogens = row["Pathogen/\nDisease Area"].split(",")
         for pathogen in pathogens:
             pathogen = pathogen.strip()
-            pathogen_obj, _ = Pathogen.objects.get_or_create(name=pathogen, defaults={"used_in": "signals"})
+            pathogen_obj, _ = Pathogen.objects.get_or_create(name=pathogen, used_in="signals")
 
 
 def process_signal_type(row) -> None:
@@ -109,9 +108,9 @@ def process_geographic_scope(row) -> None:
     if row["Geographic Scope"]:
         geographic_scope = row["Geographic Scope"]
         geographic_scope_obj, _ = GeographicScope.objects.get_or_create(
-            name=geographic_scope
+            name=geographic_scope, used_in="signals"
         )
-        row["Geographic Scope"] = geographic_scope_obj
+        row["Geographic Scope"] = geographic_scope_obj.id
 
 
 def process_source(row) -> None:
@@ -277,7 +276,7 @@ class SignalResource(ModelResource):
     geographic_scope = Field(
         attribute="geographic_scope",
         column_name="Geographic Scope",
-        widget=widgets.ForeignKeyWidget(GeographicScope, field="name"),
+        widget=widgets.ForeignKeyWidget(GeographicScope),
     )
     available_geographies = Field(
         attribute="available_geographies",
