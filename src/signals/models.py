@@ -17,14 +17,14 @@ class Pathogen(TimeStampedModel):
         max_length=128, null=True, blank=True
     )
 
-    USED_IN_CHICES = (
+    USED_IN_CHOICES = (
         ("signals", "Signals"),
         ("signal_sets", "Signal Sets"),
     )
 
     used_in: models.CharField = models.CharField(
         max_length=11,
-        choices=USED_IN_CHICES,
+        choices=USED_IN_CHOICES,
         default="signals",
     )
 
