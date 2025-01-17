@@ -54,9 +54,12 @@ class SignalSetFilter(django_filters.FilterSet):
     temporal_granularity = django_filters.MultipleChoiceFilter(
         field_name="temporal_granularity",
         choices=[
+            ("Annually", "Annually"),
+            ("Monthly", "Monthly"),
             ("Daily", "Daily"),
             ("Weekly", "Weekly"),
             ("Hourly", "Hourly"),
+            ("None", "None")
         ],
         lookup_expr="icontains",
     )

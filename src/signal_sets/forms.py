@@ -47,9 +47,12 @@ class SignalSetFilterForm(forms.ModelForm):
 
     temporal_granularity = forms.ChoiceField(
         choices=[
+            ("Annually", "Annually"),
+            ("Monthly", "Monthly"),
             ("Daily", "Daily"),
             ("Weekly", "Weekly"),
             ("Hourly", "Hourly"),
+            ("None", "None")
         ],
         widget=forms.CheckboxSelectMultiple(),
     )
