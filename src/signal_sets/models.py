@@ -203,7 +203,7 @@ class SignalSet(models.Model):
     missingness: models.TextField = models.TextField(
         verbose_name=_("missingness"),
         help_text=_("Missingness of the signal set."),
-        blank=True
+        blank=True,
     )
 
     dua_required: models.CharField = models.CharField(
@@ -245,3 +245,7 @@ class SignalSet(models.Model):
     class Meta:
         unique_together = ("name", "data_source")
         ordering = ["name"]
+
+    @property
+    def get_available_geographies(self):
+        return ", ".join([geo.display_name for geo in self.available_geographies.all()])

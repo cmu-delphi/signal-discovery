@@ -47,6 +47,11 @@ class SignalSetListView(ListView):
             "temporal_granularity": [
                 el for el in self.request.GET.getlist("temporal_granularity")
             ],
+            "available_geographies": (
+                [el for el in self.request.GET.getlist("available_geographies")]
+                if self.request.GET.get("available_geographies")
+                else None
+            ),
             "temporal_scope_end": self.request.GET.get("temporal_scope_end"),
         }
         url_params_str = ""

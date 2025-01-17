@@ -4,6 +4,8 @@ from import_export import resources
 from import_export.results import RowResult
 from import_export.fields import Field, widgets
 
+from django.db.models import Max
+
 from datasources.models import SourceSubdivision
 from datasources.resources import process_links
 from signal_sets.models import SignalSet
@@ -133,8 +135,11 @@ def process_available_geographies(row) -> None:
             ","
         )
         for geography in geographies:
+            max_display_order_number = Geography.objects.filter(used_in="signals").aggregate(Max("display_order_number"))["display_order_number__max"]
             geography_instance, _ = Geography.objects.get_or_create(
-                name=geography.strip()
+                name=geography.strip(),
+                used_in="signals",
+                defaults={"used_in": "signals", "display_order_number": max_display_order_number + 1},
             )
             signal = Signal.objects.get(
                 name=row["Signal"], source=row["Source Subdivision"]

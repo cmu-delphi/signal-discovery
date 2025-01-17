@@ -32,7 +32,10 @@ class SignalSetFilter(django_filters.FilterSet):
 
     available_geographies = django_filters.ModelMultipleChoiceFilter(
         field_name="available_geographies",
-        queryset=Geography.objects.filter(id__in=SignalSet.objects.values_list("available_geographies", flat="True")).order_by("display_order_number"),
+        queryset=Geography.objects.filter(
+            # id__in=SignalSet.objects.values_list("available_geographies", flat="True")
+            used_in="signal_sets"
+        ).order_by("display_order_number"),
         widget=QueryArrayWidget,
     )
 

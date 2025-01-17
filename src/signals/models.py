@@ -156,7 +156,6 @@ class Geography(TimeStampedModel):
 
     name: models.CharField = models.CharField(
         max_length=255,
-        unique=True,
         verbose_name=_("name"),
         help_text=_("Name of the geography."),
     )
@@ -172,9 +171,16 @@ class Geography(TimeStampedModel):
         help_text=_("Display order number of the geography."),
     )
 
+    used_in: models.CharField = models.CharField(
+        max_length=11,
+        choices=USED_IN_CHOICES,
+        default="signals",
+    )
+
     class Meta:
         verbose_name_plural: str = "geographies"
         ordering: list[str] = ["display_order_number"]
+        unique_together: list[str] = ["name", "used_in"]
 
     def __str__(self) -> str:
         """

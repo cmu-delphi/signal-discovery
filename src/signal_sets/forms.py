@@ -25,7 +25,8 @@ class SignalSetFilterForm(forms.ModelForm):
 
     available_geographies = forms.ModelChoiceField(
         queryset=Geography.objects.filter(
-            id__in=SignalSet.objects.values_list("available_geographies", flat="True")
+            # id__in=SignalSet.objects.values_list("available_geographies", flat="True")
+            used_in="signal_sets"
         ).order_by("display_order_number"),
         widget=forms.CheckboxSelectMultiple(),
     )

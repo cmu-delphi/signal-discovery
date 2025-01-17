@@ -38,7 +38,10 @@ class SignalFilterForm(forms.ModelForm):
     )
 
     available_geography = forms.ModelChoiceField(
-        queryset=Geography.objects.filter(id__in=Signal.objects.values_list("available_geography", flat=True)).order_by("display_order_number"),
+        queryset=Geography.objects.filter(
+            # id__in=Signal.objects.values_list("available_geography", flat=True)
+            used_in="signals"
+        ),
         widget=forms.CheckboxSelectMultiple(),
     )
 

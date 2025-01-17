@@ -1,5 +1,6 @@
 from typing import Any
 from django.db import IntegrityError, transaction
+from django.db.models import Max
 
 
 from import_export import resources
@@ -50,9 +51,11 @@ def process_avaliable_geographies(row) -> None:
     if row["Geographic Granularity - Delphi"]:
         available_geographies = row["Geographic Granularity - Delphi"].split(",")
         for available_geography in available_geographies:
+            max_display_order_number = Geography.objects.filter(used_in="signals").aggregate(Max("display_order_number"))["display_order_number__max"]
             available_geography_obj, _ = Geography.objects.get_or_create(
                 name=available_geography,
-                defaults={"display_order_number": 1},  # TODO: fix display_order_number
+                used_in="signal_sets",
+                defaults={"used_in": "signal_sets", "display_order_number": max_display_order_number + 1}
             )
 
 
@@ -191,6 +194,7 @@ class SignalSetResource(resources.ModelResource):
             "dataset_location",
             "link_to_documentation",
             "endpoint",
+            "available_geographies",
         ]
         import_id_fields = ["name", "data_source"]
         store_instance = True
@@ -228,7 +232,7 @@ class SignalSetResource(resources.ModelResource):
                 signal_set_obj.severity_pyramid_rungs.add(severity_pyramid_rung)
 
             for available_geography in row["Geographic Granularity - Delphi"].split(","):
-                available_geography = Geography.objects.get(name=available_geography)
+                available_geography = Geography.objects.get(name=available_geography, used_in="signal_sets")
                 signal_set_obj.available_geographies.add(available_geography)
             signal_set_obj.save()
         except SignalSet.DoesNotExist as e:
