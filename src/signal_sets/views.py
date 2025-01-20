@@ -95,7 +95,7 @@ class SignalSetListView(ListView):
         )
         context["signal_sets"] = self.get_queryset()
         context["related_signals"] = json.dumps(self.get_related_signals())
-        context["available_geographies"] = Geography.objects.all()
+        context["available_geographies"] = Geography.objects.filter(used_in="signals")
         context["geographic_granularities"] = [{"id": str(geo_unit.geo_id), "geoType": geo_unit.geography.name, "text": geo_unit.display_name} for geo_unit in GeographyUnit.objects.all()]
         return context
 
