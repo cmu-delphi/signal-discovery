@@ -43,7 +43,9 @@ def process_severity_pyramid_rungs(row) -> None:
         for severity_pyramid_rung in severity_pyramid_rungs:
             severity_pyramid_rung = severity_pyramid_rung.strip()
             severity_pyramid_rung_obj, _ = SeverityPyramidRung.objects.get_or_create(
-                name=severity_pyramid_rung
+                name=severity_pyramid_rung,
+                used_in="signal_sets",
+                defaults={"used_in": "signal_sets", "display_name": severity_pyramid_rung}
             )
 
 
@@ -227,7 +229,8 @@ class SignalSetResource(resources.ModelResource):
                 signal_set_obj.pathogens.add(pathogen)
             for severity_pyramid_rung in row["Severity Pyramid Rung(s)"].split(","):
                 severity_pyramid_rung = SeverityPyramidRung.objects.filter(
-                    name=severity_pyramid_rung
+                    name=severity_pyramid_rung,
+                    used_in="signal_sets"
                 ).first()
                 signal_set_obj.severity_pyramid_rungs.add(severity_pyramid_rung)
 

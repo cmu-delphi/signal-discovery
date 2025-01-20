@@ -64,7 +64,6 @@ class SeverityPyramidRung(TimeStampedModel):
 
     name: models.CharField = models.CharField(
         max_length=255,
-        unique=True,
         verbose_name=_("name"),
         help_text=_("Name of the severity pyramid rung."),
     )
@@ -76,8 +75,15 @@ class SeverityPyramidRung(TimeStampedModel):
         blank=True,
     )
 
+    used_in: models.CharField = models.CharField(
+        max_length=11,
+        choices=USED_IN_CHOICES,
+        default="signals",
+    )
+
     class Meta:
         verbose_name_plural: str = "Severity Pyramid Rungs"
+        unique_together: list[str] = ["name", "used_in"]
 
     def __str__(self) -> str:
         return str(self.display_name) if self.display_name else str(self.name)

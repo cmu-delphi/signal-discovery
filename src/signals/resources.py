@@ -51,7 +51,9 @@ def process_pathogen(row) -> None:
         pathogens = row["Pathogen/\nDisease Area"].split(",")
         for pathogen in pathogens:
             pathogen = pathogen.strip()
-            pathogen_obj, _ = Pathogen.objects.get_or_create(name=pathogen, used_in="signals")
+            pathogen_obj, _ = Pathogen.objects.get_or_create(
+                name=pathogen, used_in="signals", defaults={"used_in": "signals"}
+            )
 
 
 def process_signal_type(row) -> None:
@@ -86,11 +88,18 @@ def process_severity_pyramid_rungs(row) -> None:
             row["Severity Pyramid Rungs"] = None
         else:
             severity_pyramid_rung_obj, _ = SeverityPyramidRung.objects.get_or_create(
-                name=severity_pyramid_rung
+                name=severity_pyramid_rung,
+                used_in="signals",
+                defaults={"used_in": "signals", "display_name": severity_pyramid_rung},
             )
-        row["Severity Pyramid Rungs"] = severity_pyramid_rung_obj
+        row["Severity Pyramid Rungs"] = severity_pyramid_rung_obj.id
     else:
-        row["Severity Pyramid Rungs"] = None
+        none_severity_pyramid_rung_obj, _ = SeverityPyramidRung.objects.get_or_create(
+            name="N/A",
+            used_in="signals",
+            defaults={"used_in": "signals", "display_name": "N/A"},
+        )
+        row["Severity Pyramid Rungs"] = none_severity_pyramid_rung_obj.id
 
 
 def process_category(row) -> None:
@@ -135,11 +144,16 @@ def process_available_geographies(row) -> None:
             ","
         )
         for geography in geographies:
-            max_display_order_number = Geography.objects.filter(used_in="signals").aggregate(Max("display_order_number"))["display_order_number__max"]
+            max_display_order_number = Geography.objects.filter(
+                used_in="signals"
+            ).aggregate(Max("display_order_number"))["display_order_number__max"]
             geography_instance, _ = Geography.objects.get_or_create(
                 name=geography.strip(),
                 used_in="signals",
-                defaults={"used_in": "signals", "display_order_number": max_display_order_number + 1},
+                defaults={
+                    "used_in": "signals",
+                    "display_order_number": max_display_order_number + 1,
+                },
             )
             signal = Signal.objects.get(
                 name=row["Signal"], source=row["Source Subdivision"]
@@ -230,7 +244,9 @@ class SignalResource(ModelResource):
     name = Field(attribute="name", column_name="Signal")
     display_name = Field(attribute="display_name", column_name="Name")
     member_name = Field(attribute="member_name", column_name="Member Name")
-    member_short_name = Field(attribute="member_short_name", column_name="Member Short Name")
+    member_short_name = Field(
+        attribute="member_short_name", column_name="Member Short Name"
+    )
     member_description = Field(
         attribute="member_description", column_name="Member Description"
     )
@@ -271,7 +287,7 @@ class SignalResource(ModelResource):
     severity_pyramid_rung = Field(
         attribute="severity_pyramid_rung",
         column_name="Severity Pyramid Rungs",
-        widget=widgets.ForeignKeyWidget(SeverityPyramidRung, field="name"),
+        widget=widgets.ForeignKeyWidget(SeverityPyramidRung),
     )
     category = Field(
         attribute="category",
@@ -370,7 +386,6 @@ class SignalResource(ModelResource):
             "signal_set",
             "format_type",
             "severity_pyramid_rung",
-
         ]
         import_id_fields: list[str] = ["name", "source"]
         store_instance = True
@@ -394,7 +409,9 @@ class SignalResource(ModelResource):
     def skip_row(self, instance, original, row, import_validation_errors=None):
         if not row["Include in signal app"]:
             try:
-                signal = Signal.objects.get(name=row["Signal"], source=row["Source Subdivision"])
+                signal = Signal.objects.get(
+                    name=row["Signal"], source=row["Source Subdivision"]
+                )
                 signal.delete()
             except Signal.DoesNotExist:
                 pass
@@ -406,7 +423,7 @@ class SignalResource(ModelResource):
             for link in row["Links"]:
                 signal_obj.related_links.add(link)
             process_available_geographies(row)
-            signal_obj.severity_pyramid_rung = row["Severity Pyramid Rungs"]
+            signal_obj.severity_pyramid_rung = SeverityPyramidRung.objects.get(id=row["Severity Pyramid Rungs"])
             signal_obj.format_type = row["Format"]
             signal_obj.save()
         except Signal.DoesNotExist as e:

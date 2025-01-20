@@ -33,7 +33,8 @@ class SignalSetFilterForm(forms.ModelForm):
 
     severity_pyramid_rungs = forms.ModelChoiceField(
         queryset=SeverityPyramidRung.objects.filter(
-            id__in=SignalSet.objects.values_list("severity_pyramid_rungs", flat="True")
+            # id__in=SignalSet.objects.values_list("severity_pyramid_rungs", flat="True")
+            used_in="signal_sets"
         ),
         widget=forms.CheckboxSelectMultiple(),
     )

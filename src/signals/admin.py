@@ -69,7 +69,7 @@ class SeverityPyramidRungAdmin(admin.ModelAdmin):
     """
     Admin interface for managing severity pyramid objects.
     """
-    list_display: tuple[Literal['name'], Literal['display_name']] = ('name', 'display_name')
+    list_display: tuple[Literal['name'], Literal['display_name']] = ('name', 'display_name', 'used_in',)
     search_fields: tuple[Literal['name']] = ('name',)
 
 

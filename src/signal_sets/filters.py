@@ -41,7 +41,10 @@ class SignalSetFilter(django_filters.FilterSet):
 
     severity_pyramid_rungs = django_filters.ModelMultipleChoiceFilter(
         field_name="severity_pyramid_rungs",
-        queryset=SeverityPyramidRung.objects.filter(id__in=SignalSet.objects.values_list("severity_pyramid_rungs", flat="True")),
+        queryset=SeverityPyramidRung.objects.filter(
+            # id__in=SignalSet.objects.values_list("severity_pyramid_rungs", flat="True")
+            used_in="signal_sets"
+        ),
         widget=QueryArrayWidget,
     )
 
