@@ -375,7 +375,28 @@
                   
             </div>
             <div class="modal-footer">
-                <div class="row">
+                <form class="margin-top-1rem full-width" id="dataForm" onsubmit="submitMode(event)">
+                    <div class="row">
+                        <div class="col-2">
+                            <label class="form-label">
+                                Select Mode:
+                            </label>
+                        </div>
+                        <div class="col-10">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="modes" id="preview" value="preview" checked>
+                                <label class="form-check-label" for="preview">Preview data</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="modes" id="epivis" value="epivis">
+                                <label class="form-check-label" for="epivis">Plot data</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="modes" id="export" value="export">
+                                <label class="form-check-label" for="export">Export data</label>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row margin-top-1rem">
                         <div class="col-2">
                             <label for="geographic_type" class="form-label"
@@ -399,8 +420,35 @@
                             <select id="geographic_value" name="geographic_value" class="form-select" multiple="multiple"></select>
                         </div>
                     </div>
-                </div>
-            <button type="button" class="btn btn-primary" id="plotSelectedSignals" data-mdb-ripple-init>Show plot</button>
+                    <div class="row margin-top-1rem" name="choose_date">
+                        <div class="col-2">
+                            <label for="start_date" class="form-label">
+                                Start Date:
+                            </label>
+                        </div>
+                        <div class="col-10">
+                            <input type="date" class="form-control" id="start_date" name="start_date" value="2016-01-01">
+                        </div>
+                    </div>
+                    <div class="row margin-top-1rem" name="choose_date">
+                        <div class="col-2">
+                            <label for="end_date" class="form-label">
+                                End Date:
+                            </label>
+                        </div>
+                        <div class="col-10">
+                            <input type="date" class="form-control" id="end_date" name="end_date" value="2029-01-01">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button type="submit" id="processSelectedSignals" value="Submit" class="btn btn-primary margin-top-1rem" data-mdb-ripple-init>
+                            Submit
+                        </button>
+                    </div>
+                    <div class="row margin-top-1rem">
+                        <pre class="margin-top-1rem"><code id="modeSubmitResult"></code></pre>
+                    </div>
+                </form>
             </div>
         </div>
         </div>
@@ -413,18 +461,17 @@
 
 <script src="{% static 'js/signal_sets.js' %}"></script>
 <script>
-    const epivisUrl = "{{ epivis_url }}";
+    localStorage.setItem("epivis_url", "{{ epivis_url }}");
+    localStorage.setItem("data_export_url", "{{ data_export_url }}");
+    localStorage.setItem("covidcast_url", "{{ covidcast_url }}");
+
+
     var geoValues = {{ geographic_granularities|safe }};
     var relatedSignals = JSON.parse(JSON.stringify({{ related_signals|safe }}));
 
     $(document).ready(function () {
         initSelect2('location_search', geoValues);
         table.columns.adjust()
-
-        var plotSelectedSignals = document.getElementById('plotSelectedSignals');
-            plotSelectedSignals.addEventListener('click', function() {
-                plotData(epivisUrl);
-        });
     })
 
     // Add event listener for opening and closing details
@@ -447,6 +494,13 @@
     // Add event listener for filtering. 
     window.addEventListener('beforeunload', () => {
         document.getElementById('filterSignalSetsForm').reset();
+    });
+
+    document.getElementsByName('modes').forEach((el) => {
+        el.addEventListener('change', (event) => {
+            currentMode = event.target.value;
+            handleModeChange(currentMode);
+        });
     });
 
     
