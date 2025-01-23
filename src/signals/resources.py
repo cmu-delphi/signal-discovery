@@ -119,7 +119,7 @@ def process_geographic_scope(row) -> None:
     if row["Geographic Scope"]:
         geographic_scope = row["Geographic Scope"]
         geographic_scope_obj, _ = GeographicScope.objects.get_or_create(
-            name=geographic_scope, used_in="signals"
+            name=geographic_scope, used_in="signals", defaults={"used_in": "signals"}
         )
         row["Geographic Scope"] = geographic_scope_obj.id
 
