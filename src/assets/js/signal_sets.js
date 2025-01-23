@@ -1,3 +1,7 @@
+const epiVisUrl = localStorage.getItem("epivis_url");
+const dataExportUrl = localStorage.getItem("data_export_url");
+const covidCastUrl = localStorage.getItem("covidcast_url");
+
 function initSelect2(elementId, data) {
     $(`#${elementId}`).select2({
         data: data,
@@ -35,7 +39,7 @@ document.getElementById('geographic_type').addEventListener("change", (event) =>
 
 let checkedSignalMembers = []
 
-function plotData(epivisUrl) {
+function plotData() {
     var dataSets = {};
 
     var geographicType = document.getElementById('geographic_type').value;
@@ -70,7 +74,7 @@ function plotData(epivisUrl) {
 
     var urlParamsEncoded = btoa(`{"datasets":${JSON.stringify(requestParams)}}`);
     
-    var linkToEpivis = `${epivisUrl}#${urlParamsEncoded}`
+    var linkToEpivis = `${epiVisUrl}#${urlParamsEncoded}`
     window.open(linkToEpivis, '_blank').focus();
 }
 
@@ -96,7 +100,7 @@ function addSelectedSignal(element) {
             _endpoint: element.dataset.endpoint,
             data_source: element.dataset.datasource,
             signal: element.dataset.signal,
-            time_type: element.dataset.timetype,
+            time_type: element.dataset.timeType,
         });
         updateSelectedSignals(element.dataset.datasource, element.dataset.signalDisplayname, element.dataset.signalSet, element.dataset.signal);
     } else {
@@ -200,4 +204,145 @@ function format (signalSetId, relatedSignals) {
         tableMarkup = "<p>No available signals yet.</p>"
     }
     return tableMarkup;
+}
+
+
+function exportData() {
+    var geographicType = document.getElementById('geographic_type').value;
+    var geographicValues = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id);
+    if (geographicType === 'Choose...' || geographicValues.length === 0) {
+        showWarningAlert("Geographic Type or Geographic Value is not selected.");
+        return;
+    }
+    var startDate = document.getElementById('start_date').value;
+    var endDate = document.getElementById('end_date').value;
+
+    var manualDataExport = "To download data, please click on the link or copy/paste command into your terminal: \n\n"
+    
+    checkedSignalMembers.forEach((signal) => {
+        if (signal["time_type"] === "week") {
+            startDate = getDateYearWeek(new Date(startDate));
+            endDate = getDateYearWeek(new Date(endDate));
+        };
+        var exportUrl = `${dataExportUrl}?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${startDate}&end_day=${endDate}&geo_type=${geographicType}&geo_values=${geographicValues}`;
+        manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
+    });
+    $('#modeSubmitResult').html(manualDataExport);
+}
+
+function previewData() {
+    var geographicType = document.getElementById('geographic_type').value;
+    var geographicValues = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(',');
+    if (geographicType === 'Choose...' || geographicValues.length === 0) {
+        showWarningAlert("Geographic Type or Geographic Value is not selected.");
+        return;
+    }
+    var previewExample = [];
+    checkedSignalMembers.forEach((signal) => {
+        var startDate = document.getElementById("start_date").value;
+        var endDate = document.getElementById("end_date").value;
+        if (signal["time_type"] === "week") {
+            startDate = getDateYearWeek(new Date(startDate));
+            endDate = getDateYearWeek(new Date(endDate));
+        };
+        var requestSent = false;
+        if (!requestSent) {
+            $.ajax({
+                url: covidCastUrl,
+                type: 'GET',
+                async: false,
+                data: {
+                    'time_type': signal["time_type"],
+                    'time_values': `${startDate}--${endDate}`,
+                    'data_source': signal["data_source"],
+                    'signal': signal["signal"],
+                    'geo_type': geographicType,
+                    'geo_values': geographicValues
+                },
+                success: function (result) {
+                    if (result["epidata"].length != 0) {
+                        previewExample.push({epidata: result["epidata"][0], result: result["result"], message: result["message"]})
+                    } else {
+                        previewExample.push({epidata: result["epidata"], result: result["result"], message: result["message"]})
+                    }
+                }
+            })
+        }
+    })
+    $('#modeSubmitResult').html(JSON.stringify(previewExample, null, 2));
+    requestSent = true;
+}
+
+
+// Plot/Export/Preview data block
+
+var currentMode = 'preview';
+
+function handleModeChange(mode) {
+    document.getElementById("dataForm").reset();
+    $('#geographic_value').empty();
+    $('#modeSubmitResult').html('');
+
+    var choose_dates = document.getElementsByName('choose_date');
+
+    if (mode === 'epivis') {
+        currentMode = 'epivis';
+        choose_dates.forEach((el) => {
+            el.style.display = 'none';
+        });
+        $('#modeSubmitResult').html('');
+    } else if (mode === 'export') {
+        currentMode = 'export';
+        choose_dates.forEach((el) => {
+            el.style.display = 'flex';
+        });
+        $('#modeSubmitResult').html('');
+    } else {
+        currentMode = 'preview';
+        choose_dates.forEach((el) => {
+            el.style.display = 'flex';
+        });
+    }
+    document.getElementsByName("modes").forEach((el) => {
+        if (currentMode === el.value) {
+            el.checked = true;
+        }
+    });
+}
+
+function getDateYearWeek(date) {
+    const currentDate =
+        (typeof date === 'object') ? date : new Date();
+    const januaryFirst =
+        new Date(currentDate.getFullYear(), 0, 1);
+    const daysToNextMonday =
+        (januaryFirst.getDay() === 1) ? 0 :
+        (7 - januaryFirst.getDay()) % 7;
+    const nextMonday =
+        new Date(currentDate.getFullYear(), 0,
+        januaryFirst.getDate() + daysToNextMonday);
+
+    var weekNumber = (currentDate < nextMonday) ? 52 :
+    (currentDate > nextMonday ? Math.ceil(
+    (currentDate - nextMonday) / (24 * 3600 * 1000) / 7) : 1);
+
+    if (weekNumber < 10) {
+        weekNumber = `0${weekNumber}`;
+    }
+
+    const year = currentDate.getFullYear()
+
+    return `${year}${weekNumber}`;
+}
+
+function submitMode(event) {
+    event.preventDefault();
+
+    if (currentMode === 'epivis') {
+        plotData();
+    } else if (currentMode === 'export') {
+        exportData();
+    } else {
+        previewData();
+    }
 }

@@ -90,9 +90,9 @@ class SignalFilter(django_filters.FilterSet):
         if not value:
             return queryset
         pathogens = list(
-            Pathogen.objects.filter(id__in=ast.literal_eval(value)).values_list(
-                "name", flat=True
-            )
+            Pathogen.objects.filter(
+                id__in=ast.literal_eval(value)
+            ).values_list("name", flat=True)
         )
         queries: list[Q] = [Q((f"{name}__icontains", p)) for p in pathogens]
         query: Q = queries.pop()

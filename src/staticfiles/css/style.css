@@ -1395,3 +1395,13 @@ h6 {
 div.dt-button-collection {
     width: 265px!important;
 }
+
+.full-width {
+    width: 100%;
+}
+
+#processSelectedSignals {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}

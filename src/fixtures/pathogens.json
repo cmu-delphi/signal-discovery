@@ -4,6 +4,7 @@
       "pk": 1,
       "fields": {
         "name": "covid",
+        "used_in": "signals",
         "created": "2023-08-09T19:23:22.597131",
         "modified": "2023-08-09T19:23:22.597131"
       }
@@ -13,6 +14,7 @@
       "pk": 2,
       "fields": {
         "name": "flu",
+        "used_in": "signals",
         "created": "2023-08-09T19:23:22.597131",
         "modified": "2023-08-09T19:23:22.597131"
       }
@@ -22,8 +24,199 @@
       "pk": 3,
       "fields": {
         "name": "pneumonia",
+        "used_in": "signals",
         "created": "2023-08-09T19:23:22.597131",
         "modified": "2023-08-09T19:23:22.597131"
       }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 4,
+        "fields": {
+          "name": "COVID-19",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 5,
+        "fields": {
+          "name": "Ebola",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 6,
+        "fields": {
+          "name": "dengue",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 7,
+        "fields": {
+          "name": "HIV",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 8,
+        "fields": {
+          "name": "HIV 1",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 9,
+        "fields": {
+          "name": "HIV 2",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 10,
+        "fields": {
+          "name": "Human orthopneumovirus",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 11,
+        "fields": {
+          "name": "ILI",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 12,
+        "fields": {
+          "name": "influenza",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 13,
+        "fields": {
+          "name": "measles",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 14,
+        "fields": {
+          "name": "Mpox",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 15,
+        "fields": {
+          "name": "mumps",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 16,
+        "fields": {
+          "name": "Norovirus",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 17,
+        "fields": {
+          "name": "Plasmodium",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 18,
+        "fields": {
+          "name": "Pneumonia",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 19,
+        "fields": {
+          "name": "RSV",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 20,
+        "fields": {
+          "name": "tuberculosis",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 21,
+        "fields": {
+          "name": "Zika",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+    },
+    {
+        "model": "signals.Pathogen",
+        "pk": 22,
+        "fields": {
+          "name": "N/A",
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
     }
   ]

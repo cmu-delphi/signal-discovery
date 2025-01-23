@@ -47,6 +47,11 @@ class SignalSetListView(ListView):
             "temporal_granularity": [
                 el for el in self.request.GET.getlist("temporal_granularity")
             ],
+            "available_geographies": (
+                [el for el in self.request.GET.getlist("available_geographies")]
+                if self.request.GET.get("available_geographies")
+                else None
+            ),
             "temporal_scope_end": self.request.GET.get("temporal_scope_end"),
         }
         url_params_str = ""
@@ -84,13 +89,15 @@ class SignalSetListView(ListView):
         context["url_params_dict"] = url_params_dict
         context["url_params_str"] = url_params_str
         context["epivis_url"] = settings.EPIVIS_URL
+        context["data_export_url"] = settings.DATA_EXPORT_URL
+        context["covidcast_url"] = settings.COVIDCAST_URL
         context["form"] = SignalSetFilterForm(initial=url_params_dict)
         context["filter"] = SignalSetFilter(
             self.request.GET, queryset=self.get_queryset()
         )
         context["signal_sets"] = self.get_queryset()
         context["related_signals"] = json.dumps(self.get_related_signals())
-        context["available_geographies"] = Geography.objects.all()
+        context["available_geographies"] = Geography.objects.filter(used_in="signals")
         context["geographic_granularities"] = [{"id": str(geo_unit.geo_id), "geoType": geo_unit.geography.name, "text": geo_unit.display_name} for geo_unit in GeographyUnit.objects.all()]
         return context
 

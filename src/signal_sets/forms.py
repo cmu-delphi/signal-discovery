@@ -9,28 +9,32 @@ class SignalSetFilterForm(forms.ModelForm):
 
     pathogens = forms.ModelChoiceField(
         queryset=Pathogen.objects.filter(
-            id__in=SignalSet.objects.values_list("pathogens", flat="True")
+            # id__in=SignalSet.objects.values_list("pathogens", flat="True")
+            used_in="signal_sets"
         ),
         widget=forms.CheckboxSelectMultiple(),
     )
 
     geographic_scope = forms.ModelChoiceField(
         queryset=GeographicScope.objects.filter(
-            id__in=SignalSet.objects.values_list("geographic_scope", flat="True")
+            # id__in=SignalSet.objects.values_list("geographic_scope", flat="True")
+            used_in="signal_sets"
         ),
         widget=forms.CheckboxSelectMultiple(),
     )
 
     available_geographies = forms.ModelChoiceField(
         queryset=Geography.objects.filter(
-            id__in=SignalSet.objects.values_list("available_geographies", flat="True")
+            # id__in=SignalSet.objects.values_list("available_geographies", flat="True")
+            used_in="signal_sets"
         ).order_by("display_order_number"),
         widget=forms.CheckboxSelectMultiple(),
     )
 
     severity_pyramid_rungs = forms.ModelChoiceField(
         queryset=SeverityPyramidRung.objects.filter(
-            id__in=SignalSet.objects.values_list("severity_pyramid_rungs", flat="True")
+            # id__in=SignalSet.objects.values_list("severity_pyramid_rungs", flat="True")
+            used_in="signal_sets"
         ),
         widget=forms.CheckboxSelectMultiple(),
     )
@@ -44,9 +48,12 @@ class SignalSetFilterForm(forms.ModelForm):
 
     temporal_granularity = forms.ChoiceField(
         choices=[
+            ("Annually", "Annually"),
+            ("Monthly", "Monthly"),
             ("Daily", "Daily"),
             ("Weekly", "Weekly"),
             ("Hourly", "Hourly"),
+            ("None", "None")
         ],
         widget=forms.CheckboxSelectMultiple(),
     )

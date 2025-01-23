@@ -14,25 +14,37 @@ class SignalSetFilter(django_filters.FilterSet):
 
     pathogens = django_filters.ModelMultipleChoiceFilter(
         field_name="pathogens",
-        queryset=Pathogen.objects.filter(id__in=SignalSet.objects.values_list("pathogens", flat="True")),
+        queryset=Pathogen.objects.filter(
+            # id__in=SignalSet.objects.values_list("pathogens", flat="True")
+            used_in="signal_sets"
+        ),
         widget=QueryArrayWidget,
     )
 
     geographic_scope = django_filters.ModelMultipleChoiceFilter(
         field_name="geographic_scope",
-        queryset=GeographicScope.objects.filter(id__in=SignalSet.objects.values_list("geographic_scope", flat="True")),
+        queryset=GeographicScope.objects.filter(
+            # id__in=SignalSet.objects.values_list("geographic_scope", flat="True")
+            used_in="signal_sets"
+        ),
         widget=QueryArrayWidget,
     )
 
     available_geographies = django_filters.ModelMultipleChoiceFilter(
         field_name="available_geographies",
-        queryset=Geography.objects.filter(id__in=SignalSet.objects.values_list("available_geographies", flat="True")).order_by("display_order_number"),
+        queryset=Geography.objects.filter(
+            # id__in=SignalSet.objects.values_list("available_geographies", flat="True")
+            used_in="signal_sets"
+        ).order_by("display_order_number"),
         widget=QueryArrayWidget,
     )
 
     severity_pyramid_rungs = django_filters.ModelMultipleChoiceFilter(
         field_name="severity_pyramid_rungs",
-        queryset=SeverityPyramidRung.objects.filter(id__in=SignalSet.objects.values_list("severity_pyramid_rungs", flat="True")),
+        queryset=SeverityPyramidRung.objects.filter(
+            # id__in=SignalSet.objects.values_list("severity_pyramid_rungs", flat="True")
+            used_in="signal_sets"
+        ),
         widget=QueryArrayWidget,
     )
 
@@ -45,9 +57,12 @@ class SignalSetFilter(django_filters.FilterSet):
     temporal_granularity = django_filters.MultipleChoiceFilter(
         field_name="temporal_granularity",
         choices=[
+            ("Annually", "Annually"),
+            ("Monthly", "Monthly"),
             ("Daily", "Daily"),
             ("Weekly", "Weekly"),
             ("Hourly", "Hourly"),
+            ("None", "None")
         ],
         lookup_expr="icontains",
     )
