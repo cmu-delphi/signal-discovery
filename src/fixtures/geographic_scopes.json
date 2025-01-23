@@ -1,7 +1,17 @@
 [
     {
         "model": "signals.geographicscope",
-        "pk": 43,
+        "pk": null,
+        "fields": {
+            "created": "2025-01-16T13:22:35.791Z",
+            "modified": "2025-01-16T13:22:35.791Z",
+            "name": "United States",
+            "used_in": "signals"
+        }
+    },
+    {
+        "model": "signals.geographicscope",
+        "pk": null,
         "fields": {
             "created": "2025-01-16T13:22:36.900Z",
             "modified": "2025-01-16T13:22:36.900Z",
@@ -11,7 +21,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 44,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T13:22:36.933Z",
             "modified": "2025-01-16T13:22:36.933Z",
@@ -21,7 +31,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 45,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T13:22:37.014Z",
             "modified": "2025-01-16T13:22:37.015Z",
@@ -31,7 +41,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 46,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T13:22:37.026Z",
             "modified": "2025-01-16T13:22:37.026Z",
@@ -41,7 +51,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 47,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T13:22:37.037Z",
             "modified": "2025-01-16T13:22:37.037Z",
@@ -51,7 +61,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 48,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T13:22:37.106Z",
             "modified": "2025-01-16T13:22:37.106Z",
@@ -61,7 +71,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 49,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T13:23:15.345Z",
             "modified": "2025-01-16T13:23:15.345Z",
@@ -71,7 +81,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 56,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T13:29:52.428Z",
             "modified": "2025-01-16T13:29:52.428Z",
@@ -81,7 +91,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 57,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T13:29:52.521Z",
             "modified": "2025-01-16T13:29:52.521Z",
@@ -91,7 +101,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 58,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T13:29:53.071Z",
             "modified": "2025-01-16T13:29:53.071Z",
@@ -101,7 +111,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 59,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T13:29:53.693Z",
             "modified": "2025-01-16T13:29:53.693Z",
@@ -111,7 +121,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 61,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T16:27:05.951Z",
             "modified": "2025-01-16T16:27:05.951Z",
@@ -121,7 +131,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 62,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T16:27:14.549Z",
             "modified": "2025-01-16T16:27:14.549Z",
@@ -131,7 +141,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 63,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T16:27:21.373Z",
             "modified": "2025-01-16T16:27:21.373Z",
@@ -141,7 +151,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 64,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T16:27:25.669Z",
             "modified": "2025-01-16T16:27:25.669Z",
@@ -151,7 +161,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 65,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T16:27:29.964Z",
             "modified": "2025-01-16T16:27:29.964Z",
@@ -161,7 +171,7 @@
     },
     {
         "model": "signals.geographicscope",
-        "pk": 66,
+        "pk": null,
         "fields": {
             "created": "2025-01-16T16:27:36.145Z",
             "modified": "2025-01-16T16:27:36.146Z",
