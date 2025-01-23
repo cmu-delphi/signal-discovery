@@ -1,16 +1,6 @@
 [
     {
         "model": "signals.geographicscope",
-        "pk": 42,
-        "fields": {
-            "created": "2025-01-16T13:22:35.791Z",
-            "modified": "2025-01-16T13:22:35.791Z",
-            "name": "United States",
-            "used_in": "signals"
-        }
-    },
-    {
-        "model": "signals.geographicscope",
         "pk": 43,
         "fields": {
             "created": "2025-01-16T13:22:36.900Z",
