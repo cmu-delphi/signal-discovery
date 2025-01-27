@@ -148,13 +148,16 @@ bulkSelectDivs.forEach(div => {
     });
 });
 
+var tableHeight = window.screen.width / 2.36;
+console.log(tableHeight);
+
 
 var table = new DataTable('#signalSetsTable', {
     fixedHeader: true,
     paging: false,
     scrollCollapse: true,
     scrollX: true,
-    scrollY: 550,
+    scrollY: tableHeight,
     fixedColumns: {
         left: 2
     },
