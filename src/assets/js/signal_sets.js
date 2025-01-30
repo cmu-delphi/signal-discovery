@@ -150,9 +150,13 @@ bulkSelectDivs.forEach(div => {
 
 var tableHeight = window.screen.width / 3.4;
 
-function vh(percent) {
-  var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-  return (percent * h) / 100;
+function calculate_table_height() {
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    var percent = 60;
+    if (h > 1000) {
+        percent = 70;
+    }
+    return (percent * h) / 100;
 }
 
 
@@ -161,7 +165,7 @@ var table = new DataTable('#signalSetsTable', {
     paging: false,
     scrollCollapse: true,
     scrollX: true,
-    scrollY: vh(60),
+    scrollY: calculate_table_height(),
     fixedColumns: {
         left: 2
     },
