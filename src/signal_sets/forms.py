@@ -66,6 +66,11 @@ class SignalSetFilterForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple(),
     )
 
+    location_search = forms.CharField(
+        label=("Location Search"),
+        widget=forms.TextInput(),
+    )
+
     class Meta:
         model = SignalSet
         fields: list[str] = [

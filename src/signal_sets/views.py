@@ -11,6 +11,7 @@ from signals.models import Geography, GeographyUnit
 from signal_sets.models import SignalSet
 from signal_sets.filters import SignalSetFilter
 from signal_sets.forms import SignalSetFilterForm
+from signal_sets.utils import list_to_dict, get_list_of_signals_filtered_by_geo
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +54,11 @@ class SignalSetListView(ListView):
                 else None
             ),
             "temporal_scope_end": self.request.GET.get("temporal_scope_end"),
+            "location_search": (
+                [el for el in self.request.GET.getlist("location_search")]
+                if self.request.GET.get("location_search")
+                else None
+            ),
         }
         url_params_str = ""
         for param_name, param_value in url_params_dict.items():

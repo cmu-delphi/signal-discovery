@@ -605,3 +605,14 @@ class SignalsDbView(models.Model):
     @property
     def get_pathogens(self):
         return self.pathogens.split(",") if self.pathogens else []
+
+
+class SignalSourceDbView(models.Model):
+    id = models.BigIntegerField(primary_key=True)
+    signal = models.CharField(max_length=255)
+    source = models.CharField(max_length=255)
+    signal_set = models.BigIntegerField()
+
+    class Meta:
+        managed = False
+        db_table = "signals_signal_source_view"
