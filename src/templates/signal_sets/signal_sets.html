@@ -466,11 +466,19 @@
     localStorage.setItem("covidcast_url", "{{ covidcast_url }}");
 
 
-    var geoValues = {{ geographic_granularities|safe }};
+    const geoValues = {{ geographic_granularities|safe }};
+
     var relatedSignals = JSON.parse(JSON.stringify({{ related_signals|safe }}));
 
     $(document).ready(function () {
-        initSelect2('location_search', geoValues);
+
+        const locationSearchValues = geoValues.map(item => {
+            return {
+                ...item,
+                "id": `${item.geoType}:${item.id}`
+            }
+        })
+        initSelect2('location_search', locationSearchValues);
         table.columns.adjust()
     })
 
