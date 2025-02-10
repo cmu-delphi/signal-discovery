@@ -23,28 +23,8 @@ def dict_to_geo_string(geo_dict):
 
 def get_list_of_signals_filtered_by_geo(geos):
     geos = list_to_dict(ast.literal_eval(geos))
-    # send request to epidata api here
-    # temporary disabled
-    # ------------------------------------------
-    # url = f"{settings.COVIDCAST_URL}geo_coverage"
-    url = "http://localhost:10080/epidata/covidcast/geo_coverage"
+    url = f"{settings.COVIDCAST_URL}geo_coverage"
     params = {"geo": dict_to_geo_string(geos)}
     response = requests.get(url, params=params)
-    # return response.json()
-    # ------------------------------------------
-    return {
-        "epidata": [
-            {"source": "fb-survey", "signal": "7dav_outpatient_covid"},
-            {"source": "fluview_meta", "signal": "adult_icu_bed_covid_utilization"},
-            {
-                "source": "fluview_meta",
-                "signal": "adult_icu_bed_covid_utilization_numerator",
-            },
-            {
-                "source": "fluview_meta",
-                "signal": "adult_icu_bed_utilization_denominator",
-            },
-            {"source": "nchs-mortality", "signal": "confirmed_7dav_incidence_prop"},
-            {"source": "usa-facts", "signal": "confirmed_incidence_prop"},
-        ]
-    }
+    print(response.url)
+    return response.json()

@@ -32,31 +32,41 @@ class SignalSetListView(ListView):
 
     def get_url_params(self):
         url_params_dict = {
-            "pathogens": [int(el) for el in self.request.GET.getlist("pathogens")],
+            "pathogens": (
+                [int(el) for el in self.request.GET.getlist("pathogens")]
+                if self.request.GET.get("pathogens")
+                else ""
+            ),
             "geographic_scope": (
                 [el for el in self.request.GET.getlist("geographic_scope")]
                 if self.request.GET.get("geographic_scope")
-                else None
+                else ""
             ),
             "severity_pyramid_rungs": (
                 [el for el in self.request.GET.getlist("severity_pyramid_rungs")]
                 if self.request.GET.get("severity_pyramid_rungs")
-                else None
+                else ""
             ),
             "data_source": [el for el in self.request.GET.getlist("data_source")],
-            "temporal_granularity": [
-                el for el in self.request.GET.getlist("temporal_granularity")
-            ],
+            "temporal_granularity": (
+                [el for el in self.request.GET.getlist("temporal_granularity")]
+                if self.request.GET.get("temporal_granularity")
+                else ""
+            ),
             "available_geographies": (
                 [el for el in self.request.GET.getlist("available_geographies")]
                 if self.request.GET.get("available_geographies")
-                else None
+                else ""
             ),
-            "temporal_scope_end": self.request.GET.get("temporal_scope_end"),
+            "temporal_scope_end": (
+                self.request.GET.get("temporal_scope_end")
+                if self.request.GET.get("temporal_scope_end")
+                else ""
+            ),
             "location_search": (
                 [el for el in self.request.GET.getlist("location_search")]
                 if self.request.GET.get("location_search")
-                else None
+                else ""
             ),
         }
         url_params_str = ""
@@ -83,7 +93,7 @@ class SignalSetListView(ListView):
                         "endpoint": signal_set.endpoint,
                         "source": signal.source.name,
                         "time_type": signal.time_type,
-                        "description": signal.description
+                        "description": signal.description,
                     }
                 )
         return related_signals
@@ -103,7 +113,14 @@ class SignalSetListView(ListView):
         context["signal_sets"] = self.get_queryset()
         context["related_signals"] = json.dumps(self.get_related_signals())
         context["available_geographies"] = Geography.objects.filter(used_in="signals")
-        context["geographic_granularities"] = [{"id": str(geo_unit.geo_id), "geoType": geo_unit.geography.name, "text": geo_unit.display_name} for geo_unit in GeographyUnit.objects.all()]
+        context["geographic_granularities"] = [
+            {
+                "id": str(geo_unit.geo_id),
+                "geoType": geo_unit.geography.name,
+                "text": geo_unit.display_name,
+            }
+            for geo_unit in GeographyUnit.objects.all()
+        ]
         return context
 
 

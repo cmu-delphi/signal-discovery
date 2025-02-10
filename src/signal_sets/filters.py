@@ -2,13 +2,14 @@ import logging
 
 import django_filters
 from django_filters.widgets import QueryArrayWidget
+from django.db.models import Q
 
 from signals.models import (
     Pathogen,
     GeographicScope,
     Geography,
     SeverityPyramidRung,
-    SignalSourceDbView,
+    Signal
 )
 from signal_sets.models import SignalSet
 from datasources.models import DataSource
@@ -104,16 +105,8 @@ class SignalSetFilter(django_filters.FilterSet):
         if not value:
             return queryset
         filtered_signals = get_list_of_signals_filtered_by_geo(value)
-        sources = set()
-        signals = []
-        for source_signal in filtered_signals["epidata"]:
-            sources.add(source_signal["source"])
-            signals.append(source_signal["signal"])
-        signal_set_ids = (
-            SignalSourceDbView.objects.filter(source__in=sources)
-            .filter(signal__in=signals)
-            .exclude(signal_set=None)
-            .values_list("signal_set", flat=True)
-            .distinct()
-        )
-        return queryset.filter(id__in=signal_set_ids)
+        query = Q()
+        for item in filtered_signals["epidata"]:
+            query |= Q(source__name=item["source"], name=item["signal"])
+        signal_sets = Signal.objects.filter(query).values_list("signal_set_id", flat=True).distinct()
+        return queryset.filter(id__in=signal_sets)

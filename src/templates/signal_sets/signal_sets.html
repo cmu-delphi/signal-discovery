@@ -470,6 +470,8 @@
 
     var relatedSignals = JSON.parse(JSON.stringify({{ related_signals|safe }}));
 
+    var urlParams = JSON.parse(JSON.stringify({{ url_params_dict|safe }}));
+
     $(document).ready(function () {
 
         const locationSearchValues = geoValues.map(item => {
@@ -479,6 +481,9 @@
             }
         })
         initSelect2('location_search', locationSearchValues);
+        if (urlParams.location_search != "") {
+            $("#location_search").val(urlParams.location_search).trigger("change"); 
+        }
         table.columns.adjust()
     })
 
