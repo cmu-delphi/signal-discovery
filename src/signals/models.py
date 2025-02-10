@@ -605,3 +605,4 @@ class SignalsDbView(models.Model):
     @property
     def get_pathogens(self):
         return self.pathogens.split(",") if self.pathogens else []
+
