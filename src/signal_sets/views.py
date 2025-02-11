@@ -23,7 +23,7 @@ class SignalSetListView(ListView):
 
     def get_queryset(self) -> QuerySet[Any]:
         try:
-            queryset = SignalSet.objects.all()
+            queryset = SignalSet.objects.all().prefetch_related("geographic_scope", "data_source", )
             return queryset
         except Exception as e:
             logger.error(f"Error getting queryset: {e}")
@@ -81,7 +81,7 @@ class SignalSetListView(ListView):
     def get_related_signals(self, queryset):
         related_signals = []
         for signal_set in queryset:
-            for signal in signal_set.signals.all():
+            for signal in signal_set.signals.all().prefetch_related("signal_set", "source", "severity_pyramid_rung"):
                 related_signals.append(
                     {
                         "id": signal.id,
@@ -118,7 +118,7 @@ class SignalSetListView(ListView):
                 "geoType": geo_unit.geography.name,
                 "text": geo_unit.display_name,
             }
-            for geo_unit in GeographyUnit.objects.all()
+            for geo_unit in GeographyUnit.objects.all().prefetch_related("geography")
         ]
         return context
 
