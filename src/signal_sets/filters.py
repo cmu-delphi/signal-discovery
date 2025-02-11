@@ -20,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 class SignalSetFilter(django_filters.FilterSet):
 
+    signals_qs = Signal.objects.filter(signal_set__isnull=False)
+
     pathogens = django_filters.ModelMultipleChoiceFilter(
         field_name="pathogens",
         queryset=Pathogen.objects.filter(
@@ -108,5 +110,6 @@ class SignalSetFilter(django_filters.FilterSet):
         query = Q()
         for item in filtered_signals["epidata"]:
             query |= Q(source__name=item["source"], name=item["signal"])
-        signal_sets = Signal.objects.filter(query).values_list("signal_set_id", flat=True).distinct()
+        self.signals_qs = self.signals_qs.filter(query)
+        signal_sets = self.signals_qs.values_list("signal_set_id", flat=True).distinct()
         return queryset.filter(id__in=signal_sets)
