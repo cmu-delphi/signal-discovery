@@ -23,9 +23,8 @@ class SignalSetListView(ListView):
 
     def get_queryset(self) -> QuerySet[Any]:
         try:
-            queryset = SignalSet.objects.all()
-            f = SignalSetFilter(self.request.GET, queryset=queryset)
-            return f.qs
+            queryset = SignalSet.objects.all().prefetch_related("geographic_scope", "data_source", )
+            return queryset
         except Exception as e:
             logger.error(f"Error getting queryset: {e}")
             return SignalSet.objects.none()
@@ -79,10 +78,10 @@ class SignalSetListView(ListView):
                     url_params_str = f"{url_params_str}&{param_name}={param_value}"
         return url_params_dict, url_params_str
 
-    def get_related_signals(self):
+    def get_related_signals(self, queryset):
         related_signals = []
-        for signal_set in self.get_queryset():
-            for signal in signal_set.signals.all():
+        for signal_set in queryset:
+            for signal in signal_set.signals.all().prefetch_related("signal_set", "source", "severity_pyramid_rung"):
                 related_signals.append(
                     {
                         "id": signal.id,
@@ -100,18 +99,18 @@ class SignalSetListView(ListView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
         url_params_dict, url_params_str = self.get_url_params()
+        filter = SignalSetFilter(self.request.GET, queryset=queryset)
         context["url_params_dict"] = url_params_dict
         context["url_params_str"] = url_params_str
         context["epivis_url"] = settings.EPIVIS_URL
         context["data_export_url"] = settings.DATA_EXPORT_URL
         context["covidcast_url"] = settings.COVIDCAST_URL
         context["form"] = SignalSetFilterForm(initial=url_params_dict)
-        context["filter"] = SignalSetFilter(
-            self.request.GET, queryset=self.get_queryset()
-        )
-        context["signal_sets"] = self.get_queryset()
-        context["related_signals"] = json.dumps(self.get_related_signals())
+        context["filter"] = filter
+        context["signal_sets"] = filter.qs
+        context["related_signals"] = json.dumps(self.get_related_signals(filter.qs))
         context["available_geographies"] = Geography.objects.filter(used_in="signals")
         context["geographic_granularities"] = [
             {
@@ -119,7 +118,7 @@ class SignalSetListView(ListView):
                 "geoType": geo_unit.geography.name,
                 "text": geo_unit.display_name,
             }
-            for geo_unit in GeographyUnit.objects.all()
+            for geo_unit in GeographyUnit.objects.all().prefetch_related("geography")
         ]
         return context
 
