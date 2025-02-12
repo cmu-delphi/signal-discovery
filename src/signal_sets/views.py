@@ -80,21 +80,21 @@ class SignalSetListView(ListView):
 
     def get_related_signals(self, queryset):
         related_signals = []
-        for signal_set in queryset:
-            for signal in signal_set.signals.all().prefetch_related("signal_set", "source", "severity_pyramid_rung"):
-                related_signals.append(
-                    {
-                        "id": signal.id,
-                        "display_name": signal.get_display_name,
-                        "name": signal.name,
-                        "signal_set": signal_set.id,
-                        "signal_set_name": signal_set.name,
-                        "endpoint": signal_set.endpoint,
-                        "source": signal.source.name,
-                        "time_type": signal.time_type,
-                        "description": signal.description,
-                    }
-                )
+        for signal in queryset.prefetch_related("signal_set", "source", "severity_pyramid_rung"):
+            related_signals.append(
+                {
+                    "id": signal.id,
+                    "display_name": signal.get_display_name,
+                    "name": signal.name,
+                    "signal_set": signal.signal_set.id,
+                    "signal_set_name": signal.signal_set.name,
+                    "endpoint": signal.signal_set.endpoint,
+                    "source": signal.source.name,
+                    "time_type": signal.time_type,
+                    "description": signal.description,
+                }
+            )
+        print(len(related_signals))
         return related_signals
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -110,7 +110,7 @@ class SignalSetListView(ListView):
         context["form"] = SignalSetFilterForm(initial=url_params_dict)
         context["filter"] = filter
         context["signal_sets"] = filter.qs
-        context["related_signals"] = json.dumps(self.get_related_signals(filter.qs))
+        context["related_signals"] = json.dumps(self.get_related_signals(filter.signals_qs))
         context["available_geographies"] = Geography.objects.filter(used_in="signals")
         context["geographic_granularities"] = [
             {

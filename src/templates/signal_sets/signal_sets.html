@@ -377,6 +377,7 @@
             <div class="modal-footer">
                 <form class="margin-top-1rem full-width" id="dataForm" onsubmit="submitMode(event)">
                     <div class="row">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="warning-alert"></div>
                         <div class="col-2">
                             <label class="form-label">
                                 Select Mode:
@@ -473,6 +474,7 @@
     var urlParams = JSON.parse(JSON.stringify({{ url_params_dict|safe }}));
 
     $(document).ready(function () {
+        $("#warning-alert").hide();
 
         const locationSearchValues = geoValues.map(item => {
             return {
