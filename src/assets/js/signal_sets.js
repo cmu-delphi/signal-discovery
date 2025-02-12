@@ -39,13 +39,60 @@ document.getElementById('geographic_type').addEventListener("change", (event) =>
 
 let checkedSignalMembers = []
 
+function showWarningAlert(warningMessage, slideUpTime = 2000) {
+    $("#warning-alert").html(warningMessage);
+    $("#warning-alert").fadeTo(2000, 500).slideUp(slideUpTime, function() {
+        $("#warning-alert").slideUp(slideUpTime);
+    });
+}
+
+function checkGeoCoverage(geoType, geoValue) {
+    var notCoveredSignals = [];
+    $.ajax({
+        url: `${covidCastUrl}geo_coverage`,
+        type: 'GET',
+        async: false,
+        data: {
+            'geo': `${geoType}:${geoValue}`
+        },
+        success: function (result) {
+            checkedSignalMembers.forEach(signal => {
+                var covered = result["epidata"].some(
+                    e => (e.source === signal.data_source && e.signal === signal.signal)
+                )
+                if (!covered) {
+                    notCoveredSignals.push(signal);
+                }
+            })
+        }
+    })
+    return notCoveredSignals;
+}
+
+function showNotCoveredGeoWarningMessage(notCoveredSignals, geoValue) {
+    var warningMessage = `The following signals are not available at selected geographic level "${geoValue}": <br>`;
+    notCoveredSignals.forEach(signal => {
+        warningMessage += `${signal.display_name} <br>`
+    })
+    showWarningAlert(warningMessage, 5000);
+
+}
+
+$('#geographic_value').on('select2:select', function (e) {
+    var geo = e.params.data;
+    var notCoveredSignals = checkGeoCoverage(geo.geoType, geo.id)
+    if (notCoveredSignals.length > 0) {
+        showNotCoveredGeoWarningMessage(notCoveredSignals, geo.text);
+    }
+});
+
 function plotData() {
     var dataSets = {};
 
     var geographicType = document.getElementById('geographic_type').value;
     var geographicValues = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id);
     if (geographicType === 'Choose...' || geographicValues.length === 0) {
-        showWarningAlert("Geographic Type or Geographic Value is not selected.");
+        showWarningAlert("Geographic Type and(or) Geographic Value is not selected.");
         return;
     }
 
@@ -101,6 +148,8 @@ function addSelectedSignal(element) {
             data_source: element.dataset.datasource,
             signal: element.dataset.signal,
             time_type: element.dataset.timeType,
+            signal_set: element.dataset.signalSet,
+            display_name: element.dataset.signalDisplayname
         });
         updateSelectedSignals(element.dataset.datasource, element.dataset.signalDisplayname, element.dataset.signalSet, element.dataset.signal);
     } else {
@@ -222,7 +271,7 @@ function exportData() {
     var geographicType = document.getElementById('geographic_type').value;
     var geographicValues = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id);
     if (geographicType === 'Choose...' || geographicValues.length === 0) {
-        showWarningAlert("Geographic Type or Geographic Value is not selected.");
+        showWarningAlert("Geographic Type and(or) Geographic Value is not selected.");
         return;
     }
     var startDate = document.getElementById('start_date').value;
@@ -245,7 +294,7 @@ function previewData() {
     var geographicType = document.getElementById('geographic_type').value;
     var geographicValues = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(',');
     if (geographicType === 'Choose...' || geographicValues.length === 0) {
-        showWarningAlert("Geographic Type or Geographic Value is not selected.");
+        showWarningAlert("Geographic Type and(or) Geographic Value is not selected.");
         return;
     }
     var previewExample = [];
