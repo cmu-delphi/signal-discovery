@@ -29,6 +29,7 @@ services:
       command: sh -c  "python3 /usr/src/signal_documentation/src/manage.py migrate --noinput &&
                        python3 /usr/src/signal_documentation/src/manage.py collectstatic --noinput &&
                        python3 /usr/src/signal_documentation/src/manage.py loaddata ./fixtures/* &&
+                       ./import_data.sh &&
                        python3 /usr/src/signal_documentation/src/manage.py initadmin &&
                        python3 /usr/src/signal_documentation/src/manage.py runserver 0.0.0.0:8000"
       volumes:
