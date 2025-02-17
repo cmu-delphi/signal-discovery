@@ -1,7 +1,3 @@
-const epiVisUrl = localStorage.getItem("epivis_url");
-const dataExportUrl = localStorage.getItem("data_export_url");
-const covidCastUrl = localStorage.getItem("covidcast_url");
-
 function initSelect2(elementId, data) {
     $(`#${elementId}`).select2({
         data: data,

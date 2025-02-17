@@ -460,13 +460,14 @@
 <script src="https://cdn.datatables.net/v/dt/dt-2.1.8/b-3.2.0/b-colvis-3.2.0/cr-2.0.4/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sp-2.3.3/sl-2.1.0/datatables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/g/mark.js(jquery.mark.min.js),datatables.mark.js"></script>
 
+<script>
+    var epiVisUrl = "{{ epivis_url }}";
+    var dataExportUrl = "{{ data_export_url }}";
+    var covidCastUrl = "{{ covidcast_url }}";
+</script>
+
 <script src="{% static 'js/signal_sets.js' %}"></script>
 <script>
-    localStorage.setItem("epivis_url", "{{ epivis_url }}");
-    localStorage.setItem("data_export_url", "{{ data_export_url }}");
-    localStorage.setItem("covidcast_url", "{{ covidcast_url }}");
-
-
     const geoValues = {{ geographic_granularities|safe }};
 
     var relatedSignals = JSON.parse(JSON.stringify({{ related_signals|safe }}));
