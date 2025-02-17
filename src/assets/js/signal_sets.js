@@ -45,7 +45,7 @@ function showWarningAlert(warningMessage, slideUpTime = 2000) {
 function checkGeoCoverage(geoType, geoValue) {
     var notCoveredSignals = [];
     $.ajax({
-        url: `${covidCastUrl}geo_coverage`,
+        url: "/epidata/covidcast/geo_coverage/",
         type: 'GET',
         async: false,
         data: {
@@ -280,7 +280,7 @@ function exportData() {
             startDate = getDateYearWeek(new Date(startDate));
             endDate = getDateYearWeek(new Date(endDate));
         };
-        var exportUrl = `${dataExportUrl}?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${startDate}&end_day=${endDate}&geo_type=${geographicType}&geo_values=${geographicValues}`;
+        var exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${startDate}&end_day=${endDate}&geo_type=${geographicType}&geo_values=${geographicValues}`;
         manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
     });
     $('#modeSubmitResult').html(manualDataExport);
@@ -304,7 +304,7 @@ function previewData() {
         var requestSent = false;
         if (!requestSent) {
             $.ajax({
-                url: covidCastUrl,
+                url: "/epidata/covidcast/",
                 type: 'GET',
                 async: false,
                 data: {
@@ -316,6 +316,7 @@ function previewData() {
                     'geo_values': geographicValues
                 },
                 success: function (result) {
+                    console.log(result);
                     if (result["epidata"].length != 0) {
                         previewExample.push({epidata: result["epidata"][0], result: result["result"], message: result["message"]})
                     } else {

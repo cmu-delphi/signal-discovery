@@ -1,10 +1,12 @@
+import requests
 import logging
 from typing import Any, Dict
 import json
 
 from django.conf import settings
 from django.db.models.query import QuerySet
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView
+from django.http import JsonResponse
 
 
 from signals.models import Geography, GeographyUnit
@@ -23,7 +25,10 @@ class SignalSetListView(ListView):
 
     def get_queryset(self) -> QuerySet[Any]:
         try:
-            queryset = SignalSet.objects.all().prefetch_related("geographic_scope", "data_source", )
+            queryset = SignalSet.objects.all().prefetch_related(
+                "geographic_scope",
+                "data_source",
+            )
             return queryset
         except Exception as e:
             logger.error(f"Error getting queryset: {e}")
@@ -80,7 +85,9 @@ class SignalSetListView(ListView):
 
     def get_related_signals(self, queryset):
         related_signals = []
-        for signal in queryset.prefetch_related("signal_set", "source", "severity_pyramid_rung"):
+        for signal in queryset.prefetch_related(
+            "signal_set", "source", "severity_pyramid_rung"
+        ):
             related_signals.append(
                 {
                     "id": signal.id,
@@ -94,7 +101,6 @@ class SignalSetListView(ListView):
                     "description": signal.description,
                 }
             )
-        print(len(related_signals))
         return related_signals
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -105,12 +111,13 @@ class SignalSetListView(ListView):
         context["url_params_dict"] = url_params_dict
         context["url_params_str"] = url_params_str
         context["epivis_url"] = settings.EPIVIS_URL
-        context["data_export_url"] = settings.DATA_EXPORT_URL
-        context["covidcast_url"] = settings.COVIDCAST_URL
+        context["epidata_url"] = settings.EPIDATA_URL
         context["form"] = SignalSetFilterForm(initial=url_params_dict)
         context["filter"] = filter
         context["signal_sets"] = filter.qs
-        context["related_signals"] = json.dumps(self.get_related_signals(filter.signals_qs))
+        context["related_signals"] = json.dumps(
+            self.get_related_signals(filter.signals_qs)
+        )
         context["available_geographies"] = Geography.objects.filter(used_in="signals")
         context["geographic_granularities"] = [
             {
@@ -123,35 +130,9 @@ class SignalSetListView(ListView):
         return context
 
 
-class SignalSetDetailedView(DetailView):
-
-    model = SignalSet
-    template_name = "signal_sets/signal_set_detail.html"
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context: Dict[str, Any] = super().get_context_data(**kwargs)
-        context["epivis_url"] = settings.EPIVIS_URL
-        context["data_export_url"] = settings.DATA_EXPORT_URL
-        context["covidcast_url"] = settings.COVIDCAST_URL
-        context["data_source"] = (
-            self.object.signals.all()
-            .values_list("source__name", flat=True)
-            .distinct()
-            .order_by()
-            .first()
-        )
-        context["available_geographies"] = Geography.objects.filter(
-            id__in=self.object.signals.all()
-            .values_list("available_geography")
-            .distinct()
-            .order_by()
-        )
-        context["time_type"] = (
-            self.object.signals.all()
-            .values_list("time_type", flat=True)
-            .distinct()
-            .order_by()
-            .first()
-        )
-
-        return context
+def epidata(request, endpoint=''):
+    params = request.GET.dict()
+    params["api_key"] = settings.EPIDATA_API_KEY
+    url = f"{settings.EPIDATA_URL}{endpoint}"
+    response = requests.get(url, params=params)
+    return JsonResponse(response.json(), safe=False)

@@ -286,7 +286,7 @@
                 endDate = getDateYearWeek(new Date(endDate));
             };
 
-            var dataExportUrl = "{{ data_export_url }}";
+            var dataExportUrl = "/epidata/covidcast/csv";
 
             if (startDate === '' || endDate === '') {
                 showWarningAlert("Start Date or End Date is not selected.")
@@ -311,7 +311,7 @@
 
             if (!requestSent) {
                 $.ajax({
-                    url: '{{ covidcast_url }}',
+                    url: '{{ epidata_url }}covidcast/',
                     type: 'GET',
                     data: {
                         'time_type': timeType,
@@ -330,7 +330,6 @@
                         } else {
                             result = { epidata: result["epidata"], result: result["result"], message: result["message"] }
                         }
-                        console.log('Request sent to: ' + this.url);
                         $('#modeSubmitResult').html(library.json.prettyPrint(result));
                     }
                 });

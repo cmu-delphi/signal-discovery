@@ -23,8 +23,7 @@ def dict_to_geo_string(geo_dict):
 
 def get_list_of_signals_filtered_by_geo(geos):
     geos = list_to_dict(ast.literal_eval(geos))
-    url = f"{settings.COVIDCAST_URL}geo_coverage"
-    params = {"geo": dict_to_geo_string(geos)}
+    url = f"{settings.EPIDATA_URL}covidcast/geo_coverage"
+    params = {"geo": dict_to_geo_string(geos), "api_key": settings.EPIDATA_API_KEY}
     response = requests.get(url, params=params)
-    print(response.url)
     return response.json()
