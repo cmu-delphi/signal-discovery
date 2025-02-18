@@ -13,12 +13,22 @@
         <form method="GET" id="filterSignalSetsForm">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Location Search:</h5>
-                    <div class="input-group">
-                        <select id="location_search" name="location_search" class="form-select" multiple="multiple"></select>
-                    </div>
-                    <h5 class="card-title">Filters</h5>
+                    <h2 class="card-title" style="font-size: 25px;">Filters</h2>
                     <div class="accordion accordion-flush" id="accordionSignalSetFilters">
+                        <div class="accordion-item">
+                            <p class="accordion-header" id="flush-heading_location_search">
+                                Location(s):
+                            </p>
+                            <div id="flush-collapse_location_search"
+                                aria-labelledby="flush-heading_location_search"
+                                data-mdb-parent="#accordionSignalSetFilters">
+                                <div class="accordion-body margin-top-1rem">
+                                    <div class="input-group">
+                                        <select id="location_search" name="location_search" class="form-select" multiple="multiple"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-heading_{{ form.pathogens.auto_id }}">
                                 <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
