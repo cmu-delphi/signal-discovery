@@ -410,22 +410,7 @@
                     </div>
                     <div class="row margin-top-1rem">
                         <div class="col-2">
-                            <label for="geographic_type" class="form-label"
-                                >Geographic Type:</label
-                            >
-                        </div>
-                        <div class="col-10">
-                            <select id="geographic_type" name="geographic_type" class="form-select">
-                                <option selected>Choose...</option>
-                                {% for geography in available_geographies %}
-                                <option value="{{ geography.name }}">{{ geography }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row margin-top-1rem">
-                        <div class="col-2">
-                            <label for="geographic_value" class="col-form-label">Geographic Value:</label>
+                            <label for="geographic_value" class="col-form-label">Location(s):</label>
                         </div>
                         <div class="col-10">
                             <select id="geographic_value" name="geographic_value" class="form-select" multiple="multiple"></select>
@@ -456,6 +441,7 @@
                             Submit
                         </button>
                     </div>
+                    <div id="loader" class="loader margin-top-1rem" style="display: none;"></div>
                     <div class="row margin-top-1rem">
                         <pre class="margin-top-1rem"><code id="modeSubmitResult"></code></pre>
                     </div>
@@ -495,6 +481,7 @@
         if (urlParams.location_search != "") {
             $("#location_search").val(urlParams.location_search).trigger("change"); 
         }
+        initSelect2('geographic_value', geoValues);
         table.columns.adjust()
     })
 
