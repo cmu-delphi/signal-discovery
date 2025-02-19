@@ -18,7 +18,7 @@ function showWarningAlert(warningMessage, slideUpTime = 2000) {
 function checkGeoCoverage(geoType, geoValue) {
     var notCoveredSignals = [];
     $.ajax({
-        url: "/epidata/covidcast/geo_coverage/",
+        url: "epidata/covidcast/geo_coverage/",
         type: 'GET',
         async: false,
         data: {
