@@ -275,7 +275,7 @@ function previewData() {
                 var geoValues = geographicValues[geoType].map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(",");
                 $('#loader').show();
                 var request = $.ajax({
-                    url: "/epidata/covidcast/",
+                    url: "epidata/covidcast/",
                     type: 'GET',
                     async: true,
                     data: {
