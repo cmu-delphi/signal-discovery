@@ -57,12 +57,7 @@ $('#geographic_value').on('select2:select', function (e) {
 
 function plotData() {
     var dataSets = {};
-
     var geographicValues = $('#geographic_value').select2('data');
-
-    // var geographicType = document.getElementById('geographic_type').value;
-    // var geographicValues = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id);
-
     checkedSignalMembers.forEach((signal) => {
         geographicValues.forEach((geoValue) => {
             var geographicValue = (typeof geoValue.id === 'string') ? geoValue.id.toLowerCase() : geoValue.id;
@@ -237,24 +232,25 @@ function format (signalSetId, relatedSignals) {
 
 
 function exportData() {
-    var geographicType = document.getElementById('geographic_type').value;
-    var geographicValues = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id);
-    if (geographicType === 'Choose...' || geographicValues.length === 0) {
-        showWarningAlert("Geographic Type and(or) Geographic Value is not selected.");
-        return;
-    }
+    var geographicValues = $('#geographic_value').select2('data');
+    geographicValues = Object.groupBy(geographicValues, ({ geoType }) => [geoType])
+    var geoTypes = Object.keys(geographicValues);
+
     var startDate = document.getElementById('start_date').value;
     var endDate = document.getElementById('end_date').value;
 
     var manualDataExport = "To download data, please click on the link or copy/paste command into your terminal: \n\n"
     
     checkedSignalMembers.forEach((signal) => {
-        if (signal["time_type"] === "week") {
-            startDate = getDateYearWeek(new Date(startDate));
-            endDate = getDateYearWeek(new Date(endDate));
-        };
-        var exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${startDate}&end_day=${endDate}&geo_type=${geographicType}&geo_values=${geographicValues}`;
-        manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
+        geoTypes.forEach((geoType) => {
+            var geoValues = geographicValues[geoType].map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(",");
+            if (signal["time_type"] === "week") {
+                startDate = getDateYearWeek(new Date(startDate));
+                endDate = getDateYearWeek(new Date(endDate));
+            };
+            var exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${startDate}&end_day=${endDate}&geo_type=${geoType}&geo_values=${geoValues}`;
+            manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
+        });
     });
     $('#modeSubmitResult').html(manualDataExport);
 }
@@ -315,7 +311,6 @@ function previewData() {
 var currentMode = 'preview';
 
 function handleModeChange(mode) {
-    document.getElementById("dataForm").reset();
     $('#modeSubmitResult').html('');
 
     var choose_dates = document.getElementsByName('choose_date');
