@@ -13,12 +13,22 @@
         <form method="GET" id="filterSignalSetsForm">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Location Search:</h5>
-                    <div class="input-group">
-                        <select id="location_search" name="location_search" class="form-select" multiple="multiple"></select>
-                    </div>
-                    <h5 class="card-title">Filters</h5>
+                    <h2 class="card-title" style="font-size: 25px;">Filters</h2>
                     <div class="accordion accordion-flush" id="accordionSignalSetFilters">
+                        <div class="accordion-item">
+                            <p class="accordion-header" id="flush-heading_location_search">
+                                Location(s):
+                            </p>
+                            <div id="flush-collapse_location_search"
+                                aria-labelledby="flush-heading_location_search"
+                                data-mdb-parent="#accordionSignalSetFilters">
+                                <div class="accordion-body margin-top-1rem">
+                                    <div class="input-group">
+                                        <select id="location_search" name="location_search" class="form-select" multiple="multiple"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-heading_{{ form.pathogens.auto_id }}">
                                 <button data-mdb-collapse-init class="accordion-button collapsed" type="button"
@@ -400,22 +410,7 @@
                     </div>
                     <div class="row margin-top-1rem">
                         <div class="col-2">
-                            <label for="geographic_type" class="form-label"
-                                >Geographic Type:</label
-                            >
-                        </div>
-                        <div class="col-10">
-                            <select id="geographic_type" name="geographic_type" class="form-select">
-                                <option selected>Choose...</option>
-                                {% for geography in available_geographies %}
-                                <option value="{{ geography.name }}">{{ geography }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row margin-top-1rem">
-                        <div class="col-2">
-                            <label for="geographic_value" class="col-form-label">Geographic Value:</label>
+                            <label for="geographic_value" class="col-form-label">Location(s):</label>
                         </div>
                         <div class="col-10">
                             <select id="geographic_value" name="geographic_value" class="form-select" multiple="multiple"></select>
@@ -446,6 +441,7 @@
                             Submit
                         </button>
                     </div>
+                    <div id="loader" class="loader margin-top-1rem" style="display: none;"></div>
                     <div class="row margin-top-1rem">
                         <pre class="margin-top-1rem"><code id="modeSubmitResult"></code></pre>
                     </div>
@@ -460,13 +456,12 @@
 <script src="https://cdn.datatables.net/v/dt/dt-2.1.8/b-3.2.0/b-colvis-3.2.0/cr-2.0.4/fc-5.0.4/fh-4.0.1/kt-2.12.1/r-3.0.3/rg-1.5.1/rr-1.5.0/sc-2.4.3/sp-2.3.3/sl-2.1.0/datatables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/g/mark.js(jquery.mark.min.js),datatables.mark.js"></script>
 
+<script>
+    var epiVisUrl = "{{ epivis_url }}";
+</script>
+
 <script src="{% static 'js/signal_sets.js' %}"></script>
 <script>
-    localStorage.setItem("epivis_url", "{{ epivis_url }}");
-    localStorage.setItem("data_export_url", "{{ data_export_url }}");
-    localStorage.setItem("covidcast_url", "{{ covidcast_url }}");
-
-
     const geoValues = {{ geographic_granularities|safe }};
 
     var relatedSignals = JSON.parse(JSON.stringify({{ related_signals|safe }}));
@@ -486,6 +481,7 @@
         if (urlParams.location_search != "") {
             $("#location_search").val(urlParams.location_search).trigger("change"); 
         }
+        initSelect2('geographic_value', geoValues);
         table.columns.adjust()
     })
 
