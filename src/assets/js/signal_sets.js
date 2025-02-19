@@ -6,33 +6,6 @@ function initSelect2(elementId, data) {
     });
 }
 
-
-function getFilteredGeographicValues(geographicType, geoValues) {
-    var data = geoValues.reduce((data, geoValue) => {
-        if (geoValue.geoType === geographicType) {
-            data.push(geoValue);
-        }
-        return data;
-    }, []);
-    return data;
-}
-
-function initGeographicValueSelect(geoValues, geographicType = null) {
-    if (geographicType) {
-        var data = getFilteredGeographicValues(geographicType, geoValues);
-    } else {
-        data = [];
-    }
-
-    initSelect2('geographic_value', data)
-}
-
-document.getElementById('geographic_type').addEventListener("change", (event) => {
-    $('#geographic_value').empty();
-    $('#modeSubmitResult').html('');
-    initGeographicValueSelect(geoValues, event.target.value);
-})
-
 let checkedSignalMembers = []
 
 function showWarningAlert(warningMessage, slideUpTime = 2000) {
@@ -287,13 +260,11 @@ function exportData() {
 }
 
 function previewData() {
-    var geographicType = document.getElementById('geographic_type').value;
-    var geographicValues = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(',');
-    if (geographicType === 'Choose...' || geographicValues.length === 0) {
-        showWarningAlert("Geographic Type and(or) Geographic Value is not selected.");
-        return;
-    }
+    var geographicValues = $('#geographic_value').select2('data');
+    geographicValues = Object.groupBy(geographicValues, ({ geoType }) => [geoType])
+    var geoTypes = Object.keys(geographicValues);
     var previewExample = [];
+    var requests = [];
     checkedSignalMembers.forEach((signal) => {
         var startDate = document.getElementById("start_date").value;
         var endDate = document.getElementById("end_date").value;
@@ -301,33 +272,41 @@ function previewData() {
             startDate = getDateYearWeek(new Date(startDate));
             endDate = getDateYearWeek(new Date(endDate));
         };
+        
         var requestSent = false;
         if (!requestSent) {
-            $.ajax({
-                url: "/epidata/covidcast/",
-                type: 'GET',
-                async: false,
-                data: {
-                    'time_type': signal["time_type"],
-                    'time_values': `${startDate}--${endDate}`,
-                    'data_source': signal["data_source"],
-                    'signal': signal["signal"],
-                    'geo_type': geographicType,
-                    'geo_values': geographicValues
-                },
-                success: function (result) {
-                    console.log(result);
-                    if (result["epidata"].length != 0) {
-                        previewExample.push({epidata: result["epidata"][0], result: result["result"], message: result["message"]})
-                    } else {
-                        previewExample.push({epidata: result["epidata"], result: result["result"], message: result["message"]})
+            geoTypes.forEach((geoType) => {
+                var geoValues = geographicValues[geoType].map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(",");
+                $('#loader').show();
+                var request = $.ajax({
+                    url: "/epidata/covidcast/",
+                    type: 'GET',
+                    async: true,
+                    data: {
+                        'time_type': signal["time_type"],
+                        'time_values': `${startDate}--${endDate}`,
+                        'data_source': signal["data_source"],
+                        'signal': signal["signal"],
+                        'geo_type': geoType,
+                        'geo_values': geoValues
+                    },
+                    success: function (result) {
+                        if (result["epidata"].length != 0) {
+                            previewExample.push({epidata: result["epidata"][0], result: result["result"], message: result["message"]})
+                        } else {
+                            previewExample.push({epidata: result["epidata"], result: result["result"], message: result["message"]})
+                        }
                     }
-                }
+                })
+                requests.push(request);
             })
         }
     })
+    $.when.apply($, requests).then(function() {
+        $('#loader').hide();
     $('#modeSubmitResult').html(JSON.stringify(previewExample, null, 2));
     requestSent = true;
+    })
 }
 
 
@@ -337,7 +316,6 @@ var currentMode = 'preview';
 
 function handleModeChange(mode) {
     document.getElementById("dataForm").reset();
-    $('#geographic_value').empty();
     $('#modeSubmitResult').html('');
 
     var choose_dates = document.getElementsByName('choose_date');
