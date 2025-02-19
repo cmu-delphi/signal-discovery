@@ -58,16 +58,16 @@ $('#geographic_value').on('select2:select', function (e) {
 function plotData() {
     var dataSets = {};
 
-    var geographicType = document.getElementById('geographic_type').value;
-    var geographicValues = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id);
-    if (geographicType === 'Choose...' || geographicValues.length === 0) {
-        showWarningAlert("Geographic Type and(or) Geographic Value is not selected.");
-        return;
-    }
+    var geographicValues = $('#geographic_value').select2('data');
+
+    // var geographicType = document.getElementById('geographic_type').value;
+    // var geographicValues = $('#geographic_value').select2('data').map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id);
 
     checkedSignalMembers.forEach((signal) => {
         geographicValues.forEach((geoValue) => {
-            dataSets[`${signal["signal"]}_${geoValue}`] = {
+            var geographicValue = (typeof geoValue.id === 'string') ? geoValue.id.toLowerCase() : geoValue.id;
+            var geographicType = geoValue.geoType;
+            dataSets[`${signal["signal"]}_${geographicValue}`] = {
                 color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
                 title: "value",
                 params: {
@@ -76,7 +76,7 @@ function plotData() {
                     signal: signal["signal"],
                     time_type: signal["time_type"],
                     geo_type: geographicType,
-                    geo_value: geoValue
+                    geo_value: geographicValue
                 }
             }
         })
