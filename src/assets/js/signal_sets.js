@@ -71,7 +71,8 @@ function plotData() {
                     signal: signal["signal"],
                     time_type: signal["time_type"],
                     geo_type: geographicType,
-                    geo_value: geographicValue
+                    geo_value: geographicValue,
+                    custom_title: `${signal["data_source"]}:${signal["signal"]} - ${geoValue.text}`
                 }
             }
         })
