@@ -176,6 +176,7 @@ function calculate_table_height() {
 
 var table = new DataTable('#signalSetsTable', {
     fixedHeader: true,
+    searching: false,
     paging: false,
     scrollCollapse: true,
     scrollX: true,
