@@ -22,20 +22,34 @@ class SignalFilterForm(forms.ModelForm):
     )
 
     pathogens = forms.ModelChoiceField(
-        queryset=Pathogen.objects.filter(id__in=Signal.objects.values_list("pathogen", flat=True)), widget=forms.CheckboxSelectMultiple()
+        queryset=Pathogen.objects.filter(
+            # id__in=Signal.objects.values_list("pathogen", flat=True)
+            used_in="signals"
+        ),
+        widget=forms.CheckboxSelectMultiple()
     )
 
     geographic_scope = forms.ModelChoiceField(
-        queryset=GeographicScope.objects.filter(id__in=Signal.objects.values_list("geographic_scope", flat=True)), widget=forms.CheckboxSelectMultiple()
+        queryset=GeographicScope.objects.filter(
+            # id__in=Signal.objects.values_list("geographic_scope", flat=True)
+            used_in="signals"
+        ),
+        widget=forms.CheckboxSelectMultiple()
     )
 
     available_geography = forms.ModelChoiceField(
-        queryset=Geography.objects.filter(id__in=Signal.objects.values_list("available_geography", flat=True)).order_by("display_order_number"),
+        queryset=Geography.objects.filter(
+            # id__in=Signal.objects.values_list("available_geography", flat=True)
+            used_in="signals"
+        ),
         widget=forms.CheckboxSelectMultiple(),
     )
 
     severity_pyramid_rung = forms.ModelChoiceField(
-        queryset=SeverityPyramidRung.objects.filter(id__in=Signal.objects.values_list("severity_pyramid_rung", flat=True)),
+        queryset=SeverityPyramidRung.objects.filter(
+            # id__in=Signal.objects.values_list("severity_pyramid_rung", flat=True)
+            used_in="signals"
+        ),
         widget=forms.CheckboxSelectMultiple(),
     )
 

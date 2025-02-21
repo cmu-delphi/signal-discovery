@@ -1,4 +1,7 @@
 from typing import Any
+from django.db import IntegrityError, transaction
+from django.db.models import Max
+
 
 from import_export import resources
 from import_export.fields import Field, widgets
@@ -16,19 +19,19 @@ def process_pathogens(row) -> None:
         pathogens = row["Pathogen(s)/Syndrome(s)"].split(",")
         for pathogen in pathogens:
             pathogen = pathogen.strip()
-            pathogen_obj, _ = Pathogen.objects.get_or_create(name=pathogen)
+            pathogen_obj, _ = Pathogen.objects.get_or_create(name=pathogen, used_in="signal_sets")
 
 
 def process_geographic_scope(row) -> None:
     """
     Processes geographic scope.
     """
-    if row["Geographic Scope*"]:
-        geographic_scope = row["Geographic Scope*"]
+    if row["Geo Scope with index"]:
+        geographic_scope = row["Geo Scope with index"]
         geographic_scope_obj, _ = GeographicScope.objects.get_or_create(
-            name=geographic_scope
+            name=geographic_scope, used_in="signal_sets"
         )
-        row["Geographic Scope*"] = geographic_scope_obj
+        row["Geo Scope with index"] = geographic_scope_obj.id
 
 
 def process_severity_pyramid_rungs(row) -> None:
@@ -40,7 +43,9 @@ def process_severity_pyramid_rungs(row) -> None:
         for severity_pyramid_rung in severity_pyramid_rungs:
             severity_pyramid_rung = severity_pyramid_rung.strip()
             severity_pyramid_rung_obj, _ = SeverityPyramidRung.objects.get_or_create(
-                name=severity_pyramid_rung
+                name=severity_pyramid_rung,
+                used_in="signal_sets",
+                defaults={"used_in": "signal_sets", "display_name": severity_pyramid_rung}
             )
 
 
@@ -48,9 +53,11 @@ def process_avaliable_geographies(row) -> None:
     if row["Geographic Granularity - Delphi"]:
         available_geographies = row["Geographic Granularity - Delphi"].split(",")
         for available_geography in available_geographies:
+            max_display_order_number = Geography.objects.filter(used_in="signals").aggregate(Max("display_order_number"))["display_order_number__max"]
             available_geography_obj, _ = Geography.objects.get_or_create(
                 name=available_geography,
-                defaults={"display_order_number": 1},  # TODO: fix display_order_number
+                used_in="signal_sets",
+                defaults={"used_in": "signal_sets", "display_order_number": max_display_order_number + 1}
             )
 
 
@@ -82,6 +89,7 @@ def fix_boolean_fields(row) -> Any:
 class SignalSetResource(resources.ModelResource):
 
     name = Field(attribute="name", column_name="Signal Set name* ")
+    short_name = Field(attribute="short_name", column_name="Signal Set Short Name")
     description = Field(attribute="description", column_name="Signal Set Description*")
     maintainer_name = Field(
         attribute="maintainer_name", column_name="Maintainer/\nKey Contact *"
@@ -95,6 +103,7 @@ class SignalSetResource(resources.ModelResource):
         column_name="Data Source",
         widget=widgets.ForeignKeyWidget(DataSource, field="name"),
     )
+    endpoint = Field(attribute="endpoint", column_name="Endpoint")
     language = Field(attribute="language", column_name="Language (likely English) ")
     version_number = Field(
         attribute="version_number", column_name="Version Number \n(if applicable) "
@@ -103,11 +112,11 @@ class SignalSetResource(resources.ModelResource):
         attribute="origin_datasource",
         column_name="Source dataset from which data was derived (for aggregates or processed data) ",
     )
-    data_type = Field(attribute="data_type", column_name="Type(s) of data*")
+    data_type = Field(attribute="data_type", column_name="Type(s) of Data*")
     geographic_scope = Field(
         attribute="geographic_scope",
-        column_name="Geographic Scope*",
-        widget=widgets.ForeignKeyWidget(GeographicScope, field="name"),
+        column_name="Geo Scope with index",
+        widget=widgets.ForeignKeyWidget(GeographicScope),
     )
     geographic_granularity = Field(
         attribute="geographic_granularity",
@@ -115,10 +124,10 @@ class SignalSetResource(resources.ModelResource):
     )
     preprocessing_description = Field(
         attribute="preprocessing_description",
-        column_name="Description of pre-processing (if any)",
+        column_name="Pre-processing",
     )
     temporal_scope_start = Field(
-        attribute="temporal_scope_start", column_name="Temporal scope start"
+        attribute="temporal_scope_start", column_name="Temporal Scope Start"
     )
     temporal_scope_end = Field(
         attribute="temporal_scope_end", column_name="Temporal Scope End"
@@ -146,7 +155,7 @@ class SignalSetResource(resources.ModelResource):
     )
     censoring = Field(attribute="censoring", column_name="Censoring")
     missingness = Field(attribute="missingness", column_name="Missingness")
-    dua_required = Field(attribute="dua_required", column_name="DUA required (yes/no) ")
+    dua_required = Field(attribute="dua_required", column_name="DUA required?")
     license = Field(attribute="license", column_name="License ")
     dataset_location = Field(
         attribute="dataset_location", column_name="Dataset Location"
@@ -154,12 +163,12 @@ class SignalSetResource(resources.ModelResource):
     link_to_documentation = Field(
         attribute="link_to_documentation", column_name="Link to documentation"
     )
-    endpoint = Field(attribute="endpoint", column_name="Endpoint")
 
     class Meta:
         model = SignalSet
         fields: list[str] = [
             "name",
+            "short_name",
             "description",
             "maintainer_name",
             "maintainer_email",
@@ -187,9 +196,11 @@ class SignalSetResource(resources.ModelResource):
             "dataset_location",
             "link_to_documentation",
             "endpoint",
+            "available_geographies",
         ]
         import_id_fields = ["name", "data_source"]
         store_instance = True
+        skip_unchanged = True
 
     def before_import_row(self, row, **kwargs):
         fix_boolean_fields(row)
@@ -199,6 +210,13 @@ class SignalSetResource(resources.ModelResource):
         process_avaliable_geographies(row)
         process_datasources(row)
 
+    def save_instance(self, instance, is_create, row, **kwargs):
+        try:
+            with transaction.atomic():
+                return super().save_instance(instance, is_create, row, **kwargs)
+        except IntegrityError:
+            pass
+
     def skip_row(self, instance, original, row, import_validation_errors=None):
         if not row["Include in signal app"]:
             return True
@@ -207,16 +225,17 @@ class SignalSetResource(resources.ModelResource):
         try:
             signal_set_obj = SignalSet.objects.get(id=row_result.object_id)
             for pathogen in row["Pathogen(s)/Syndrome(s)"].split(","):
-                pathogen = Pathogen.objects.get(name=pathogen)
+                pathogen = Pathogen.objects.get(name=pathogen, used_in="signal_sets")
                 signal_set_obj.pathogens.add(pathogen)
             for severity_pyramid_rung in row["Severity Pyramid Rung(s)"].split(","):
                 severity_pyramid_rung = SeverityPyramidRung.objects.filter(
-                    name=severity_pyramid_rung
+                    name=severity_pyramid_rung,
+                    used_in="signal_sets"
                 ).first()
                 signal_set_obj.severity_pyramid_rungs.add(severity_pyramid_rung)
 
             for available_geography in row["Geographic Granularity - Delphi"].split(","):
-                available_geography = Geography.objects.get(name=available_geography)
+                available_geography = Geography.objects.get(name=available_geography, used_in="signal_sets")
                 signal_set_obj.available_geographies.add(available_geography)
             signal_set_obj.save()
         except SignalSet.DoesNotExist as e:

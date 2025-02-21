@@ -1386,3 +1386,39 @@ h6 {
 .form-check > label.form-check-label {
     display: block!important; /* Ensure the label takes up the full width */
 }
+
+.min-w-300 {
+    content: '';
+    min-width: 300px;
+}
+
+div.dt-button-collection {
+    width: 265px!important;
+}
+
+.full-width {
+    width: 100%;
+}
+
+#processSelectedSignals {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px!important;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

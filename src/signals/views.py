@@ -38,7 +38,6 @@ class SignalsListView(ListView):
         url_params_dict = {
             "id": [int(el) for el in self.request.GET.getlist("id")] if self.request.GET.getlist("id") else None,
             "search": self.request.GET.get("search"),
-            "order_by": self.request.GET.get("order_by"),
             "pathogens": [int(el) for el in self.request.GET.getlist("pathogens")],
             "active": [el for el in self.request.GET.getlist("active")],
             "available_geography": (
@@ -103,6 +102,5 @@ class SignalsDetailView(DetailView):
 
         context: Dict[str, Any] = super().get_context_data(**kwargs)
         context["epivis_url"] = settings.EPIVIS_URL
-        context["data_export_url"] = settings.DATA_EXPORT_URL
-        context["covidcast_url"] = settings.COVIDCAST_URL
+        context["epidata_url"] = settings.EPIDATA_URL
         return context

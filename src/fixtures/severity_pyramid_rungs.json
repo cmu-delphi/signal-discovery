@@ -1,72 +1,189 @@
 [
-{
-    "model": "signals.severitypyramidrung",
-    "pk": 73,
-    "fields": {
-        "created": "2024-08-15T09:57:05.874Z",
-        "modified": "2024-08-15T13:08:28.334Z",
-        "name": "outpatient visit",
-        "display_name": "Outpatient / ED"
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 73,
+        "fields": {
+            "created": "2024-08-15T09:57:05.874Z",
+            "modified": "2024-08-15T13:08:28.334Z",
+            "name": "outpatient visit",
+            "display_name": "Outpatient / ED",
+            "used_in": "signals"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 74,
+        "fields": {
+            "created": "2024-08-15T09:57:06.623Z",
+            "modified": "2024-08-15T13:08:20.357Z",
+            "name": "infected",
+            "display_name": "Infected",
+            "used_in": "signals"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 75,
+        "fields": {
+            "created": "2024-08-15T09:57:06.742Z",
+            "modified": "2024-08-15T13:08:14.615Z",
+            "name": "population",
+            "display_name": "Population",
+            "used_in": "signals"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 76,
+        "fields": {
+            "created": "2024-08-15T09:57:07.184Z",
+            "modified": "2024-08-15T13:08:07.134Z",
+            "name": "hospitalized",
+            "display_name": "Hospitalized",
+            "used_in": "signals"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 77,
+        "fields": {
+            "created": "2024-08-15T09:57:07.541Z",
+            "modified": "2024-08-15T13:07:59.789Z",
+            "name": "symptomatic",
+            "display_name": "Symptomatic",
+            "used_in": "signals"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 78,
+        "fields": {
+            "created": "2024-08-15T09:57:16.477Z",
+            "modified": "2024-08-15T13:07:54.021Z",
+            "name": "ascertained (case)",
+            "display_name": "Ascertained (case)",
+            "used_in": "signals"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 79,
+        "fields": {
+            "created": "2024-08-15T09:57:49.327Z",
+            "modified": "2024-08-15T13:07:46.136Z",
+            "name": "dead",
+            "display_name": "Dead",
+            "used_in": "signals"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 80,
+        "fields": {
+            "created": "2024-08-15T09:57:49.327Z",
+            "modified": "2024-08-15T13:07:46.136Z",
+            "name": "Population",
+            "display_name": "Population",
+            "used_in": "signal_sets"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 81,
+        "fields": {
+            "created": "2024-08-15T09:57:49.327Z",
+            "modified": "2024-08-15T13:07:46.136Z",
+            "name": "Vaccinated",
+            "display_name": "Vaccinated",
+            "used_in": "signal_sets"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 82,
+        "fields": {
+            "created": "2024-08-15T09:57:49.327Z",
+            "modified": "2024-08-15T13:07:46.136Z",
+            "name": "Infected",
+            "display_name": "Infected",
+            "used_in": "signal_sets"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 83,
+        "fields": {
+            "created": "2024-08-15T09:57:49.327Z",
+            "modified": "2024-08-15T13:07:46.136Z",
+            "name": "Tested",
+            "display_name": "Tested",
+            "used_in": "signal_sets"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 84,
+        "fields": {
+            "created": "2024-08-15T09:57:49.327Z",
+            "modified": "2024-08-15T13:07:46.136Z",
+            "name": "Case",
+            "display_name": "Case",
+            "used_in": "signal_sets"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 85,
+        "fields": {
+            "created": "2024-08-15T09:57:49.327Z",
+            "modified": "2024-08-15T13:07:46.136Z",
+            "name": "Symptomatic",
+            "display_name": "Symptomatic",
+            "used_in": "signal_sets"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 86,
+        "fields": {
+            "created": "2024-08-15T09:57:49.327Z",
+            "modified": "2024-08-15T13:07:46.136Z",
+            "name": "Outpatient / ED",
+            "display_name": "Outpatient / ED",
+            "used_in": "signal_sets"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 87,
+        "fields": {
+            "created": "2024-08-15T09:57:49.327Z",
+            "modified": "2024-08-15T13:07:46.136Z",
+            "name": "Hospitalized",
+            "display_name": "Hospitalized",
+            "used_in": "signal_sets"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 88,
+        "fields": {
+            "created": "2024-08-15T09:57:49.327Z",
+            "modified": "2024-08-15T13:07:46.136Z",
+            "name": "ICU",
+            "display_name": "ICU",
+            "used_in": "signal_sets"
+        }
+    },
+    {
+        "model": "signals.severitypyramidrung",
+        "pk": 89,
+        "fields": {
+            "created": "2024-08-15T09:57:49.327Z",
+            "modified": "2024-08-15T13:07:46.136Z",
+            "name": "Deceased",
+            "display_name": "Deceased",
+            "used_in": "signal_sets"
+        }
     }
-},
-{
-    "model": "signals.severitypyramidrung",
-    "pk": 74,
-    "fields": {
-        "created": "2024-08-15T09:57:06.623Z",
-        "modified": "2024-08-15T13:08:20.357Z",
-        "name": "infected",
-        "display_name": "Infected"
-    }
-},
-{
-    "model": "signals.severitypyramidrung",
-    "pk": 75,
-    "fields": {
-        "created": "2024-08-15T09:57:06.742Z",
-        "modified": "2024-08-15T13:08:14.615Z",
-        "name": "population",
-        "display_name": "Population"
-    }
-},
-{
-    "model": "signals.severitypyramidrung",
-    "pk": 76,
-    "fields": {
-        "created": "2024-08-15T09:57:07.184Z",
-        "modified": "2024-08-15T13:08:07.134Z",
-        "name": "hospitalized",
-        "display_name": "Hospitalized"
-    }
-},
-{
-    "model": "signals.severitypyramidrung",
-    "pk": 77,
-    "fields": {
-        "created": "2024-08-15T09:57:07.541Z",
-        "modified": "2024-08-15T13:07:59.789Z",
-        "name": "symptomatic",
-        "display_name": "Symptomatic"
-    }
-},
-{
-    "model": "signals.severitypyramidrung",
-    "pk": 78,
-    "fields": {
-        "created": "2024-08-15T09:57:16.477Z",
-        "modified": "2024-08-15T13:07:54.021Z",
-        "name": "ascertained (case)",
-        "display_name": "Ascertained (case)"
-    }
-},
-{
-    "model": "signals.severitypyramidrung",
-    "pk": 79,
-    "fields": {
-        "created": "2024-08-15T09:57:49.327Z",
-        "modified": "2024-08-15T13:07:46.136Z",
-        "name": "dead",
-        "display_name": "Dead"
-    }
-}
 ]

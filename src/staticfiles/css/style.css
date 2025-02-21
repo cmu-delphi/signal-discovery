@@ -1386,3 +1386,22 @@ h6 {
 .form-check > label.form-check-label {
     display: block!important; /* Ensure the label takes up the full width */
 }
+
+.min-w-300 {
+    content: '';
+    min-width: 300px;
+}
+
+div.dt-button-collection {
+    width: 265px!important;
+}
+
+.full-width {
+    width: 100%;
+}
+
+#processSelectedSignals {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}

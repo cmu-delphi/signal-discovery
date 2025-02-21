@@ -6,6 +6,7 @@
         "name": "county",
         "display_name": "ADM2 (e.g. U.S. counties)",
         "display_order_number": 3,
+        "used_in": "signals",
         "created": "2023-08-09T19:23:22.597131",
         "modified": "2023-08-09T19:23:22.597131"
       }
@@ -17,6 +18,7 @@
         "name": "hhs",
         "display_name": "HHS Regions",
         "display_order_number": 4,
+        "used_in": "signals",
         "created": "2023-08-09T19:23:22.597131",
         "modified": "2023-08-09T19:23:22.597131"
       }
@@ -28,6 +30,7 @@
         "name": "hrr",
         "display_name": "Hospital Referral Regions (HRRs)",
         "display_order_number": 6,
+        "used_in": "signals",
         "created": "2023-08-09T19:23:22.597131",
         "modified": "2023-08-09T19:23:22.597131"
       }
@@ -39,6 +42,7 @@
         "name": "msa",
         "display_name": "Metropolitan Statistical Areas (MSAs)",
         "display_order_number": 5,
+        "used_in": "signals",
         "created": "2023-08-09T19:23:22.597131",
         "modified": "2023-08-09T19:23:22.597131"
       }
@@ -50,6 +54,7 @@
         "name": "nation",
         "display_name": "National",
         "display_order_number": 1,
+        "used_in": "signals",
         "created": "2023-08-09T19:23:22.597131",
         "modified": "2023-08-09T19:23:22.597131"
       }
@@ -61,6 +66,7 @@
         "name": "state",
         "display_name": "ADM1 (e.g. U.S. states)",
         "display_order_number": 2,
+        "used_in": "signals",
         "created": "2023-08-09T19:23:22.597131",
         "modified": "2023-08-09T19:23:22.597131"
       }
@@ -72,8 +78,165 @@
         "name": "dma",
         "display_name": "Designated Market Areas (DMAs)",
         "display_order_number": 7,
+        "used_in": "signals",
         "created": "2023-08-09T19:23:22.597131",
         "modified": "2023-08-09T19:23:22.597131"
       }
-    }
+    },
+    {
+        "model": "signals.Geography",
+        "pk": 8,
+        "fields": {
+          "name": "nation",
+          "display_name": "National",
+          "display_order_number": 1,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 9,
+        "fields": {
+          "name": "hhs-region",
+          "display_name": "U.S. HHS Region",
+          "display_order_number": 2,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 10,
+        "fields": {
+          "name": "census-region",
+          "display_name": "U.S. Census Region",
+          "display_order_number": 3,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 11,
+        "fields": {
+          "name": "region",
+          "display_name": "Other Subnational Region",
+          "display_order_number": 4,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 12,
+        "fields": {
+          "name": "state",
+          "display_name": "State/ADM 1",
+          "display_order_number": 5,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 13,
+        "fields": {
+          "name": "county",
+          "display_name": "County/ADM 2",
+          "display_order_number": 6,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 14,
+        "fields": {
+          "name": "city",
+          "display_name": "Municipality/ADM 3",
+          "display_order_number": 7,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 15,
+        "fields": {
+          "name": "hrr",
+          "display_name": "Hospital Referral Region (HRR)",
+          "display_order_number": 8,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 16,
+        "fields": {
+          "name": "msa",
+          "display_name": "Metropolitan Statistical Area (MSA)",
+          "display_order_number": 9,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 17,
+        "fields": {
+          "name": "dma",
+          "display_name": "Designated Market Area (DMA)",
+          "display_order_number": 10,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 18,
+        "fields": {
+          "name": "facility",
+          "display_name": "Hospital ('Facility')",
+          "display_order_number": 11,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 19,
+        "fields": {
+          "name": "FluSurv-Net site",
+          "display_name": "FluSurv-Net site (see documentation)",
+          "display_order_number": 12,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      },
+      {
+        "model": "signals.Geography",
+        "pk": 20,
+        "fields": {
+          "name": "n/a",
+          "display_name": "N/A",
+          "display_order_number": 13,
+          "used_in": "signal_sets",
+          "created": "2023-08-09T19:23:22.597131",
+          "modified": "2023-08-09T19:23:22.597131"
+        }
+      }
   ]
