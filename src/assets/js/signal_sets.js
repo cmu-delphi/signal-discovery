@@ -182,7 +182,7 @@ var table = new DataTable('#signalSetsTable', {
         }
     },
     language: {
-        "info":           "Showing _TOTAL_ / _MAX_ Signal Sets",
+        "info":           "Showing _TOTAL_ / _MAX_ Indicator Sets",
         "infoEmpty":      "",
         "infoFiltered":   "",
     },
@@ -195,8 +195,8 @@ function format (signalSetId, relatedSignals) {
         var tableMarkup = '<table class="table" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
                     '<thead>'+
                         '<th></th>'+
-                        '<th>Signal Name</th>'+
-                        '<th>Signal Description</th>'+
+                        '<th>Indicator Name</th>'+
+                        '<th>Indicator Description</th>'+
                         '<th></th>'+
                     '</thead>'+
                     '<tbody>'
@@ -212,7 +212,7 @@ function format (signalSetId, relatedSignals) {
         }) 
         tableMarkup += '</tbody></table>'
     } else {
-        tableMarkup = "<p>No available signals yet.</p>"
+        tableMarkup = "<p>No available indicators yet.</p>"
     }
     return tableMarkup;
 }
@@ -356,11 +356,11 @@ function showNotCoveredGeoWarningMessage(notCoveredSignals, geoValue) {
     var warningMessage = "";
     notCoveredSignals.forEach(signal => {
         if (currentMode === 'epivis') {
-            warningMessage += `Signal ${signal.display_name} is not available for Location ${geoValue} <br>`
+            warningMessage += `Indicator ${signal.display_name} is not available for Location ${geoValue} <br>`
         } else {
             var startDate = document.getElementById("start_date").value;
             var endDate = document.getElementById("end_date").value;
-            warningMessage += `Signal ${signal.display_name} is not available for Location ${geoValue} for the time period from ${startDate} to ${endDate} <br>` 
+            warningMessage += `Indicator ${signal.display_name} is not available for Location ${geoValue} for the time period from ${startDate} to ${endDate} <br>` 
         }
     })
     appendAlert(warningMessage, "warning")

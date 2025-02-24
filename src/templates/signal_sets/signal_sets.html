@@ -4,7 +4,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %} Signal Sets {% endblock %} 
+{% block title %} Indicator Sets {% endblock %} 
 
 {% block content %}
 
@@ -45,7 +45,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Pathogen, syndrome, or disease area for which the signal set applies."
+                                        data-mdb-content="Pathogen, syndrome, or disease area for which the indicator set applies."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -81,7 +81,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Country for which signal set is available."
+                                        data-mdb-content="Country for which indicator set is available."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -117,7 +117,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Spatial resolution of the signal set (e.g., county, hospital referral region, metropolitan statistical area, designated market area, state)."
+                                        data-mdb-content="Spatial resolution of the indicator set (e.g., county, hospital referral region, metropolitan statistical area, designated market area, state)."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -152,7 +152,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Units of time available for a given signal set, e.g., day and week."
+                                        data-mdb-content="Units of time available for a given indicator set, e.g., day and week."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -184,7 +184,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="One or more rungs to which this signal set best relates. See https://delphi.cmu.edu/epidemic-signals/."
+                                        data-mdb-content="One or more rungs to which this indicator set best relates. See https://delphi.cmu.edu/epidemic-signals/."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -359,7 +359,7 @@
     <!-- Button trigger modal -->
     <div class="float" id="showSelectedSignalsButton" style="display:none;">
         <a type="button" class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#selectedSignalsModal">
-            Show selected signals
+            Show selected indicators
         </a>
     </div>
     
@@ -369,15 +369,15 @@
         <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="selectedSignalsModalLabel">Selected signals</h5>
+            <h5 class="modal-title" id="selectedSignalsModalLabel">Selected indicators</h5>
             <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <table class="table">
                     <thead>
                       <tr>
-                        <th scope="col">Signal Set name</th>
-                        <th scope="col">Signal name</th>
+                        <th scope="col">Indicator Set name</th>
+                        <th scope="col">Indicator name</th>
                       </tr>
                     </thead>
                     <tbody id="selectedSignalsList"></tbody>
