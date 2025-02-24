@@ -38,22 +38,7 @@ function checkGeoCoverage(geoType, geoValue) {
     return notCoveredSignals;
 }
 
-function showNotCoveredGeoWarningMessage(notCoveredSignals, geoValue) {
-    var warningMessage = `The following signals are not available at selected geographic level "${geoValue}": <br>`;
-    notCoveredSignals.forEach(signal => {
-        warningMessage += `${signal.display_name} <br>`
-    })
-    showWarningAlert(warningMessage, 5000);
 
-}
-
-$('#geographic_value').on('select2:select', function (e) {
-    var geo = e.params.data;
-    var notCoveredSignals = checkGeoCoverage(geo.geoType, geo.id)
-    if (notCoveredSignals.length > 0) {
-        showNotCoveredGeoWarningMessage(notCoveredSignals, geo.text);
-    }
-});
 
 function plotData() {
     var dataSets = {};
@@ -312,6 +297,7 @@ function previewData() {
 
 var currentMode = 'preview';
 
+
 function handleModeChange(mode) {
     $('#modeSubmitResult').html('');
 
@@ -341,6 +327,48 @@ function handleModeChange(mode) {
         }
     });
 }
+
+function hideNotCoveredAlert() {
+    const alert = document.getElementById("notCoveredWarning");
+    alert.remove();
+}
+
+
+
+const alertPlaceholder = document.getElementById('warning-alert')
+const appendAlert = (message, type) => {
+    const wrapper = document.createElement('div')
+    wrapper.innerHTML = [
+      `<div id="notCoveredWarning" class="alert alert-${type} alert-dismissible" data-mdb-alert-init role="alert">`,
+      `   <div>${message}</div>`,
+      `   <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close" onclick=hideNotCoveredAlert()></button>`,
+      '</div>'
+    ].join('')
+  
+    alertPlaceholder.append(wrapper)
+  }
+
+function showNotCoveredGeoWarningMessage(notCoveredSignals, geoValue) {
+    var warningMessage = "";
+    notCoveredSignals.forEach(signal => {
+        if (currentMode === 'epivis') {
+            warningMessage += `Signal ${signal.display_name} is not available for Location ${geoValue} <br>`
+        } else {
+            var startDate = document.getElementById("start_date").value;
+            var endDate = document.getElementById("end_date").value;
+            warningMessage += `Signal ${signal.display_name} is not available for Location ${geoValue} for the time period from ${startDate} to ${endDate} <br>` 
+        }
+    })
+    appendAlert(warningMessage, "warning")
+}
+
+$('#geographic_value').on('select2:select', function (e) {
+    var geo = e.params.data;
+    var notCoveredSignals = checkGeoCoverage(geo.geoType, geo.id)
+    if (notCoveredSignals.length > 0) {
+        showNotCoveredGeoWarningMessage(notCoveredSignals, geo.text);
+    }
+});
 
 function getDateYearWeek(date) {
     const currentDate =
