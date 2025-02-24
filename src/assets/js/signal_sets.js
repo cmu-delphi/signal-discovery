@@ -328,9 +328,11 @@ function handleModeChange(mode) {
     });
 }
 
-function hideNotCoveredAlert() {
-    const alert = document.getElementById("notCoveredWarning");
-    alert.remove();
+function hideAlert(alertId) {
+    const alert = document.getElementById(alertId);
+    if (alert) {
+        alert.remove();
+    }
 }
 
 
@@ -338,14 +340,16 @@ function hideNotCoveredAlert() {
 const alertPlaceholder = document.getElementById('warning-alert')
 const appendAlert = (message, type) => {
     const wrapper = document.createElement('div')
+    const alertId = `alert-${Date.now()}`;
     wrapper.innerHTML = [
-      `<div id="notCoveredWarning" class="alert alert-${type} alert-dismissible" data-mdb-alert-init role="alert">`,
+      `<div id="${alertId}" class="alert alert-${type} alert-dismissible" data-mdb-alert-init role="alert">`,
       `   <div>${message}</div>`,
-      `   <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close" onclick=hideNotCoveredAlert()></button>`,
+      '   <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>',
       '</div>'
     ].join('')
   
     alertPlaceholder.append(wrapper)
+    wrapper.getElementsByClassName('btn-close')[0].addEventListener('click', () => hideAlert(alertId))
   }
 
 function showNotCoveredGeoWarningMessage(notCoveredSignals, geoValue) {
