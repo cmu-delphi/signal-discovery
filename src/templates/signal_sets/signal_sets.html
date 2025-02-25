@@ -4,7 +4,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %} Signal Sets {% endblock %} 
+{% block title %} Indicator Sets {% endblock %} 
 
 {% block content %}
 
@@ -18,6 +18,19 @@
                         <div class="accordion-item">
                             <p class="accordion-header" id="flush-heading_location_search">
                                 Location(s):
+                                <a
+                                        tabindex="0"
+                                        type="button"
+                                        class="info-button filter-description-popover"
+                                        data-mdb-container="body"
+                                        data-mdb-ripple-init
+                                        data-mdb-popover-init
+                                        data-mdb-trigger="hover"
+                                        data-mdb-placement="right"
+                                        data-mdb-content="Enter one or more locations for which you are looking for indicator coverage, or leave empty for all locations.  Start entering a location name to see all compatible locations.  Auto-complete with [Tab] or [Enter].  Currently works only for U.S. locations."
+                                        >
+                                        <i class="far fa-circle-question"></i>
+                                    </a>
                             </p>
                             <div id="flush-collapse_location_search"
                                 aria-labelledby="flush-heading_location_search"
@@ -45,7 +58,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Pathogen, syndrome, or disease area for which the signal set applies."
+                                        data-mdb-content="List only indicators related to these pathogens, syndromes or diseases."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -81,7 +94,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Country for which signal set is available."
+                                        data-mdb-content="List only indicators that cover any of the selected countries or world regions."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -117,7 +130,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Spatial resolution of the signal set (e.g., county, hospital referral region, metropolitan statistical area, designated market area, state)."
+                                        data-mdb-content="List only indicators that are available at any of the selected geographic levels."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -152,7 +165,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="Units of time available for a given signal set, e.g., day and week."
+                                        data-mdb-content="List only indicators that are available at any of the selected temporal levels."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -184,7 +197,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="One or more rungs to which this signal set best relates. See https://delphi.cmu.edu/epidemic-signals/."
+                                        data-mdb-content="List only indicators that are directly related to any of the selected rungs."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -219,7 +232,7 @@
                                         data-mdb-popover-init
                                         data-mdb-trigger="hover"
                                         data-mdb-placement="right"
-                                        data-mdb-content="The owner or supplier of the raw data."
+                                        data-mdb-content="List only indicator that are based on data from one of the selected sources."
                                         >
                                         <i class="far fa-circle-question"></i>
                                     </a>
@@ -240,6 +253,20 @@
                         </div>
                         <div class="input-group margin-top-1rem">
                             {{ form.temporal_scope_end|as_crispy_field }}
+                            <a
+                                tabindex="0"
+                                style="margin-left: 10px;"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="List only indicators that are currently actively ingested."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
                         </div>
                     </div> 
                     <div class="card-body">
@@ -359,7 +386,7 @@
     <!-- Button trigger modal -->
     <div class="float" id="showSelectedSignalsButton" style="display:none;">
         <a type="button" class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#selectedSignalsModal">
-            Show selected signals
+            Show selected indicators
         </a>
     </div>
     
@@ -369,15 +396,15 @@
         <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="selectedSignalsModalLabel">Selected signals</h5>
+            <h5 class="modal-title" id="selectedSignalsModalLabel">Selected indicators</h5>
             <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <table class="table">
                     <thead>
                       <tr>
-                        <th scope="col">Signal Set name</th>
-                        <th scope="col">Signal name</th>
+                        <th scope="col">Indicator Set name</th>
+                        <th scope="col">Indicator name</th>
                       </tr>
                     </thead>
                     <tbody id="selectedSignalsList"></tbody>
