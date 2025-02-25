@@ -296,7 +296,7 @@ function previewData() {
 
 // Plot/Export/Preview data block
 
-var currentMode = 'preview';
+var currentMode = 'epivis';
 
 
 function handleModeChange(mode) {
