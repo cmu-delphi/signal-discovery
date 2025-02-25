@@ -261,13 +261,14 @@ function previewData() {
             geoTypes.forEach((geoType) => {
                 var geoValues = geographicValues[geoType].map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(",");
                 $('#loader').show();
+                var timeValues = signal["time_type"] === "week" ? `${startDate}-${endDate}` : `${startDate}--${endDate}`;
                 var request = $.ajax({
                     url: "epidata/covidcast/",
                     type: 'GET',
                     async: true,
                     data: {
                         'time_type': signal["time_type"],
-                        'time_values': `${startDate}--${endDate}`,
+                        'time_values': timeValues,
                         'data_source': signal["data_source"],
                         'signal': signal["signal"],
                         'geo_type': geoType,
