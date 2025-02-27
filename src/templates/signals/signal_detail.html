@@ -49,7 +49,7 @@
             </div>
         </div>
     </section>
-    <h5>About this signal</h5>
+    <h5>About this indicator</h5>
     <section class="section signal">
         <div class="row">
             <div class="card">
@@ -62,7 +62,7 @@
                                     <td>{{ signal.source.name }}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Signal Name</th>
+                                    <th scope="row">Indicator Name</th>
                                     <td>{{ signal.name }}</td>
                                 </tr>
                                 {% if signal.short_description %}
@@ -100,7 +100,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Signal Type</th>
+                                    <th scope="row">Indicator Type</th>
                                     <td>
                                         <ul class="no-padding">
                                             <a {% if signal.signal_type %} href="{% url 'signals' %}?signal_type={{ signal.signal_type.id }} {% else %} {% endif %}">
@@ -201,7 +201,7 @@
                                 {% endif %}
                                 {% if signal.same_base_signals|length > 0 %}
                                 <tr>
-                                    <th scope="row">Related signals (signals with the same base)</th>
+                                    <th scope="row">Related indicators (indicators with the same base)</th>
                                     <td>
                                         {% for signal in signal.same_base_signals %}
                                         <a href="{% url 'signal' pk=signal.id %}" target="_blank">
