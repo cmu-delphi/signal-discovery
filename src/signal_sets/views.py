@@ -1,7 +1,8 @@
 import requests
 import logging
-from typing import Any, Dict
+from typing import Any
 import json
+from datetime import datetime as dtime
 
 from django.conf import settings
 from django.db.models.query import QuerySet
@@ -13,6 +14,8 @@ from signals.models import Geography, GeographyUnit
 from signal_sets.models import SignalSet
 from signal_sets.filters import SignalSetFilter
 from signal_sets.forms import SignalSetFilterForm
+
+from epiweeks import Week
 
 logger = logging.getLogger(__name__)
 
@@ -130,9 +133,22 @@ class SignalSetListView(ListView):
         return context
 
 
-def epidata(request, endpoint=''):
+def epidata(request, endpoint=""):
     params = request.GET.dict()
     params["api_key"] = settings.EPIDATA_API_KEY
     url = f"{settings.EPIDATA_URL}{endpoint}"
     response = requests.get(url, params=params)
     return JsonResponse(response.json(), safe=False)
+
+
+def get_epiweek(request):
+    start_date = dtime.strptime(request.POST["start_date"], "%Y-%m-%d")
+    start_date = Week.fromdate(start_date)
+    end_date = dtime.strptime(request.POST["end_date"], "%Y-%m-%d")
+    end_date = Week.fromdate(end_date)
+    return JsonResponse(
+        {
+            "start_date": f"{start_date.year}{start_date.week if start_date.week >= 10 else '0' + str(start_date.week)}",
+            "end_date": f"{end_date.year}{end_date.week if end_date.week >= 10 else '0' + str(end_date.week)}",
+        }
+    )
