@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "dcfee6e13b22e7381970bc928dd36a0169abd3b290b4a72a59f5f7ae5871348f"
+            "sha256": "86779d3f0c119371b35c4a2f4c61fdc5e674855267f81045b19fbb53d1ae57fe"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -482,6 +482,15 @@
             "index": "pypi",
             "markers": "python_version >= '3.7'",
             "version": "==0.27.2"
+        },
+        "epiweeks": {
+            "hashes": [
+                "sha256:3c64ee0b217d0a03f0896fce3c35b73c848c3717790504893cb4eb61b9364bac",
+                "sha256:e60f31f0bb7021cb62d6a366fc90b69798b3f78b2aa929ad78709be9e0cb35a8"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==2.3.0"
         },
         "factory-boy": {
             "hashes": [

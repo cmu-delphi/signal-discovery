@@ -227,19 +227,37 @@ function exportData() {
     var endDate = document.getElementById('end_date').value;
 
     var manualDataExport = "To download data, please click on the link or copy/paste command into your terminal: \n\n"
+    var requests = [];
     
     checkedSignalMembers.forEach((signal) => {
         geoTypes.forEach((geoType) => {
             var geoValues = geographicValues[geoType].map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(",");
             if (signal["time_type"] === "week") {
-                startDate = getDateYearWeek(new Date(startDate));
-                endDate = getDateYearWeek(new Date(endDate));
-            };
-            var exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${startDate}&end_day=${endDate}&geo_type=${geoType}&geo_values=${geoValues}`;
-            manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
+                var request = $.ajax({
+                    url: "get_epiweek/",
+                    type: 'POST',
+                    async: true,
+                    data: {
+                        csrfmiddlewaretoken: csrf_token,
+                        start_date: startDate,
+                        end_date: endDate,
+                    },
+                    success: function (result) {
+                        var exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${result.start_date}&end_day=${result.end_date}&geo_type=${geoType}&geo_values=${geoValues}`;
+                        manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
+                    }
+                })
+                requests.push(request);
+            } else {
+                var exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${startDate}&end_day=${endDate}&geo_type=${geoType}&geo_values=${geoValues}`;
+                manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
+            }
         });
     });
-    $('#modeSubmitResult').html(manualDataExport);
+    $.when.apply($, requests).then(function() {
+        $('#modeSubmitResult').html(manualDataExport);
+    })
+    
 }
 
 function previewData() {
@@ -248,12 +266,27 @@ function previewData() {
     var geoTypes = Object.keys(geographicValues);
     var previewExample = [];
     var requests = [];
+
+    var startDate = document.getElementById("start_date").value;
+    var endDate = document.getElementById("end_date").value;
+
     checkedSignalMembers.forEach((signal) => {
-        var startDate = document.getElementById("start_date").value;
-        var endDate = document.getElementById("end_date").value;
+        var timeValues;
+        
         if (signal["time_type"] === "week") {
-            startDate = getDateYearWeek(new Date(startDate));
-            endDate = getDateYearWeek(new Date(endDate));
+            $.ajax({
+                url: "get_epiweek/",
+                type: 'POST',
+                async: false,
+                data: {
+                    csrfmiddlewaretoken: csrf_token,
+                    start_date: startDate,
+                    end_date: endDate,
+                },
+                success: function (result) {
+                    timeValues = `${result.start_date}-${result.end_date}`;
+                }
+            })
         };
         
         var requestSent = false;
@@ -261,7 +294,7 @@ function previewData() {
             geoTypes.forEach((geoType) => {
                 var geoValues = geographicValues[geoType].map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(",");
                 $('#loader').show();
-                var timeValues = signal["time_type"] === "week" ? `${startDate}-${endDate}` : `${startDate}--${endDate}`;
+                timeValues = signal["time_type"] === "week" ? timeValues : `${startDate}--${endDate}`;
                 var request = $.ajax({
                     url: "epidata/covidcast/",
                     type: 'GET',
@@ -375,30 +408,6 @@ $('#geographic_value').on('select2:select', function (e) {
     }
 });
 
-function getDateYearWeek(date) {
-    const currentDate =
-        (typeof date === 'object') ? date : new Date();
-    const januaryFirst =
-        new Date(currentDate.getFullYear(), 0, 1);
-    const daysToNextMonday =
-        (januaryFirst.getDay() === 1) ? 0 :
-        (7 - januaryFirst.getDay()) % 7;
-    const nextMonday =
-        new Date(currentDate.getFullYear(), 0,
-        januaryFirst.getDate() + daysToNextMonday);
-
-    var weekNumber = (currentDate < nextMonday) ? 52 :
-    (currentDate > nextMonday ? Math.ceil(
-    (currentDate - nextMonday) / (24 * 3600 * 1000) / 7) : 1);
-
-    if (weekNumber < 10) {
-        weekNumber = `0${weekNumber}`;
-    }
-
-    const year = currentDate.getFullYear()
-
-    return `${year}${weekNumber}`;
-}
 
 function submitMode(event) {
     event.preventDefault();
