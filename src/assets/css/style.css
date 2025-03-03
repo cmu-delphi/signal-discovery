@@ -1392,6 +1392,11 @@ h6 {
     min-width: 300px;
 }
 
+.min-w-120 {
+    content: '';
+    min-width: 120px;
+}
+
 div.dt-button-collection {
     width: 265px!important;
 }
