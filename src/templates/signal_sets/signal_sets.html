@@ -84,7 +84,7 @@
                                     data-mdb-target="#flush-collapse_{{ form.geographic_scope.auto_id }}"
                                     aria-expanded="false"
                                     aria-controls="flush-collapse_{{ form.geographic_scope.auto_id }}">
-                                    Geographic Scope
+                                    Geographic Coverage
                                     <a
                                         tabindex="0"
                                         type="button"
@@ -120,7 +120,7 @@
                                     data-mdb-target="#flush-collapse_{{ form.available_geographies.auto_id }}"
                                     aria-expanded="false"
                                     aria-controls="flush-collapse_{{ form.available_geographies.auto_id }}">
-                                    Geographic Granularity
+                                    Geographic Level
                                     <a
                                         tabindex="0"
                                         type="button"
@@ -187,7 +187,7 @@
                                     data-mdb-target="#flush-collapse_{{ form.severity_pyramid_rungs.auto_id }}"
                                     aria-expanded="false"
                                     aria-controls="flush-collapse_{{ form.severity_pyramid_rungs.auto_id }}">
-                                    Severity Pyramid
+                                    Surveillance Category
                                     <a
                                         tabindex="0"
                                         type="button"
@@ -222,7 +222,7 @@
                                     data-mdb-toggle="collapse"
                                     data-mdb-target="#flush-collapse_{{ form.data_source.auto_id }}" aria-expanded="false"
                                     aria-controls="flush-collapse_{{ form.data_source.auto_id }}">
-                                    Data Source
+                                    Original Data Provider
                                     <a
                                         tabindex="0"
                                         type="button"
@@ -283,25 +283,264 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Name</th>
+                        <th>Name
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="Hover over the indicator's name to see a brief description."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
                         <th>Pathogen(s)/<br>Syndrome(s)</th>
-                        <th>Geographic Scope</th>
-                        <th>Geographic Granularity</th>
-                        <th>Temporal scope Start</th>
-                        <th>Temporal Scope End</th>
-                        <th>Temporal Granularity</th>
-                        <th>Reporting Cadence</th>
-                        <th>Reporting Lag(nominal)</th>
-                        <th>Revision Cadence</th>
-                        <th>Demographic scope</th>
-                        <th>Demographic Granularity</th>                              
-                        <th>Severity Pyramid Rung(s)</th>
-                        <th>Data Source</th>
-                        <th class="min-w-300">Pre-processing</th>
-                        <th class="min-w-300">Censoring</th>
-                        <th class="min-w-300">Missingness</th>
-                        <th>DUA required</th>
-                        <th>License</th>
+                        <th>Geographic Coverage
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="The countries or world regions covered by this indicator.  These are typically covered at finer geographic levels / jurisdictions."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th class="min-w-300">Geographic Levels
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="All the geographic levels at which this indicator is available.  Larger jurisdictions are often based on aggregation of data from constituent jurisdictions."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th>Temporal Scope Start
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="The earliest date for which this indicator is available."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th>Temporal Scope End
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="The latest date for which this indicator is available."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th>Temporal Granularity
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="The temporal resolution of this indicator (not of the reporting).  Might not be the same as Reporting Cadence (e.g. a daily indicator may be reported only once a week)."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th>Reporting Cadence
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="Frequency of reporting.  Might not be the same as Temporal Granularity (e.g. a daily indicator may be reported only once a week)."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th>Reporting Lag(nominal)
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="The number of days from the last day of a reported period until the first reported value for that period is usually available in Delphi Epidata.  E.g. if reporting U.S. epiweeks (Sunday through Saturday), and the first report is usually available in Delphi Epidata on the following Friday, The Reporting Lag is 6.
+                                                    By ""usually available"" we mean when it's ""supposed to be"" available based on our current understanding of the data provider's operations and Delphi's ingestion pipeline.  That is the date on which we think of the data as showing up ""on time"", and relative to which we track unusual delays."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th>Revision Cadence
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content='How frequently are revised values (e.g. "backfill") usually reported (if any)?'
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th>Population
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content='The population or demographic group reflected by the indicator ("All" means the entire population)'
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th>Population Stratifiers
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="What population or demographic stratifiers are available, if any?"
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>                              
+                        <th>Surveillance Categories
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="Which surveillance categories or rungs in the Severity Pyramid does this indicator attempt to track?  Some indicators may approximately track multiple categories."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th>Original Data Provider
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="The owner or supplier of the original or raw data used to create this indicator."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th class="min-w-300">Pre-processing
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="Brief description of main data processing used in creating this set of indicators, including smoothing and aggregation.  For more details, see the documentation."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th class="min-w-300">Censoring
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="Is any of the data being censored (e.g. small counts)?  If so how, and how much impact does it have (e.g. approximate fraction of values affected)."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th class="min-w-300">Missingness
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content=""
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
+                        <th>DUA required?</th>
+                        <th>Data Use Terms
+                            <a
+                                tabindex="0"
+                                type="button"
+                                class="info-button filter-description-popover"
+                                data-mdb-container="body"
+                                data-mdb-ripple-init
+                                data-mdb-popover-init
+                                data-mdb-trigger="hover"
+                                data-mdb-placement="right"
+                                data-mdb-content="Applicable data use terms (may apply even to publicly accessible indicators)."
+                                >
+                                <i class="far fa-circle-question"></i>
+                            </a>
+                        </th>
                         <th>Documentation</th>
                     </tr>
                 </thead>
