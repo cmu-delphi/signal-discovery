@@ -42,13 +42,13 @@ h6 {
 # Main
 --------------------------------------------------------------*/
 #main {
-  padding: 20px 30px;
+  padding-top: 20px!important;
   transition: all 0.3s;
 }
 
 @media (max-width: 1199px) {
   #main {
-    padding: 20px;
+    padding-top: 20px!important;
   }
 }
 
@@ -1404,4 +1404,25 @@ div.dt-button-collection {
     width: 50%;
     margin-left: auto;
     margin-right: auto;
+}
+
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px!important;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+div[name="choose_date"] {
+    display: none;
 }
