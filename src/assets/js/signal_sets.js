@@ -165,24 +165,37 @@ var table = new DataTable('#signalSetsTable', {
     paging: false,
     scrollCollapse: true,
     scrollX: true,
-    scrollY: calculate_table_height(),
+    scrollY: calculate_table_height() + 75,
     info: false,
     fixedColumns: {
         left: 2
     },
     ordering: false,
     mark: true,
-    layout: {
-        topStart: {
-            buttons: [
-                {
-                    extend: 'colvis',
-                    columns: 'th:nth-child(n+3)'
-                }
-            ]
+    
+    language: {
+        buttons: {
+            colvis: "Toggle Columns"
         }
-    },
+    }
 });
+  
+
+new DataTable.Buttons(table, {
+    buttons: [
+        {
+            extend: 'colvis',
+            columns: 'th:nth-child(n+3)',
+            prefixButtons: ['colvisRestore']
+        }
+    ]
+});
+ 
+table
+    .buttons(0, null)
+    .container()
+    .appendTo("#colvis");
+
 
 function format (signalSetId, relatedSignals) {
     var signals = relatedSignals.filter((signal) => signal.signal_set === signalSetId)
