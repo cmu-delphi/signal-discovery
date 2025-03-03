@@ -12,8 +12,9 @@
     <div class="col-2">
         <form method="GET" id="filterSignalSetsForm">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body" style="padding-top: 0px; padding-bottom: 0px;">
                     <span id="totalRowsNumber"></span>
+                    <div style="margin-top: 20px" class="colvis" id="colvis"></div>
                     <h2 class="card-title" style="font-size: 25px;">Filters</h2>
                     <div class="accordion accordion-flush" id="accordionSignalSetFilters">
                         <div class="accordion-item">
@@ -270,7 +271,7 @@
                             </a>
                         </div>
                     </div> 
-                    <div class="card-body">
+                    <div class="card-body" style="padding-top: 0px;">
                         <div class="d-grid gap-2 mt-3">
                             <button id="filter-submit" type="submit" class="btn btn-primary">{% trans 'Apply Filters' %}</button>
                         </div>
@@ -753,6 +754,7 @@
         }
         initSelect2('geographic_value', geoValues);
         table.columns.adjust()
+
         $("#totalRowsNumber").text(`Showing ${table.page.info().recordsTotal} Indicator ${pluralize(table.page.info().recordsTotal, 'Set')}`);
     })
 
