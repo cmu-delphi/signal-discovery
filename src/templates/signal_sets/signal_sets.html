@@ -13,6 +13,7 @@
         <form method="GET" id="filterSignalSetsForm">
             <div class="card">
                 <div class="card-body">
+                    <span id="totalRowsNumber"></span>
                     <h2 class="card-title" style="font-size: 25px;">Filters</h2>
                     <div class="accordion accordion-flush" id="accordionSignalSetFilters">
                         <div class="accordion-item">
@@ -329,7 +330,7 @@
                                 <i class="far fa-circle-question"></i>
                             </a>
                         </th>
-                        <th>Temporal Scope Start
+                        <th class="min-w-120">Temporal Scope Start
                             <a
                                 tabindex="0"
                                 type="button"
@@ -344,7 +345,7 @@
                                 <i class="far fa-circle-question"></i>
                             </a>
                         </th>
-                        <th>Temporal Scope End
+                        <th class="min-w-120">Temporal Scope End
                             <a
                                 tabindex="0"
                                 type="button"
@@ -752,6 +753,7 @@
         }
         initSelect2('geographic_value', geoValues);
         table.columns.adjust()
+        $("#totalRowsNumber").text(`Showing ${table.page.info().recordsTotal} Indicator ${pluralize(table.page.info().recordsTotal, 'Set')}`);
     })
 
     // Add event listener for opening and closing details

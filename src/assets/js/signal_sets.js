@@ -166,6 +166,7 @@ var table = new DataTable('#signalSetsTable', {
     scrollCollapse: true,
     scrollX: true,
     scrollY: calculate_table_height(),
+    info: false,
     fixedColumns: {
         left: 2
     },
@@ -180,11 +181,6 @@ var table = new DataTable('#signalSetsTable', {
                 }
             ]
         }
-    },
-    language: {
-        "info":           "Showing _TOTAL_ / _MAX_ Indicator Sets",
-        "infoEmpty":      "",
-        "infoFiltered":   "",
     },
 });
 
@@ -420,3 +416,8 @@ function submitMode(event) {
         previewData();
     }
 }
+
+const isPlural = num => Math.abs(num) !== 1;
+const simplePlural = word => `${word}s`;
+const pluralize = (num, word, plural = simplePlural) =>
+  isPlural(num) ? plural(word) : word;
