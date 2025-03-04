@@ -197,14 +197,16 @@ table
     .appendTo("#colvis");
 
 
-function format (signalSetId, relatedSignals) {
+function format (signalSetId, relatedSignals, signalSetDescription) {
     var signals = relatedSignals.filter((signal) => signal.signal_set === signalSetId)
 
     if (signals.length > 0) {
+        var data = `<p style="width: 40%;">${signalSetDescription}</p>`
         var tableMarkup = '<table class="table" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
                     '<thead>'+
                         '<th></th>'+
                         '<th>Indicator Name</th>'+
+                        '<th>Indicator API Name</th>'+
                         '<th>Indicator Description</th>'+
                         '<th></th>'+
                     '</thead>'+
@@ -215,15 +217,17 @@ function format (signalSetId, relatedSignals) {
             tableMarkup += '<tr>'+
                                 `<td><input type="checkbox" name="selectedSignal" onclick="addSelectedSignal(this)" data-signal-displayname='${signal.display_name}' data-endpoint="${signal.endpoint}" data-datasource="${signal.source}" data-signal="${signal.name}" data-time-type="${signal.time_type}" data-signal-set="${signal.signal_set_name}" ${checked}></td>`+
                                 `<td>${signal.display_name}</td>`+
+                                `<td>${signal.member_name}</td>`+
                                 `<td>${signal.description}</td>`+
                                 '<td style="width: 60%"></td>'+
                             '</tr>'
         }) 
         tableMarkup += '</tbody></table>'
+        data += tableMarkup;
     } else {
-        tableMarkup = "<p>No available indicators yet.</p>"
+        data = "<p>No available indicators yet.</p>"
     }
-    return tableMarkup;
+    return data;
 }
 
 
