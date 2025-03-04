@@ -103,6 +103,7 @@ class SignalSetListView(ListView):
                     "source": signal.source.name,
                     "time_type": signal.time_type,
                     "description": signal.description,
+                    "member_description": signal.member_description,
                 }
             )
         return related_signals
