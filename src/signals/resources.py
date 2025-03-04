@@ -33,7 +33,7 @@ def fix_boolean_fields(row) -> Any:
         "Is Cumulative",
         "Has StdErr",
         "Has Sample Size",
-        "Include in signal app",
+        "Include in indicator app",
     ]
     for k in fields:
         if row[k] == "TRUE":
@@ -60,10 +60,10 @@ def process_signal_type(row) -> None:
     """
     Processes signal type.
     """
-    if row["Signal Type"]:
-        signal_type = row["Signal Type"]
+    if row["Indicator Type"]:
+        signal_type = row["Indicator Type"]
         signal_type_obj, _ = SignalType.objects.get_or_create(name=signal_type)
-        row["Signal Type"] = signal_type_obj
+        row["Indicator Type"] = signal_type_obj
 
 
 def process_format_type(row) -> None:
@@ -71,7 +71,7 @@ def process_format_type(row) -> None:
     Processes format type.
     """
     if row["Format"]:
-        format_type = row["Format"]
+        format_type = row["Format"].strip()
         format_type_obj, _ = FormatType.objects.get_or_create(name=format_type)
         row["Format"] = format_type_obj
     else:
@@ -82,24 +82,24 @@ def process_severity_pyramid_rungs(row) -> None:
     """
     Processes severity pyramid rungs.
     """
-    if row["Severity Pyramid Rungs"]:
-        severity_pyramid_rung = row["Severity Pyramid Rungs"].strip()
+    if row["Surveillance Categories"]:
+        severity_pyramid_rung = row["Surveillance Categories"].strip()
         if severity_pyramid_rung.startswith("None"):
-            row["Severity Pyramid Rungs"] = None
+            row["Surveillance Categories"] = None
         else:
             severity_pyramid_rung_obj, _ = SeverityPyramidRung.objects.get_or_create(
                 name=severity_pyramid_rung,
                 used_in="signals",
                 defaults={"used_in": "signals", "display_name": severity_pyramid_rung},
             )
-        row["Severity Pyramid Rungs"] = severity_pyramid_rung_obj.id
+        row["Surveillance Categories"] = severity_pyramid_rung_obj.id
     else:
         none_severity_pyramid_rung_obj, _ = SeverityPyramidRung.objects.get_or_create(
             name="N/A",
             used_in="signals",
             defaults={"used_in": "signals", "display_name": "N/A"},
         )
-        row["Severity Pyramid Rungs"] = none_severity_pyramid_rung_obj.id
+        row["Surveillance Categories"] = none_severity_pyramid_rung_obj.id
 
 
 def process_category(row) -> None:
@@ -116,12 +116,12 @@ def process_geographic_scope(row) -> None:
     """
     Processes geographic scope.
     """
-    if row["Geographic Scope"]:
-        geographic_scope = row["Geographic Scope"]
+    if row["Geographic Coverage"]:
+        geographic_scope = row["Geographic Coverage"]
         geographic_scope_obj, _ = GeographicScope.objects.get_or_create(
             name=geographic_scope, used_in="signals", defaults={"used_in": "signals"}
         )
-        row["Geographic Scope"] = geographic_scope_obj.id
+        row["Geographic Coverage"] = geographic_scope_obj.id
 
 
 def process_source(row) -> None:
@@ -138,8 +138,8 @@ def process_available_geographies(row) -> None:
     """
     Processes available geographies.
     """
-    if row["Available Geography"]:
-        geographies: str = row["Available Geography"].split(",")
+    if row["Geographic Levels"]:
+        geographies: str = row["Geographic Levels"].split(",")
         delphi_aggregated_geographies: str = row["Delphi-Aggregated Geography"].split(
             ","
         )
@@ -156,7 +156,7 @@ def process_available_geographies(row) -> None:
                 },
             )
             signal = Signal.objects.get(
-                name=row["Signal"], source=row["Source Subdivision"]
+                name=row["Indicator"], source=row["Source Subdivision"]
             )
             signal_geography, _ = SignalGeography.objects.get_or_create(
                 geography=geography_instance, signal=signal
@@ -167,12 +167,12 @@ def process_available_geographies(row) -> None:
 
 
 def process_base(row) -> None:
-    if row["Signal BaseName"]:
+    if row["Indicator BaseName"]:
         source: SourceSubdivision = SourceSubdivision.objects.get(
             name=row["Source Subdivision"]
         )
         base_signal: Signal = Signal.objects.get(
-            name=row["Signal BaseName"], source=source
+            name=row["Indicator BaseName"], source=source
         )
         row["base"] = base_signal.id
 
@@ -213,7 +213,7 @@ class SignalBaseResource(ModelResource):
     Resource class for importing Signals base.
     """
 
-    name = Field(attribute="name", column_name="Signal")
+    name = Field(attribute="name", column_name="Indicator")
     display_name = Field(attribute="display_name", column_name="Name")
     base = Field(
         attribute="base",
@@ -241,9 +241,9 @@ class SignalResource(ModelResource):
     Resource class for importing and exporting Signal models
     """
 
-    name = Field(attribute="name", column_name="Signal")
+    name = Field(attribute="name", column_name="Indicator")
     display_name = Field(attribute="display_name", column_name="Name")
-    member_name = Field(attribute="member_name", column_name="Member Name")
+    member_name = Field(attribute="member_name", column_name="Member API Name")
     member_short_name = Field(
         attribute="member_short_name", column_name="Member Short Name"
     )
@@ -257,7 +257,7 @@ class SignalResource(ModelResource):
     )
     signal_type = Field(
         attribute="signal_type",
-        column_name="Signal Type",
+        column_name="Indicator Type",
         widget=widgets.ForeignKeyWidget(SignalType, field="name"),
     )
     active = Field(attribute="active", column_name="Active")
@@ -282,11 +282,11 @@ class SignalResource(ModelResource):
         attribute="typical_revision_cadence", column_name="Typical Revision Cadence"
     )
     demographic_scope = Field(
-        attribute="demographic_scope", column_name="Demographic Scope"
+        attribute="demographic_scope", column_name="Population"
     )
     severity_pyramid_rung = Field(
         attribute="severity_pyramid_rung",
-        column_name="Severity Pyramid Rungs",
+        column_name="Surveillance Categories",
         widget=widgets.ForeignKeyWidget(SeverityPyramidRung),
     )
     category = Field(
@@ -296,12 +296,12 @@ class SignalResource(ModelResource):
     )
     geographic_scope = Field(
         attribute="geographic_scope",
-        column_name="Geographic Scope",
+        column_name="Geographic Coverage",
         widget=widgets.ForeignKeyWidget(GeographicScope),
     )
     available_geographies = Field(
-        attribute="available_geographies",
-        column_name="Available Geographies",
+        attribute="available_geography",
+        column_name="Geographic Levels",
         widget=widgets.ManyToManyWidget(Geography, field="name", separator=","),
     )
     temporal_scope_start = Field(
@@ -330,17 +330,17 @@ class SignalResource(ModelResource):
     data_censoring = Field(attribute="data_censoring", column_name="Data Censoring")
     missingness = Field(attribute="missingness", column_name="Missingness")
     organization_access_list = Field(
-        attribute="organization_access_list", column_name="Who may access this signal?"
+        attribute="organization_access_list", column_name="Who may access this indicator?"
     )
     organization_sharing_list = Field(
         attribute="organization_sharing_list",
-        column_name="Who may be told about this signal?",
+        column_name="Who may be told about this indicator?",
     )
-    license = Field(attribute="license", column_name="License")
+    license = Field(attribute="license", column_name="Data Use Terms")
     restrictions = Field(attribute="restrictions", column_name="Use Restrictions")
     signal_set = Field(
         attribute="signal_set",
-        column_name="Signal Set",
+        column_name="Indicator Set",
         widget=widgets.ForeignKeyWidget(SignalSet, field="name"),
     )
 
@@ -401,16 +401,16 @@ class SignalResource(ModelResource):
         process_geographic_scope(row)
         process_source(row)
         process_links(row, dua_column_name="Link to DUA", link_column_name="Link")
-        if not row.get("Signal Set"):
-            row["Signal Set"] = None
+        if not row.get("Indicator Set"):
+            row["Indicator Set"] = None
         if not row.get("Source Subdivision"):
             row["Source Subdivision"] = None
 
     def skip_row(self, instance, original, row, import_validation_errors=None):
-        if not row["Include in signal app"]:
+        if not row["Include in indicator app"]:
             try:
                 signal = Signal.objects.get(
-                    name=row["Signal"], source=row["Source Subdivision"]
+                    name=row["Indicator"], source=row["Source Subdivision"]
                 )
                 signal.delete()
             except Signal.DoesNotExist:
@@ -423,7 +423,7 @@ class SignalResource(ModelResource):
             for link in row["Links"]:
                 signal_obj.related_links.add(link)
             process_available_geographies(row)
-            signal_obj.severity_pyramid_rung = SeverityPyramidRung.objects.get(id=row["Severity Pyramid Rungs"])
+            signal_obj.severity_pyramid_rung = SeverityPyramidRung.objects.get(id=row["Surveillance Categories"])
             signal_obj.format_type = row["Format"]
             signal_obj.save()
         except Signal.DoesNotExist as e:
