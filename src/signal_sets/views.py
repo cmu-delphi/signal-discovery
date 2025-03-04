@@ -95,6 +95,7 @@ class SignalSetListView(ListView):
                 {
                     "id": signal.id,
                     "display_name": signal.get_display_name,
+                    "member_name": signal.member_name,
                     "name": signal.name,
                     "signal_set": signal.signal_set.id,
                     "signal_set_name": signal.signal_set.name,

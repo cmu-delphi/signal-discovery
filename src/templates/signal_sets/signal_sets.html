@@ -548,7 +548,7 @@
                 </thead>
                 <tbody>
                     {% for signal_set in signal_sets %}
-                    <tr data-id="{{ signal_set.id }}">
+                    <tr data-id="{{ signal_set.id }}" data-description="{{ signal_set.description }}">
                         <td class="dt-control"></td>
                         <td>
                             <a data-mdb-tooltip-init title="{{ signal_set.description }}">{{ signal_set.name }}</a>
@@ -769,7 +769,7 @@
         }
         else {
             // Open this row
-            row.child(format(tr.data('id'), relatedSignals)).show();
+            row.child(format(tr.data('id'), relatedSignals, tr.data("description"))).show();
         }
         
     });
