@@ -218,7 +218,7 @@ function format (signalSetId, relatedSignals, signalSetDescription) {
                                 `<td><input type="checkbox" name="selectedSignal" onclick="addSelectedSignal(this)" data-signal-displayname='${signal.display_name}' data-endpoint="${signal.endpoint}" data-datasource="${signal.source}" data-signal="${signal.name}" data-time-type="${signal.time_type}" data-signal-set="${signal.signal_set_name}" ${checked}></td>`+
                                 `<td>${signal.display_name}</td>`+
                                 `<td>${signal.member_name}</td>`+
-                                `<td>${signal.description}</td>`+
+                                `<td>${signal.member_description}</td>`+
                                 '<td style="width: 60%"></td>'+
                             '</tr>'
         }) 
