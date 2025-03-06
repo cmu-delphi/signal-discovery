@@ -47,6 +47,12 @@ function plotData() {
         geographicValues.forEach((geoValue) => {
             var geographicValue = (typeof geoValue.id === 'string') ? geoValue.id.toLowerCase() : geoValue.id;
             var geographicType = geoValue.geoType;
+            var epivisCustomTitle;
+            if (signal["member_short_name"]) {
+                epivisCustomTitle = `${signal["signal_set_short_name"]}:${signal["member_short_name"]} : ${geoValue.text}`
+            } else {
+                epivisCustomTitle = `${signal["signal_set_short_name"]} : ${geoValue.text}`
+            }
             dataSets[`${signal["signal"]}_${geographicValue}`] = {
                 color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
                 title: "value",
@@ -56,8 +62,8 @@ function plotData() {
                     signal: signal["signal"],
                     time_type: signal["time_type"],
                     geo_type: geographicType,
-                    geo_value: geographicValue
-                    // custom_title: `${signal["data_source"]}:${signal["signal"]} - ${geoValue.text}`
+                    geo_value: geographicValue,
+                    custom_title: epivisCustomTitle
                 }
             }
         })
@@ -99,7 +105,9 @@ function addSelectedSignal(element) {
             signal: element.dataset.signal,
             time_type: element.dataset.timeType,
             signal_set: element.dataset.signalSet,
-            display_name: element.dataset.signalDisplayname
+            display_name: element.dataset.signalDisplayname,
+            signal_set_short_name: element.dataset.signalSetShortName,
+            member_short_name: element.dataset.memberShortName
         });
         updateSelectedSignals(element.dataset.datasource, element.dataset.signalDisplayname, element.dataset.signalSet, element.dataset.signal);
     } else {
@@ -215,7 +223,7 @@ function format (signalSetId, relatedSignals, signalSetDescription) {
             checked = checkedSignalMembers.filter((obj) => obj.data_source == signal.source && obj.signal == signal.name).length;
             checked = checked ? "checked" : ""
             tableMarkup += '<tr>'+
-                                `<td><input type="checkbox" name="selectedSignal" onclick="addSelectedSignal(this)" data-signal-displayname='${signal.display_name}' data-endpoint="${signal.endpoint}" data-datasource="${signal.source}" data-signal="${signal.name}" data-time-type="${signal.time_type}" data-signal-set="${signal.signal_set_name}" ${checked}></td>`+
+                                `<td><input type="checkbox" name="selectedSignal" onclick="addSelectedSignal(this)" data-signal-displayname='${signal.display_name}' data-endpoint="${signal.endpoint}" data-datasource="${signal.source}" data-signal="${signal.name}" data-time-type="${signal.time_type}" data-signal-set="${signal.signal_set_name}" data-signal-set-short-name="${signal.signal_set_short_name}" data-member-short-name="${signal.member_short_name}" ${checked}></td>`+
                                 `<td>${signal.display_name}</td>`+
                                 `<td>${signal.member_name}</td>`+
                                 `<td>${signal.member_description}</td>`+

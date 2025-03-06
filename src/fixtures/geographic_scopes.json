@@ -168,15 +168,5 @@
             "name": "Taiwan",
             "used_in": "signal_sets"
         }
-    },
-    {
-        "model": "signals.geographicscope",
-        "pk": 66,
-        "fields": {
-            "created": "2025-01-16T16:27:36.145Z",
-            "modified": "2025-01-16T16:27:36.146Z",
-            "name": "International",
-            "used_in": "signal_sets"
-        }
     }
 ]

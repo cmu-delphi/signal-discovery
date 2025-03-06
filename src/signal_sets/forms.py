@@ -50,10 +50,10 @@ class SignalSetFilterForm(forms.ModelForm):
         choices=[
             ("Annually", "Annually"),
             ("Monthly", "Monthly"),
-            ("Daily", "Daily"),
             ("Weekly", "Weekly"),
+            ("Daily", "Daily"),
             ("Hourly", "Hourly"),
-            ("None", "None")
+            ("Other", "Other")
         ],
         widget=forms.CheckboxSelectMultiple(),
     )
