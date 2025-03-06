@@ -222,8 +222,9 @@ function format (signalSetId, relatedSignals, signalSetDescription) {
         signals.forEach((signal) => {
             checked = checkedSignalMembers.filter((obj) => obj.data_source == signal.source && obj.signal == signal.name).length;
             checked = checked ? "checked" : ""
+            var disabled = signal.endpoint ? "" : "disabled title='Visualization functionality for this endpoint is coming soon'";
             tableMarkup += '<tr>'+
-                                `<td><input type="checkbox" name="selectedSignal" onclick="addSelectedSignal(this)" data-signal-displayname='${signal.display_name}' data-endpoint="${signal.endpoint}" data-datasource="${signal.source}" data-signal="${signal.name}" data-time-type="${signal.time_type}" data-signal-set="${signal.signal_set_name}" data-signal-set-short-name="${signal.signal_set_short_name}" data-member-short-name="${signal.member_short_name}" ${checked}></td>`+
+                                `<td><input ${disabled} type="checkbox" name="selectedSignal" onclick="addSelectedSignal(this)" data-signal-displayname='${signal.display_name}' data-endpoint="${signal.endpoint}" data-datasource="${signal.source}" data-signal="${signal.name}" data-time-type="${signal.time_type}" data-signal-set="${signal.signal_set_name}" data-signal-set-short-name="${signal.signal_set_short_name}" data-member-short-name="${signal.member_short_name}" ${checked}></td>`+
                                 `<td>${signal.display_name}</td>`+
                                 `<td>${signal.member_name}</td>`+
                                 `<td>${signal.member_description}</td>`+
