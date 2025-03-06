@@ -67,7 +67,7 @@ def process_datasources(row) -> None:
     """
     if row["Original Data Provider"]:
         data_source = row["Original Data Provider"]
-        data_source_obj, _ = DataSource.objects.get_or_create(name=data_source)
+        data_source_obj, _ = DataSource.objects.get_or_create(name=data_source, defaults={"display_name": data_source.capitalize()})
         row["Original Data Provider"] = data_source_obj
 
 
@@ -222,6 +222,7 @@ class SignalSetResource(resources.ModelResource):
         try:
             signal_set_obj = SignalSet.objects.get(id=row_result.object_id)
             for pathogen in row["Pathogen(s)/Syndrome(s)"].split(","):
+                signal_set_obj.pathogens.clear()
                 pathogen = Pathogen.objects.get(name=pathogen, used_in="signal_sets")
                 signal_set_obj.pathogens.add(pathogen)
             for severity_pyramid_rung in row["Surveillance Categories"].split(","):

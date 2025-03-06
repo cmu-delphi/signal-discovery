@@ -71,10 +71,10 @@ class SignalSetFilter(django_filters.FilterSet):
         choices=[
             ("Annually", "Annually"),
             ("Monthly", "Monthly"),
-            ("Daily", "Daily"),
             ("Weekly", "Weekly"),
+            ("Daily", "Daily"),
             ("Hourly", "Hourly"),
-            ("None", "None"),
+            ("Other", "Other"),
         ],
         lookup_expr="icontains",
     )
