@@ -106,6 +106,7 @@ class SignalSetListView(ListView):
                     "time_type": signal.time_type,
                     "description": signal.description,
                     "member_description": signal.member_description,
+                    "restricted": signal.signal_set.dua_required
                 }
             )
         return related_signals
