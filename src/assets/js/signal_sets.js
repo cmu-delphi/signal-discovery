@@ -207,6 +207,7 @@ table
 
 function format (signalSetId, relatedSignals, signalSetDescription) {
     var signals = relatedSignals.filter((signal) => signal.signal_set === signalSetId)
+    var disabled, restricted;
 
     if (signals.length > 0) {
         var data = `<p style="width: 40%;">${signalSetDescription}</p>`
@@ -221,10 +222,9 @@ function format (signalSetId, relatedSignals, signalSetDescription) {
                     '<tbody>'
         signals.forEach((signal) => {
             checked = checkedSignalMembers.filter((obj) => obj.data_source == signal.source && obj.signal == signal.name).length;
-            console.log(signal);
             var checkboxTitle = ""
             checked = checked ? "checked" : ""
-            var disabled = signal.endpoint ? "" : "disabled";
+            disabled = signal.endpoint ? "" : "disabled";
             var restricted = signal.restricted != "No";
             if (disabled === "disabled") {
                 checkboxTitle = "Visualization functionality for this endpoint is coming soon."
@@ -242,6 +242,11 @@ function format (signalSetId, relatedSignals, signalSetDescription) {
                             '</tr>'
         }) 
         tableMarkup += '</tbody></table>'
+        if (disabled === "disabled" || restricted) {
+            data += `<div class="alert alert-warning" data-mdb-alert-init role="alert">` +
+                    `   <div>This indicator set is available via the <a href="https://cmu-delphi.github.io/delphi-epidata/">Epidata API</a>, and directly via <a href="https://delphi.cmu.edu/epivis/">Epivis</a>, but is not yet available via this interface.</div>` +
+                    '</div>'
+        }
         data += tableMarkup;
     } else {
         data = "<p>No available indicators yet.</p>"
