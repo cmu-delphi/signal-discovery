@@ -208,15 +208,5 @@
           "created": "2023-08-09T19:23:22.597131",
           "modified": "2023-08-09T19:23:22.597131"
         }
-    },
-    {
-        "model": "signals.Pathogen",
-        "pk": 22,
-        "fields": {
-          "name": "N/A",
-          "used_in": "signal_sets",
-          "created": "2023-08-09T19:23:22.597131",
-          "modified": "2023-08-09T19:23:22.597131"
-        }
     }
   ]

@@ -26,20 +26,20 @@ def process_geographic_scope(row) -> None:
     """
     Processes geographic scope.
     """
-    if row["Geo Scope with index"]:
-        geographic_scope = row["Geo Scope with index"]
+    if row["Geographic Coverage"]:
+        geographic_scope = row["Geographic Coverage"]
         geographic_scope_obj, _ = GeographicScope.objects.get_or_create(
             name=geographic_scope, used_in="signal_sets"
         )
-        row["Geo Scope with index"] = geographic_scope_obj.id
+        row["Geographic Coverage"] = geographic_scope_obj.id
 
 
 def process_severity_pyramid_rungs(row) -> None:
     """
     Processes pathogen.
     """
-    if row["Severity Pyramid Rung(s)"]:
-        severity_pyramid_rungs = row["Severity Pyramid Rung(s)"].split(",")
+    if row["Surveillance Categories"]:
+        severity_pyramid_rungs = row["Surveillance Categories"].split(",")
         for severity_pyramid_rung in severity_pyramid_rungs:
             severity_pyramid_rung = severity_pyramid_rung.strip()
             severity_pyramid_rung_obj, _ = SeverityPyramidRung.objects.get_or_create(
@@ -65,10 +65,10 @@ def process_datasources(row) -> None:
     """
     Processes data source.
     """
-    if row["Data Source"]:
-        data_source = row["Data Source"]
-        data_source_obj, _ = DataSource.objects.get_or_create(name=data_source)
-        row["Data Source"] = data_source_obj
+    if row["Original Data Provider"]:
+        data_source = row["Original Data Provider"]
+        data_source_obj, _ = DataSource.objects.get_or_create(name=data_source, defaults={"display_name": data_source.capitalize()})
+        row["Original Data Provider"] = data_source_obj
 
 
 def fix_boolean_fields(row) -> Any:
@@ -76,7 +76,7 @@ def fix_boolean_fields(row) -> Any:
     Fixes boolean fields.
     """
     fields = [
-        "Include in signal app",
+        "Include in indicator app",
     ]
     for k in fields:
         if row[k] == "TRUE":
@@ -88,9 +88,9 @@ def fix_boolean_fields(row) -> Any:
 
 class SignalSetResource(resources.ModelResource):
 
-    name = Field(attribute="name", column_name="Signal Set name* ")
-    short_name = Field(attribute="short_name", column_name="Signal Set Short Name")
-    description = Field(attribute="description", column_name="Signal Set Description*")
+    name = Field(attribute="name", column_name="Indicator Set name* ")
+    short_name = Field(attribute="short_name", column_name="Indicator Set Short Name")
+    description = Field(attribute="description", column_name="Indicator Set Description*")
     maintainer_name = Field(
         attribute="maintainer_name", column_name="Maintainer/\nKey Contact *"
     )
@@ -100,7 +100,7 @@ class SignalSetResource(resources.ModelResource):
     organization = Field(attribute="organization", column_name="Organization")
     data_source = Field(
         attribute="data_source",
-        column_name="Data Source",
+        column_name="Original Data Provider",
         widget=widgets.ForeignKeyWidget(DataSource, field="name"),
     )
     endpoint = Field(attribute="endpoint", column_name="Endpoint")
@@ -115,12 +115,12 @@ class SignalSetResource(resources.ModelResource):
     data_type = Field(attribute="data_type", column_name="Type(s) of Data*")
     geographic_scope = Field(
         attribute="geographic_scope",
-        column_name="Geo Scope with index",
+        column_name="Geographic Coverage",
         widget=widgets.ForeignKeyWidget(GeographicScope),
     )
     geographic_granularity = Field(
         attribute="geographic_granularity",
-        column_name="Geographic Granularity*",
+        column_name="Geographic Levels",
     )
     preprocessing_description = Field(
         attribute="preprocessing_description",
@@ -142,21 +142,18 @@ class SignalSetResource(resources.ModelResource):
         attribute="reporting_lag", column_name="Reporting Lag (nominal)"
     )
     demographic_scope = Field(
-        attribute="demographic_scope", column_name="Demographic Scope"
+        attribute="demographic_scope", column_name="Population"
     )
     revision_cadence = Field(
         attribute="revision_cadence", column_name="Revision Cadence"
     )
-    demographic_scope = Field(
-        attribute="demographic_scope", column_name="Demographic Scope*"
-    )
     demographic_granularity = Field(
-        attribute="demographic_granularity", column_name="Demographic Granularity*"
+        attribute="demographic_granularity", column_name="Population Stratifiers"
     )
     censoring = Field(attribute="censoring", column_name="Censoring")
     missingness = Field(attribute="missingness", column_name="Missingness")
     dua_required = Field(attribute="dua_required", column_name="DUA required?")
-    license = Field(attribute="license", column_name="License ")
+    license = Field(attribute="license", column_name="Data Use Terms")
     dataset_location = Field(
         attribute="dataset_location", column_name="Dataset Location"
     )
@@ -218,16 +215,17 @@ class SignalSetResource(resources.ModelResource):
             pass
 
     def skip_row(self, instance, original, row, import_validation_errors=None):
-        if not row["Include in signal app"]:
+        if not row["Include in indicator app"]:
             return True
 
     def after_import_row(self, row, row_result, **kwargs):
         try:
             signal_set_obj = SignalSet.objects.get(id=row_result.object_id)
             for pathogen in row["Pathogen(s)/Syndrome(s)"].split(","):
+                signal_set_obj.pathogens.clear()
                 pathogen = Pathogen.objects.get(name=pathogen, used_in="signal_sets")
                 signal_set_obj.pathogens.add(pathogen)
-            for severity_pyramid_rung in row["Severity Pyramid Rung(s)"].split(","):
+            for severity_pyramid_rung in row["Surveillance Categories"].split(","):
                 severity_pyramid_rung = SeverityPyramidRung.objects.filter(
                     name=severity_pyramid_rung,
                     used_in="signal_sets"

@@ -38,22 +38,7 @@ function checkGeoCoverage(geoType, geoValue) {
     return notCoveredSignals;
 }
 
-function showNotCoveredGeoWarningMessage(notCoveredSignals, geoValue) {
-    var warningMessage = `The following signals are not available at selected geographic level "${geoValue}": <br>`;
-    notCoveredSignals.forEach(signal => {
-        warningMessage += `${signal.display_name} <br>`
-    })
-    showWarningAlert(warningMessage, 5000);
 
-}
-
-$('#geographic_value').on('select2:select', function (e) {
-    var geo = e.params.data;
-    var notCoveredSignals = checkGeoCoverage(geo.geoType, geo.id)
-    if (notCoveredSignals.length > 0) {
-        showNotCoveredGeoWarningMessage(notCoveredSignals, geo.text);
-    }
-});
 
 function plotData() {
     var dataSets = {};
@@ -62,6 +47,12 @@ function plotData() {
         geographicValues.forEach((geoValue) => {
             var geographicValue = (typeof geoValue.id === 'string') ? geoValue.id.toLowerCase() : geoValue.id;
             var geographicType = geoValue.geoType;
+            var epivisCustomTitle;
+            if (signal["member_short_name"]) {
+                epivisCustomTitle = `${signal["signal_set_short_name"]}:${signal["member_short_name"]} : ${geoValue.text}`
+            } else {
+                epivisCustomTitle = `${signal["signal_set_short_name"]} : ${geoValue.text}`
+            }
             dataSets[`${signal["signal"]}_${geographicValue}`] = {
                 color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
                 title: "value",
@@ -72,7 +63,7 @@ function plotData() {
                     time_type: signal["time_type"],
                     geo_type: geographicType,
                     geo_value: geographicValue,
-                    custom_title: `${signal["data_source"]}:${signal["signal"]} - ${geoValue.text}`
+                    custom_title: epivisCustomTitle
                 }
             }
         })
@@ -114,7 +105,9 @@ function addSelectedSignal(element) {
             signal: element.dataset.signal,
             time_type: element.dataset.timeType,
             signal_set: element.dataset.signalSet,
-            display_name: element.dataset.signalDisplayname
+            display_name: element.dataset.signalDisplayname,
+            signal_set_short_name: element.dataset.signalSetShortName,
+            member_short_name: element.dataset.memberShortName
         });
         updateSelectedSignals(element.dataset.datasource, element.dataset.signalDisplayname, element.dataset.signalSet, element.dataset.signal);
     } else {
@@ -180,56 +173,80 @@ var table = new DataTable('#signalSetsTable', {
     paging: false,
     scrollCollapse: true,
     scrollX: true,
-    scrollY: calculate_table_height(),
+    scrollY: calculate_table_height() + 75,
+    info: false,
     fixedColumns: {
         left: 2
     },
     ordering: false,
     mark: true,
-    layout: {
-        topStart: {
-            buttons: [
-                {
-                    extend: 'colvis',
-                    columns: 'th:nth-child(n+3)'
-                }
-            ]
-        }
-    },
+    
     language: {
-        "info":           "Showing _TOTAL_ / _MAX_ Signal Sets",
-        "infoEmpty":      "",
-        "infoFiltered":   "",
-    },
+        buttons: {
+            colvis: "Toggle Columns"
+        }
+    }
 });
+  
 
-function format (signalSetId, relatedSignals) {
+new DataTable.Buttons(table, {
+    buttons: [
+        {
+            extend: 'colvis',
+            columns: 'th:nth-child(n+3)',
+            prefixButtons: ['colvisRestore']
+        }
+    ]
+});
+ 
+table
+    .buttons(0, null)
+    .container()
+    .appendTo("#colvis");
+
+
+function format (signalSetId, relatedSignals, signalSetDescription) {
     var signals = relatedSignals.filter((signal) => signal.signal_set === signalSetId)
 
     if (signals.length > 0) {
+        var data = `<p style="width: 40%;">${signalSetDescription}</p>`
         var tableMarkup = '<table class="table" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
                     '<thead>'+
                         '<th></th>'+
-                        '<th>Signal Name</th>'+
-                        '<th>Signal Description</th>'+
+                        '<th>Indicator Name</th>'+
+                        '<th>Indicator API Name</th>'+
+                        '<th>Indicator Description</th>'+
                         '<th></th>'+
                     '</thead>'+
                     '<tbody>'
         signals.forEach((signal) => {
             checked = checkedSignalMembers.filter((obj) => obj.data_source == signal.source && obj.signal == signal.name).length;
+            console.log(signal);
+            var checkboxTitle = ""
             checked = checked ? "checked" : ""
+            var disabled = signal.endpoint ? "" : "disabled";
+            var restricted = signal.restricted != "No";
+            if (disabled === "disabled") {
+                checkboxTitle = "Visualization functionality for this endpoint is coming soon."
+            }
+            if (restricted) {
+                disabled = "disabled";
+                checkboxTitle = "Access to this data source is restricted. Contact delphi-support@andrew.cmu.edu for more information."
+            }
             tableMarkup += '<tr>'+
-                                `<td><input type="checkbox" name="selectedSignal" onclick="addSelectedSignal(this)" data-signal-displayname='${signal.display_name}' data-endpoint="${signal.endpoint}" data-datasource="${signal.source}" data-signal="${signal.name}" data-time-type="${signal.time_type}" data-signal-set="${signal.signal_set_name}" ${checked}></td>`+
+                                `<td><input ${disabled} title="${checkboxTitle}" type="checkbox" name="selectedSignal" onclick="addSelectedSignal(this)" data-signal-displayname='${signal.display_name}' data-endpoint="${signal.endpoint}" data-datasource="${signal.source}" data-signal="${signal.name}" data-time-type="${signal.time_type}" data-signal-set="${signal.signal_set_name}" data-signal-set-short-name="${signal.signal_set_short_name}" data-member-short-name="${signal.member_short_name}" ${checked}></td>`+
                                 `<td>${signal.display_name}</td>`+
-                                `<td>${signal.description}</td>`+
+                                `<td>${signal.member_name}</td>`+
+                                `<td>${signal.member_description}</td>`+
                                 '<td style="width: 60%"></td>'+
                             '</tr>'
         }) 
         tableMarkup += '</tbody></table>'
+        data += tableMarkup;
     } else {
-        tableMarkup = "<p>No available signals yet.</p>"
+        data = "<p>No available indicators yet.</p>"
     }
-    return tableMarkup;
+    return data;
 }
 
 
@@ -242,19 +259,37 @@ function exportData() {
     var endDate = document.getElementById('end_date').value;
 
     var manualDataExport = "To download data, please click on the link or copy/paste command into your terminal: \n\n"
+    var requests = [];
     
     checkedSignalMembers.forEach((signal) => {
         geoTypes.forEach((geoType) => {
             var geoValues = geographicValues[geoType].map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(",");
             if (signal["time_type"] === "week") {
-                startDate = getDateYearWeek(new Date(startDate));
-                endDate = getDateYearWeek(new Date(endDate));
-            };
-            var exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${startDate}&end_day=${endDate}&geo_type=${geoType}&geo_values=${geoValues}`;
-            manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
+                var request = $.ajax({
+                    url: "get_epiweek/",
+                    type: 'POST',
+                    async: true,
+                    data: {
+                        csrfmiddlewaretoken: csrf_token,
+                        start_date: startDate,
+                        end_date: endDate,
+                    },
+                    success: function (result) {
+                        var exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${result.start_date}&end_day=${result.end_date}&geo_type=${geoType}&geo_values=${geoValues}`;
+                        manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
+                    }
+                })
+                requests.push(request);
+            } else {
+                var exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${startDate}&end_day=${endDate}&geo_type=${geoType}&geo_values=${geoValues}`;
+                manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
+            }
         });
     });
-    $('#modeSubmitResult').html(manualDataExport);
+    $.when.apply($, requests).then(function() {
+        $('#modeSubmitResult').html(manualDataExport);
+    })
+    
 }
 
 function previewData() {
@@ -263,12 +298,27 @@ function previewData() {
     var geoTypes = Object.keys(geographicValues);
     var previewExample = [];
     var requests = [];
+
+    var startDate = document.getElementById("start_date").value;
+    var endDate = document.getElementById("end_date").value;
+
     checkedSignalMembers.forEach((signal) => {
-        var startDate = document.getElementById("start_date").value;
-        var endDate = document.getElementById("end_date").value;
+        var timeValues;
+        
         if (signal["time_type"] === "week") {
-            startDate = getDateYearWeek(new Date(startDate));
-            endDate = getDateYearWeek(new Date(endDate));
+            $.ajax({
+                url: "get_epiweek/",
+                type: 'POST',
+                async: false,
+                data: {
+                    csrfmiddlewaretoken: csrf_token,
+                    start_date: startDate,
+                    end_date: endDate,
+                },
+                success: function (result) {
+                    timeValues = `${result.start_date}-${result.end_date}`;
+                }
+            })
         };
         
         var requestSent = false;
@@ -276,13 +326,14 @@ function previewData() {
             geoTypes.forEach((geoType) => {
                 var geoValues = geographicValues[geoType].map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(",");
                 $('#loader').show();
+                timeValues = signal["time_type"] === "week" ? timeValues : `${startDate}--${endDate}`;
                 var request = $.ajax({
                     url: "epidata/covidcast/",
                     type: 'GET',
                     async: true,
                     data: {
                         'time_type': signal["time_type"],
-                        'time_values': `${startDate}--${endDate}`,
+                        'time_values': timeValues,
                         'data_source': signal["data_source"],
                         'signal': signal["signal"],
                         'geo_type': geoType,
@@ -310,7 +361,8 @@ function previewData() {
 
 // Plot/Export/Preview data block
 
-var currentMode = 'preview';
+var currentMode = 'epivis';
+
 
 function handleModeChange(mode) {
     $('#modeSubmitResult').html('');
@@ -342,30 +394,52 @@ function handleModeChange(mode) {
     });
 }
 
-function getDateYearWeek(date) {
-    const currentDate =
-        (typeof date === 'object') ? date : new Date();
-    const januaryFirst =
-        new Date(currentDate.getFullYear(), 0, 1);
-    const daysToNextMonday =
-        (januaryFirst.getDay() === 1) ? 0 :
-        (7 - januaryFirst.getDay()) % 7;
-    const nextMonday =
-        new Date(currentDate.getFullYear(), 0,
-        januaryFirst.getDate() + daysToNextMonday);
-
-    var weekNumber = (currentDate < nextMonday) ? 52 :
-    (currentDate > nextMonday ? Math.ceil(
-    (currentDate - nextMonday) / (24 * 3600 * 1000) / 7) : 1);
-
-    if (weekNumber < 10) {
-        weekNumber = `0${weekNumber}`;
+function hideAlert(alertId) {
+    const alert = document.getElementById(alertId);
+    if (alert) {
+        alert.remove();
     }
-
-    const year = currentDate.getFullYear()
-
-    return `${year}${weekNumber}`;
 }
+
+
+
+const alertPlaceholder = document.getElementById('warning-alert')
+const appendAlert = (message, type) => {
+    const wrapper = document.createElement('div')
+    const alertId = `alert-${Date.now()}`;
+    wrapper.innerHTML = [
+      `<div id="${alertId}" class="alert alert-${type} alert-dismissible" data-mdb-alert-init role="alert">`,
+      `   <div>${message}</div>`,
+      '   <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>',
+      '</div>'
+    ].join('')
+  
+    alertPlaceholder.append(wrapper)
+    wrapper.getElementsByClassName('btn-close')[0].addEventListener('click', () => hideAlert(alertId))
+  }
+
+function showNotCoveredGeoWarningMessage(notCoveredSignals, geoValue) {
+    var warningMessage = "";
+    notCoveredSignals.forEach(signal => {
+        if (currentMode === 'epivis') {
+            warningMessage += `Indicator ${signal.display_name} is not available for Location ${geoValue} <br>`
+        } else {
+            var startDate = document.getElementById("start_date").value;
+            var endDate = document.getElementById("end_date").value;
+            warningMessage += `Indicator ${signal.display_name} is not available for Location ${geoValue} for the time period from ${startDate} to ${endDate} <br>` 
+        }
+    })
+    appendAlert(warningMessage, "warning")
+}
+
+$('#geographic_value').on('select2:select', function (e) {
+    var geo = e.params.data;
+    var notCoveredSignals = checkGeoCoverage(geo.geoType, geo.id)
+    if (notCoveredSignals.length > 0) {
+        showNotCoveredGeoWarningMessage(notCoveredSignals, geo.text);
+    }
+});
+
 
 function submitMode(event) {
     event.preventDefault();
@@ -378,3 +452,8 @@ function submitMode(event) {
         previewData();
     }
 }
+
+const isPlural = num => Math.abs(num) !== 1;
+const simplePlural = word => `${word}s`;
+const pluralize = (num, word, plural = simplePlural) =>
+  isPlural(num) ? plural(word) : word;

@@ -42,13 +42,13 @@ h6 {
 # Main
 --------------------------------------------------------------*/
 #main {
-  padding: 20px 30px;
+  padding-top: 20px!important;
   transition: all 0.3s;
 }
 
 @media (max-width: 1199px) {
   #main {
-    padding: 20px;
+    padding-top: 20px!important;
   }
 }
 
@@ -1392,6 +1392,11 @@ h6 {
     min-width: 300px;
 }
 
+.min-w-120 {
+    content: '';
+    min-width: 120px;
+}
+
 div.dt-button-collection {
     width: 265px!important;
 }
@@ -1422,3 +1427,7 @@ div.dt-button-collection {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+div[name="choose_date"] {
+    display: none;
+}
