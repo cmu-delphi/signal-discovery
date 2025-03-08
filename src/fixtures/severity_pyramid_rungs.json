@@ -126,8 +126,8 @@
         "fields": {
             "created": "2024-08-15T09:57:49.327Z",
             "modified": "2024-08-15T13:07:46.136Z",
-            "name": "Case",
-            "display_name": "Case",
+            "name": "Ascertained (Case)",
+            "display_name": "Ascertained (Case)",
             "used_in": "signal_sets"
         }
     },
