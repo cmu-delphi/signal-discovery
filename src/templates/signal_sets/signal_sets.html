@@ -567,7 +567,11 @@
                             {{ signal_set.geographic_scope }}
                         </td>
                         <td >
-                            {{ signal_set.get_available_geographies }}
+                            {% for available_geography in signal_set.get_available_geographies %}
+                                <span class="badge rounded-pill bg-dark">
+                                    {{ available_geography }}
+                                </span>
+                            {% endfor %}
                         </td>
                         <td >
                             {{ signal_set.temporal_scope_start }}
@@ -576,7 +580,9 @@
                             {{ signal_set.temporal_scope_end }}
                         </td>
                         <td >
-                            {{ signal_set.temporal_granularity }}
+                            <span class="badge rounded-pill bg-dark">
+                                {{ signal_set.temporal_granularity }}
+                            </span>
                         </td>
                         <td>
                             {{ signal_set.reporting_cadence }}
@@ -738,6 +744,7 @@
     const geoValues = {{ geographic_granularities|safe }};
 
     var relatedSignals = JSON.parse(JSON.stringify({{ related_signals|safe }}));
+    console.log(relatedSignals.length)
 
     var urlParams = JSON.parse(JSON.stringify({{ url_params_dict|safe }}));
 
@@ -758,7 +765,7 @@
         initSelect2('geographic_value', geoValues);
         table.columns.adjust()
 
-        $("#totalRowsNumber").text(`Showing ${table.page.info().recordsTotal} Indicator ${pluralize(table.page.info().recordsTotal, 'Set')}`);
+        $("#totalRowsNumber").text(`Showing ${table.page.info().recordsTotal} indicator ${pluralize(table.page.info().recordsTotal, 'set')} containing ${relatedSignals.length} individual ${pluralize(relatedSignals.length, 'indicator')}`)
     })
 
     // Add event listener for opening and closing details
