@@ -103,6 +103,7 @@ class SeverityPyramidRungAdmin(admin.ModelAdmin):
         "display_name",
         "used_in",
     )
+    exclude = ("id",)
     search_fields: tuple[Literal["name"]] = ("name",)
 
 

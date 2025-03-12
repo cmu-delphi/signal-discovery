@@ -86,9 +86,9 @@ class SignalSetListView(ListView):
                     url_params_str = f"{url_params_str}&{param_name}={param_value}"
         return url_params_dict, url_params_str
 
-    def get_related_signals(self, queryset):
+    def get_related_signals(self, queryset, signal_set_ids):
         related_signals = []
-        for signal in queryset.prefetch_related(
+        for signal in queryset.filter(signal_set__id__in=signal_set_ids).prefetch_related(
             "signal_set", "source", "severity_pyramid_rung"
         ):
             related_signals.append(
@@ -124,7 +124,7 @@ class SignalSetListView(ListView):
         context["filter"] = filter
         context["signal_sets"] = filter.qs
         context["related_signals"] = json.dumps(
-            self.get_related_signals(filter.signals_qs)
+            self.get_related_signals(filter.signals_qs, filter.qs.values_list("id", flat=True))
         )
         context["available_geographies"] = Geography.objects.filter(used_in="signals")
         context["geographic_granularities"] = [

@@ -248,4 +248,4 @@ class SignalSet(models.Model):
 
     @property
     def get_available_geographies(self):
-        return ", ".join([geo.display_name for geo in self.available_geographies.all()])
+        return [geo.display_name for geo in self.available_geographies.all()]
