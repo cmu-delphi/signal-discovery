@@ -81,6 +81,12 @@ class SeverityPyramidRung(TimeStampedModel):
         default="signals",
     )
 
+    display_order_number: models.IntegerField = models.IntegerField(
+        verbose_name=_("display order number"),
+        help_text=_("Display order number of the severity pyramid rung."),
+        null=True,
+    )
+
     class Meta:
         verbose_name_plural: str = "Severity Pyramid Rungs"
         unique_together: list[str] = ["name", "used_in"]
