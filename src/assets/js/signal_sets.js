@@ -448,8 +448,15 @@ $('#geographic_value').on('select2:select', function (e) {
 
 function submitMode(event) {
     event.preventDefault();
+    var geographicValues = $('#geographic_value').select2('data');
 
+    if (geographicValues.length === 0) {
+        appendAlert("Please select at least one geographic location", "warning")
+        return;
+    }
+    
     if (currentMode === 'epivis') {
+        // appendAlert(warningMessage, "warning")
         plotData();
     } else if (currentMode === 'export') {
         exportData();
