@@ -744,7 +744,6 @@
     const geoValues = {{ geographic_granularities|safe }};
 
     var relatedSignals = JSON.parse(JSON.stringify({{ related_signals|safe }}));
-    console.log(relatedSignals.length)
 
     var urlParams = JSON.parse(JSON.stringify({{ url_params_dict|safe }}));
 
@@ -785,10 +784,9 @@
     });
 
 
-    // Add event listener for filtering. 
-    window.addEventListener('beforeunload', () => {
-        document.getElementById('filterSignalSetsForm').reset();
-    });
+    // Added these two lines to disable bfcache (https://web.dev/articles/bfcache).
+    window.addEventListener('unload', function(){});
+    window.addEventListener('beforeunload', function(){});
 
     document.getElementsByName('modes').forEach((el) => {
         el.addEventListener('change', (event) => {
