@@ -785,8 +785,13 @@
 
 
     // Added these two lines to disable bfcache (https://web.dev/articles/bfcache).
-    window.addEventListener('unload', function(){});
-    window.addEventListener('beforeunload', function(){});
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+          location.reload()
+        }
+      });
+    {% comment %} window.addEventListener('unload', function(){});
+    window.addEventListener('beforeunload', function(){}); {% endcomment %}
 
     document.getElementsByName('modes').forEach((el) => {
         el.addEventListener('change', (event) => {
