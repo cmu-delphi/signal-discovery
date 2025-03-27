@@ -575,6 +575,13 @@ class Signal(TimeStampedModel):
             return self.name
 
 
+class OtherEndointSignal(Signal):
+    class Meta:
+        proxy = True
+        verbose_name = "Other Endpoint Signal"
+        verbose_name_plural = "Other Endpoint Signals"
+
+
 class SignalsDbView(models.Model):
     id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=255)
