@@ -152,7 +152,7 @@ class SignalSetResource(resources.ModelResource):
     )
     censoring = Field(attribute="censoring", column_name="Censoring")
     missingness = Field(attribute="missingness", column_name="Missingness")
-    dua_required = Field(attribute="dua_required", column_name="DUA required?")
+    dua_required = Field(attribute="dua_required", column_name="DUA Required?")
     license = Field(attribute="license", column_name="Data Use Terms")
     dataset_location = Field(
         attribute="dataset_location", column_name="Dataset Location"
