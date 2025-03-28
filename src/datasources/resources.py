@@ -27,9 +27,19 @@ def process_links(row, dua_column_name="DUA", link_column_name="Link"):
             links.append(link.id)
         else:
             for match in matches:
-                link, _ = Link.objects.get_or_create(url=match[1], defaults={'link_type': match[0], })
+                link, _ = Link.objects.get_or_create(
+                    url=match[1],
+                    defaults={
+                        "link_type": match[0],
+                    },
+                )
                 links.append(link.id)
     row["Links"] = links
+
+
+def process_datasource_name(row):
+    if row["Name"]:
+        row["Name"] = row["Name"].capitalize()
 
 
 def process_datasources(row):
@@ -67,5 +77,6 @@ class SourceSubdivisionResource(resources.ModelResource):
         skip_unchanged = True
 
     def before_import_row(self, row, **kwargs):
+        process_datasource_name(row)
         process_links(row)
         process_datasources(row)

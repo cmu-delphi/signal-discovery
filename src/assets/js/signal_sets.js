@@ -15,27 +15,32 @@ function showWarningAlert(warningMessage, slideUpTime = 2000) {
     });
 }
 
-function checkGeoCoverage(geoType, geoValue) {
-    var notCoveredSignals = [];
-    $.ajax({
-        url: "epidata/covidcast/geo_coverage/",
-        type: 'GET',
-        async: false,
-        data: {
-            'geo': `${geoType}:${geoValue}`
-        },
-        success: function (result) {
-            checkedSignalMembers.forEach(signal => {
-                var covered = result["epidata"].some(
-                    e => (e.source === signal.data_source && e.signal === signal.signal)
-                )
-                if (!covered) {
-                    notCoveredSignals.push(signal);
-                }
-            })
-        }
-    })
-    return notCoveredSignals;
+async function checkGeoCoverage(geoType, geoValue) {
+    const notCoveredSignals = [];
+    
+    try {
+        const result = await $.ajax({
+            url: "epidata/covidcast/geo_coverage/",
+            type: 'GET',
+            data: {
+                'geo': `${geoType}:${geoValue}`
+            }
+        });
+        
+        checkedSignalMembers.forEach(signal => {
+            const covered = result["epidata"].some(
+                e => (e.source === signal.data_source && e.signal === signal.signal)
+            );
+            if (!covered) {
+                notCoveredSignals.push(signal);
+            }
+        });
+        
+        return notCoveredSignals;
+    } catch (error) {
+        console.error('Error fetching geo coverage:', error);
+        return notCoveredSignals;
+    }
 }
 
 
@@ -122,6 +127,18 @@ function addSelectedSignal(element) {
         $("#showSelectedSignalsButton").hide();
     }
 }
+
+$("#showSelectedSignalsButton").click(function() {
+    alertPlaceholder.innerHTML = "";
+    $('#geographic_value').select2("data").forEach(geo => {
+        checkGeoCoverage(geo.geoType, geo.id).then((notCoveredSignals) => {
+            if (notCoveredSignals.length > 0) {
+                showNotCoveredGeoWarningMessage(notCoveredSignals, geo.text);
+            }
+        })
+        
+    });
+});
 
 // Add an event listener to each 'bulk-select' element
 let bulkSelectDivs = document.querySelectorAll('.bulk-select');
@@ -439,15 +456,23 @@ function showNotCoveredGeoWarningMessage(notCoveredSignals, geoValue) {
 
 $('#geographic_value').on('select2:select', function (e) {
     var geo = e.params.data;
-    var notCoveredSignals = checkGeoCoverage(geo.geoType, geo.id)
-    if (notCoveredSignals.length > 0) {
-        showNotCoveredGeoWarningMessage(notCoveredSignals, geo.text);
+    checkGeoCoverage(geo.geoType, geo.id).then((notCoveredSignals) => {
+        if (notCoveredSignals.length > 0) {
+            showNotCoveredGeoWarningMessage(notCoveredSignals, geo.text);
+        }
     }
+    );
 });
 
 
 function submitMode(event) {
     event.preventDefault();
+    var geographicValues = $('#geographic_value').select2('data');
+
+    if (geographicValues.length === 0) {
+        appendAlert("Please select at least one geographic location", "warning")
+        return;
+    }
 
     if (currentMode === 'epivis') {
         plotData();

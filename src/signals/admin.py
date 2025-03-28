@@ -3,7 +3,7 @@ from typing import Literal
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 
-from signals.resources import SignalResource, SignalBaseResource
+from signals.resources import SignalResource, SignalBaseResource, OtherEndpointSignalResource
 
 
 from signals.models import (
@@ -14,6 +14,7 @@ from signals.models import (
     Pathogen,
     SeverityPyramidRung,
     Signal,
+    OtherEndointSignal,
     SignalType,
     SignalGeography,
     GeographyUnit,
@@ -102,6 +103,7 @@ class SeverityPyramidRungAdmin(admin.ModelAdmin):
         "name",
         "display_name",
         "used_in",
+        "display_order_number",
     )
     exclude = ("id",)
     search_fields: tuple[Literal["name"]] = ("name",)
@@ -147,6 +149,35 @@ class SignalAdmin(ImportExportModelAdmin):
         "geographic_scope__name",
     )
     resource_classes: list[type[SignalResource]] = [SignalResource, SignalBaseResource]
+
+
+@admin.register(OtherEndointSignal)
+class OtherEndpointsSignalAdmin(ImportExportModelAdmin):
+    """
+    Admin interface for managing signal objects.
+    """
+
+    list_display: tuple[
+        Literal["name"],
+        Literal["signal_type"],
+        Literal["format_type"],
+        Literal["category"],
+        Literal["geographic_scope"],
+    ] = ("name", "signal_type", "format_type", "category", "geographic_scope")
+    search_fields: tuple[
+        Literal["name"],
+        Literal["signal_type__name"],
+        Literal["format_type__name"],
+        Literal["category__name"],
+        Literal["geographic_scope__name"],
+    ] = (
+        "name",
+        "signal_type__name",
+        "format_type__name",
+        "category__name",
+        "geographic_scope__name",
+    )
+    resource_classes: list[type[SignalResource]] = [OtherEndpointSignalResource]
 
 
 @admin.register(SignalGeography)

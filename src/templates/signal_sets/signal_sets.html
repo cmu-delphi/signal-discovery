@@ -278,6 +278,18 @@
                                 <a href="{% url 'signal_sets' %}">Clear filters</a>
                             </div>
                         </div>
+                        <hr>
+                        <div class="d-grid gap-2 mt-3" style="font-size: 0.9rem">
+                            <div>
+                                <a href="https://forms.gle/WV4Ndhc3ftvkkgVCA">Report a Data Problem</a>
+                            </div>
+                            <div>
+                                <a href="https://forms.gle/cMG7v7uUrnLVszRu5">Suggest a New Data Source</a>
+                            </div>
+                            <div>
+                                <a href="https://docs.google.com/forms/d/e/1FAIpQLScqgT1fKZr5VWBfsaSp-DNaN03aV6EoZU4YljIzHJ1Wl_zmtg/viewform">Other Feedback or Suggestion</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -744,7 +756,6 @@
     const geoValues = {{ geographic_granularities|safe }};
 
     var relatedSignals = JSON.parse(JSON.stringify({{ related_signals|safe }}));
-    console.log(relatedSignals.length)
 
     var urlParams = JSON.parse(JSON.stringify({{ url_params_dict|safe }}));
 
@@ -759,10 +770,14 @@
             }
         })
         initSelect2('location_search', locationSearchValues);
-        if (urlParams.location_search != "") {
-            $("#location_search").val(urlParams.location_search).trigger("change"); 
-        }
         initSelect2('geographic_value', geoValues);
+        if (urlParams.location_search != "") {
+            var locationSearch = urlParams.location_search; 
+            $("#location_search").val(locationSearch).trigger("change");
+            var locationIds = locationSearch.map((item) => item.split(":")[1]);
+            $('#geographic_value').val(locationIds).trigger('change');
+        }
+        
         table.columns.adjust()
 
         $("#totalRowsNumber").text(`Showing ${table.page.info().recordsTotal} indicator ${pluralize(table.page.info().recordsTotal, 'set')} containing ${relatedSignals.length} individual ${pluralize(relatedSignals.length, 'indicator')}`)
@@ -785,10 +800,12 @@
     });
 
 
-    // Add event listener for filtering. 
-    window.addEventListener('beforeunload', () => {
-        document.getElementById('filterSignalSetsForm').reset();
-    });
+    // Added these two lines to disable bfcache (https://web.dev/articles/bfcache).
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+          location.reload()
+        }
+      });
 
     document.getElementsByName('modes').forEach((el) => {
         el.addEventListener('change', (event) => {

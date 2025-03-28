@@ -82,9 +82,10 @@
         "fields": {
             "created": "2024-08-15T09:57:49.327Z",
             "modified": "2024-08-15T13:07:46.136Z",
-            "name": "Population",
-            "display_name": "Population",
-            "used_in": "signal_sets"
+            "name": "Entire Population",
+            "display_name": "Entire Population",
+            "used_in": "signal_sets",
+            "display_order_number": 1
         }
     },
     {
@@ -95,7 +96,8 @@
             "modified": "2024-08-15T13:07:46.136Z",
             "name": "Vaccinated",
             "display_name": "Vaccinated",
-            "used_in": "signal_sets"
+            "used_in": "signal_sets",
+            "display_order_number": 2
         }
     },
     {
@@ -106,7 +108,8 @@
             "modified": "2024-08-15T13:07:46.136Z",
             "name": "Infected",
             "display_name": "Infected",
-            "used_in": "signal_sets"
+            "used_in": "signal_sets",
+            "display_order_number": 3
         }
     },
     {
@@ -117,7 +120,8 @@
             "modified": "2024-08-15T13:07:46.136Z",
             "name": "Tested",
             "display_name": "Tested",
-            "used_in": "signal_sets"
+            "used_in": "signal_sets",
+            "display_order_number": 4
         }
     },
     {
@@ -128,7 +132,8 @@
             "modified": "2024-08-15T13:07:46.136Z",
             "name": "Ascertained (Case)",
             "display_name": "Ascertained (Case)",
-            "used_in": "signal_sets"
+            "used_in": "signal_sets",
+            "display_order_number": 5
         }
     },
     {
@@ -139,7 +144,8 @@
             "modified": "2024-08-15T13:07:46.136Z",
             "name": "Symptomatic",
             "display_name": "Symptomatic",
-            "used_in": "signal_sets"
+            "used_in": "signal_sets",
+            "display_order_number": 6
         }
     },
     {
@@ -150,7 +156,8 @@
             "modified": "2024-08-15T13:07:46.136Z",
             "name": "Outpatient / ED",
             "display_name": "Outpatient / ED",
-            "used_in": "signal_sets"
+            "used_in": "signal_sets",
+            "display_order_number": 7
         }
     },
     {
@@ -161,7 +168,8 @@
             "modified": "2024-08-15T13:07:46.136Z",
             "name": "Hospitalized",
             "display_name": "Hospitalized",
-            "used_in": "signal_sets"
+            "used_in": "signal_sets",
+            "display_order_number": 8
         }
     },
     {
@@ -172,7 +180,8 @@
             "modified": "2024-08-15T13:07:46.136Z",
             "name": "ICU",
             "display_name": "ICU",
-            "used_in": "signal_sets"
+            "used_in": "signal_sets",
+            "display_order_number": 9
         }
     },
     {
@@ -183,7 +192,8 @@
             "modified": "2024-08-15T13:07:46.136Z",
             "name": "Deceased",
             "display_name": "Deceased",
-            "used_in": "signal_sets"
+            "used_in": "signal_sets",
+            "display_order_number": 10
         }
     }
 ]

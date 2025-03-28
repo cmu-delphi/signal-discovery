@@ -35,7 +35,7 @@ class SignalSetFilterForm(forms.ModelForm):
         queryset=SeverityPyramidRung.objects.filter(
             # id__in=SignalSet.objects.values_list("severity_pyramid_rungs", flat="True")
             used_in="signal_sets"
-        ),
+        ).order_by("display_order_number"),
         widget=forms.CheckboxSelectMultiple(),
     )
 
