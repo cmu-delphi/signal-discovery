@@ -1,3 +1,5 @@
+const indicatorHandler = new IndicatorHandler();
+
 function initSelect2(elementId, data) {
     $(`#${elementId}`).select2({
         data: data,
@@ -27,7 +29,7 @@ async function checkGeoCoverage(geoType, geoValue) {
             }
         });
         
-        checkedSignalMembers.forEach(signal => {
+        checkedSignalMembers.filter(signal => signal["_endpoint"] === "covidcast").forEach(signal => {
             const covered = result["epidata"].some(
                 e => (e.source === signal.data_source && e.signal === signal.signal)
             );
@@ -42,50 +44,6 @@ async function checkGeoCoverage(geoType, geoValue) {
         return notCoveredSignals;
     }
 }
-
-
-
-function plotData() {
-    var dataSets = {};
-    var geographicValues = $('#geographic_value').select2('data');
-    checkedSignalMembers.forEach((signal) => {
-        geographicValues.forEach((geoValue) => {
-            var geographicValue = (typeof geoValue.id === 'string') ? geoValue.id.toLowerCase() : geoValue.id;
-            var geographicType = geoValue.geoType;
-            var epivisCustomTitle;
-            if (signal["member_short_name"]) {
-                epivisCustomTitle = `${signal["signal_set_short_name"]}:${signal["member_short_name"]} : ${geoValue.text}`
-            } else {
-                epivisCustomTitle = `${signal["signal_set_short_name"]} : ${geoValue.text}`
-            }
-            dataSets[`${signal["signal"]}_${geographicValue}`] = {
-                color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
-                title: "value",
-                params: {
-                    _endpoint: signal["_endpoint"],
-                    data_source: signal["data_source"],
-                    signal: signal["signal"],
-                    time_type: signal["time_type"],
-                    geo_type: geographicType,
-                    geo_value: geographicValue,
-                    custom_title: epivisCustomTitle
-                }
-            }
-        })
-        
-    });
-    
-    var requestParams = [];
-    for (var key in dataSets) {
-        requestParams.push(dataSets[key]);
-    }
-
-    var urlParamsEncoded = btoa(`{"datasets":${JSON.stringify(requestParams)}}`);
-    
-    var linkToEpivis = `${epiVisUrl}#${urlParamsEncoded}`
-    window.open(linkToEpivis, '_blank').focus();
-}
-
 
 // Function to update the modal content
 function updateSelectedSignals(dataSource, signalDisplayName, signalSet, signal) {
@@ -120,6 +78,7 @@ function addSelectedSignal(element) {
         document.getElementById(`${element.dataset.datasource}_${element.dataset.signal}`).remove();
     }
 
+    indicatorHandler.indicators = checkedSignalMembers;
 
     if (checkedSignalMembers.length > 0) {
         $("#showSelectedSignalsButton").show();
@@ -130,14 +89,24 @@ function addSelectedSignal(element) {
 
 $("#showSelectedSignalsButton").click(function() {
     alertPlaceholder.innerHTML = "";
+    if (!indicatorHandler.checkForCovidcastIndicators()) {
+        $("#geographic_value").prop("disabled", true);
+    }
     $('#geographic_value').select2("data").forEach(geo => {
         checkGeoCoverage(geo.geoType, geo.id).then((notCoveredSignals) => {
             if (notCoveredSignals.length > 0) {
                 showNotCoveredGeoWarningMessage(notCoveredSignals, geo.text);
             }
         })
-        
     });
+    var otherEndpointLocationsWarning = `<div class="alert alert-info" data-mdb-alert-init role="alert">` +
+    `   <div>Please, note that some indicator sets may require to select location(s) that is/are different from location above.<br> `
+    nonCovidcastSignalSets = [...new Set(checkedSignalMembers.filter(signal => signal["_endpoint"] != "covidcast").map((signal) => signal["signal_set"]))];
+    otherEndpointLocationsWarning += `Different location is required for following signal set(s): ${nonCovidcastSignalSets.join(", ")}`
+    otherEndpointLocationsWarning += `</div></div>`
+    $("#differentLocationNote").html(otherEndpointLocationsWarning)
+    indicatorHandler.showFluviewRegions();
+
 });
 
 // Add an event listener to each 'bulk-select' element
@@ -468,14 +437,15 @@ $('#geographic_value').on('select2:select', function (e) {
 function submitMode(event) {
     event.preventDefault();
     var geographicValues = $('#geographic_value').select2('data');
-
-    if (geographicValues.length === 0) {
-        appendAlert("Please select at least one geographic location", "warning")
-        return;
+    if (indicatorHandler.checkForCovidcastIndicators()) {
+        if (geographicValues.length === 0) {
+            appendAlert("Please select at least one geographic location", "warning")
+            return;
+        }
     }
 
     if (currentMode === 'epivis') {
-        plotData();
+        indicatorHandler.plotData();
     } else if (currentMode === 'export') {
         exportData();
     } else {
