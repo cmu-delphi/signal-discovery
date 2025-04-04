@@ -1,11 +1,11 @@
-class IndicatorHandler{
+class IndicatorHandler {
     constructor() {
         this.indicators = {};
     }
 
     fluviewIndicatorsMapping = {
         "wili": "%wILI",
-        "ili": "%ILI", 
+        "ili": "%ILI",
     }
 
     fluSurvRegions = [
@@ -122,6 +122,57 @@ class IndicatorHandler{
         });
     }
 
+    getCovidcastIndicators() {
+        var covidcastIndicators = [];
+        this.indicators.forEach((indicator) => {
+            if (indicator["_endpoint"] === "covidcast") {
+                covidcastIndicators.push(indicator);
+            }
+        });
+        return covidcastIndicators;
+    }
+
+    getFluviewIndicators() {
+        var fluviewIndicators = [];
+        this.indicators.forEach((indicator) => {
+            if (indicator["_endpoint"] === "fluview") {
+                fluviewIndicators.push(indicator);
+            }
+        }
+        );
+        return fluviewIndicators;
+    }
+
+    getFromToDate(startDate, endDate, timeType) {
+        if (timeType === "week") {
+            $.ajax({
+                url: "get_epiweek/",
+                type: 'POST',
+                async: false,
+                data: {
+                    csrfmiddlewaretoken: csrf_token,
+                    start_date: startDate,
+                    end_date: endDate,
+                },
+                success: function (result) {
+                    startDate = result.start_date;
+                    endDate = result.end_date;
+                }
+            })
+        }
+        return [startDate, endDate];
+    }
+
+
+    sendAsyncAjaxRequest(url, data) {
+        var request = $.ajax({
+            url: url,
+            type: "GET",
+            data: data,
+        })
+        return request;
+    }
+
     showFluviewRegions() {
         var fluviewRegionSelect = `
         <div class="row margin-top-1rem">
@@ -132,13 +183,15 @@ class IndicatorHandler{
                 <select id="fluviewRegions" name="fluviewRegions" class="form-select" multiple="multiple"></select>
             </div>
         </div>`
-        $("#otherEndpointLocations").append(fluviewRegionSelect)
-        $("#fluviewRegions").select2({
-            placeholder: "Select ILINet Location(s)",
-            data: this.fluviewRegions,
-            allowClear: true,
-            width: '100%',
-        });
+        if ($("#otherEndpointLocations").length) {
+            $("#otherEndpointLocations").append(fluviewRegionSelect)
+            $("#fluviewRegions").select2({
+                placeholder: "Select ILINet Location(s)",
+                data: this.fluviewRegions,
+                allowClear: true,
+                width: '100%',
+            });
+        }
     }
 
     generateEpivisCustomTitle(indicator, geoValue) {
@@ -151,19 +204,18 @@ class IndicatorHandler{
         return epivisCustomTitle;
     }
 
-    plotData(){
+    plotData() {
         var dataSets = {};
         var covidCastGeographicValues = $('#geographic_value').select2('data');
         var fluviewRegions = $('#fluviewRegions').select2('data');
-        console.log(fluviewRegions)
-        
+
         this.indicators.forEach((indicator) => {
             if (indicator["_endpoint"] === "covidcast") {
                 covidCastGeographicValues.forEach((geoValue) => {
                     var geographicValue = (typeof geoValue.id === 'string') ? geoValue.id.toLowerCase() : geoValue.id;
                     var geographicType = geoValue.geoType;
                     dataSets[`${indicator["signal"]}_${geographicValue}`] = {
-                        color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
+                        color: '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
                         title: "value",
                         params: {
                             _endpoint: indicator["_endpoint"],
@@ -179,7 +231,7 @@ class IndicatorHandler{
             } else if (indicator["_endpoint"] === "fluview") {
                 fluviewRegions.forEach((region) => {
                     dataSets[`${indicator["signal"]}_${indicator["_endpoint"]}_${region.id}`] = {
-                        color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
+                        color: '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
                         title: this.fluviewIndicatorsMapping[indicator["signal"]] || indicator["signal"],
                         params: {
                             _endpoint: indicator["_endpoint"],
@@ -256,8 +308,106 @@ class IndicatorHandler{
         }
 
         var urlParamsEncoded = btoa(`{"datasets":${JSON.stringify(requestParams)}}`);
-        
+
         var linkToEpivis = `${epiVisUrl}#${urlParamsEncoded}`
         window.open(linkToEpivis, '_blank').focus();
-    }   
+    }
+
+    exportData() {
+        var manualDataExport = "To download data, please click on the link or copy/paste command into your terminal: \n\n"
+        var exportUrl;
+
+        this.getCovidcastIndicators().forEach((indicator) => {
+            var startDate = document.getElementById('start_date').value;
+            var endDate = document.getElementById('end_date').value;
+            const [dateFrom, dateTo] = this.getFromToDate(startDate, endDate, indicator["time_type"]);
+
+            var covidCastGeographicValues = $('#geographic_value').select2('data');
+            covidCastGeographicValues = Object.groupBy(covidCastGeographicValues, ({ geoType }) => [geoType]);
+            var covidcastGeoTypes = Object.keys(covidCastGeographicValues);
+            covidcastGeoTypes.forEach((geoType) => {
+                var geoValues = covidCastGeographicValues[geoType].map((el) => (typeof el.id === "string") ? el.id.toLowerCase() : el.id).join(",");
+                exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${indicator["data_source"]}:${indicator["signal"]}&start_day=${dateFrom}&end_day=${dateTo}&geo_type=${geoType}&geo_values=${geoValues}`;
+                manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`;
+            })
+        })
+
+        if (this.getFluviewIndicators().length > 0) {
+            var startDate = document.getElementById('start_date').value;
+            var endDate = document.getElementById('end_date').value;
+
+            const [dateFrom, dateTo] = this.getFromToDate(startDate, endDate, "week");
+
+            var fluviewRegions = $('#fluviewRegions').select2('data').map((region) => region.id);
+            fluviewRegions = fluviewRegions.join(",");
+            exportUrl = `https://api.delphi.cmu.edu/epidata/fluview/?regions=${fluviewRegions}&epiweeks=${dateFrom}-${dateTo}&format=csv`
+            manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`;
+        }
+
+        $('#modeSubmitResult').html(manualDataExport);
+    }
+
+    previewData(){
+        $('#loader').show();
+        var requests = [];
+        var previewExample = [];
+        var startDate = document.getElementById('start_date').value;
+        var endDate = document.getElementById('end_date').value;
+
+        if (this.checkForCovidcastIndicators()) {
+            var geographicValues = $('#geographic_value').select2('data');
+            geographicValues = Object.groupBy(geographicValues, ({ geoType }) => [geoType])
+            var geoTypes = Object.keys(geographicValues);
+            this.getCovidcastIndicators().forEach((indicator) => {
+                const [dateFrom, dateTo] = this.getFromToDate(startDate, endDate, indicator["time_type"]);
+                var timeValues = indicator["time_type"] === "week" ? `${dateFrom}-${dateTo}` : `${dateFrom}--${dateTo}`;
+                geoTypes.forEach((geoType) => {
+                    var geoValues = geographicValues[geoType].map((el) => (typeof el.id === "string") ? el.id.toLowerCase() : el.id).join(",");
+                    var data = {
+                        "time_type": indicator["time_type"],
+                        "time_values": timeValues,
+                        "data_source": indicator["data_source"],
+                        "signal": indicator["signal"],
+                        "geo_type": geoType,
+                        "geo_values": geoValues
+                    }
+                    requests.push(this.sendAsyncAjaxRequest("epidata/covidcast/", data))
+                })
+            })
+        }
+
+        if (this.getFluviewIndicators().length > 0) {
+            const [dateFrom, dateTo] = this.getFromToDate(startDate, endDate, "week");
+            var fluviewRegions = $('#fluviewRegions').select2('data').map((region) => region.id);
+            fluviewRegions = fluviewRegions.join(",");
+            var data = {
+                "regions": fluviewRegions,
+                "epiweeks": `${dateFrom}-${dateTo}`,
+            }
+
+            requests.push(this.sendAsyncAjaxRequest("epidata/fluview/", data))
+        }
+
+        $.when.apply($, requests).then((...responses) => {
+            if (requests.length === 1) {
+                if (responses[0]["epidata"].length != 0) {
+                    previewExample.push({ epidata: responses[0]["epidata"][0], result: responses["result"], message: responses["message"] })
+                } else {
+                    previewExample.push(responses[0]);
+                }
+            } else {
+                responses.forEach((response) => {
+                    if (response[0]["epidata"].length != 0) {
+                        previewExample.push({ epidata: response[0]["epidata"][0], result: response[0]["result"], message: response[0]["message"] })
+                    } else {
+                        previewExample.push(response[0]["epidata"]);
+                    }
+                })
+            }
+            $('#loader').hide();
+            $('#modeSubmitResult').html(JSON.stringify(previewExample, null, 2));
+            
+        })
+    }
+
 }

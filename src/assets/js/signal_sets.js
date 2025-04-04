@@ -91,6 +91,8 @@ $("#showSelectedSignalsButton").click(function() {
     alertPlaceholder.innerHTML = "";
     if (!indicatorHandler.checkForCovidcastIndicators()) {
         $("#geographic_value").prop("disabled", true);
+    } else {
+        $("#geographic_value").prop("disabled", false);
     }
     $('#geographic_value').select2("data").forEach(geo => {
         checkGeoCoverage(geo.geoType, geo.id).then((notCoveredSignals) => {
@@ -104,9 +106,12 @@ $("#showSelectedSignalsButton").click(function() {
     nonCovidcastSignalSets = [...new Set(checkedSignalMembers.filter(signal => signal["_endpoint"] != "covidcast").map((signal) => signal["signal_set"]))];
     otherEndpointLocationsWarning += `Different location is required for following signal set(s): ${nonCovidcastSignalSets.join(", ")}`
     otherEndpointLocationsWarning += `</div></div>`
-    $("#differentLocationNote").html(otherEndpointLocationsWarning)
-    indicatorHandler.showFluviewRegions();
-
+    if (indicatorHandler.getFluviewIndicators().length > 0) {
+        $("#differentLocationNote").html(otherEndpointLocationsWarning)
+        if (document.getElementsByName("fluviewRegions").length === 0) {
+            indicatorHandler.showFluviewRegions();
+        }
+    }
 });
 
 // Add an event listener to each 'bulk-select' element
@@ -240,116 +245,6 @@ function format (signalSetId, relatedSignals, signalSetDescription) {
     return data;
 }
 
-
-function exportData() {
-    var geographicValues = $('#geographic_value').select2('data');
-    geographicValues = Object.groupBy(geographicValues, ({ geoType }) => [geoType])
-    var geoTypes = Object.keys(geographicValues);
-
-    var startDate = document.getElementById('start_date').value;
-    var endDate = document.getElementById('end_date').value;
-
-    var manualDataExport = "To download data, please click on the link or copy/paste command into your terminal: \n\n"
-    var requests = [];
-    
-    checkedSignalMembers.forEach((signal) => {
-        geoTypes.forEach((geoType) => {
-            var geoValues = geographicValues[geoType].map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(",");
-            if (signal["time_type"] === "week") {
-                var request = $.ajax({
-                    url: "get_epiweek/",
-                    type: 'POST',
-                    async: true,
-                    data: {
-                        csrfmiddlewaretoken: csrf_token,
-                        start_date: startDate,
-                        end_date: endDate,
-                    },
-                    success: function (result) {
-                        var exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${result.start_date}&end_day=${result.end_date}&geo_type=${geoType}&geo_values=${geoValues}`;
-                        manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
-                    }
-                })
-                requests.push(request);
-            } else {
-                var exportUrl = `https://api.delphi.cmu.edu/epidata/covidcast/csv?signal=${signal["data_source"]}:${signal["signal"]}&start_day=${startDate}&end_day=${endDate}&geo_type=${geoType}&geo_values=${geoValues}`;
-                manualDataExport += `wget --content-disposition <a href="${exportUrl}">${exportUrl}</a>\n`
-            }
-        });
-    });
-    $.when.apply($, requests).then(function() {
-        $('#modeSubmitResult').html(manualDataExport);
-    })
-    
-}
-
-function previewData() {
-    var geographicValues = $('#geographic_value').select2('data');
-    geographicValues = Object.groupBy(geographicValues, ({ geoType }) => [geoType])
-    var geoTypes = Object.keys(geographicValues);
-    var previewExample = [];
-    var requests = [];
-
-    var startDate = document.getElementById("start_date").value;
-    var endDate = document.getElementById("end_date").value;
-
-    checkedSignalMembers.forEach((signal) => {
-        var timeValues;
-        
-        if (signal["time_type"] === "week") {
-            $.ajax({
-                url: "get_epiweek/",
-                type: 'POST',
-                async: false,
-                data: {
-                    csrfmiddlewaretoken: csrf_token,
-                    start_date: startDate,
-                    end_date: endDate,
-                },
-                success: function (result) {
-                    timeValues = `${result.start_date}-${result.end_date}`;
-                }
-            })
-        };
-        
-        var requestSent = false;
-        if (!requestSent) {
-            geoTypes.forEach((geoType) => {
-                var geoValues = geographicValues[geoType].map((el) => (typeof el.id === 'string') ? el.id.toLowerCase() : el.id).join(",");
-                $('#loader').show();
-                timeValues = signal["time_type"] === "week" ? timeValues : `${startDate}--${endDate}`;
-                var request = $.ajax({
-                    url: "epidata/covidcast/",
-                    type: 'GET',
-                    async: true,
-                    data: {
-                        'time_type': signal["time_type"],
-                        'time_values': timeValues,
-                        'data_source': signal["data_source"],
-                        'signal': signal["signal"],
-                        'geo_type': geoType,
-                        'geo_values': geoValues
-                    },
-                    success: function (result) {
-                        if (result["epidata"].length != 0) {
-                            previewExample.push({epidata: result["epidata"][0], result: result["result"], message: result["message"]})
-                        } else {
-                            previewExample.push({epidata: result["epidata"], result: result["result"], message: result["message"]})
-                        }
-                    }
-                })
-                requests.push(request);
-            })
-        }
-    })
-    $.when.apply($, requests).then(function() {
-        $('#loader').hide();
-    $('#modeSubmitResult').html(JSON.stringify(previewExample, null, 2));
-    requestSent = true;
-    })
-}
-
-
 // Plot/Export/Preview data block
 
 var currentMode = 'epivis';
@@ -447,9 +342,9 @@ function submitMode(event) {
     if (currentMode === 'epivis') {
         indicatorHandler.plotData();
     } else if (currentMode === 'export') {
-        exportData();
+        indicatorHandler.exportData();
     } else {
-        previewData();
+        indicatorHandler.previewData();
     }
 }
 
