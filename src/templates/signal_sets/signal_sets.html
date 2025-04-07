@@ -726,6 +726,10 @@
                             <input type="date" class="form-control" id="end_date" name="end_date" value="2029-01-01">
                         </div>
                     </div>
+                    <div class="row margin-top-1rem">
+                        <div id="differentLocationNote"></div>
+                        <div id="otherEndpointLocations"></div>
+                    </div>
                     <div class="row">
                         <button type="submit" id="processSelectedSignals" value="Submit" class="btn btn-primary margin-top-1rem" data-mdb-ripple-init>
                             Submit
@@ -750,7 +754,7 @@
     var epiVisUrl = "{{ epivis_url }}";
     var csrf_token = "{{ csrf_token }}";
 </script>
-
+<script src="{% static 'js/indicatorHandler.js' %}"></script>
 <script src="{% static 'js/signal_sets.js' %}"></script>
 <script>
     const geoValues = {{ geographic_granularities|safe }};
