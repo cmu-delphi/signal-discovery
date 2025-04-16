@@ -81,6 +81,12 @@ class SeverityPyramidRung(TimeStampedModel):
         default="signals",
     )
 
+    display_order_number: models.IntegerField = models.IntegerField(
+        verbose_name=_("display order number"),
+        help_text=_("Display order number of the severity pyramid rung."),
+        null=True,
+    )
+
     class Meta:
         verbose_name_plural: str = "Severity Pyramid Rungs"
         unique_together: list[str] = ["name", "used_in"]
@@ -567,6 +573,13 @@ class Signal(TimeStampedModel):
             return self.member_name
         else:
             return self.name
+
+
+class OtherEndointSignal(Signal):
+    class Meta:
+        proxy = True
+        verbose_name = "Other Endpoint Signal"
+        verbose_name_plural = "Other Endpoint Signals"
 
 
 class SignalsDbView(models.Model):

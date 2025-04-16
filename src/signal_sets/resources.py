@@ -152,7 +152,7 @@ class SignalSetResource(resources.ModelResource):
     )
     censoring = Field(attribute="censoring", column_name="Censoring")
     missingness = Field(attribute="missingness", column_name="Missingness")
-    dua_required = Field(attribute="dua_required", column_name="DUA required?")
+    dua_required = Field(attribute="dua_required", column_name="DUA Required?")
     license = Field(attribute="license", column_name="Data Use Terms")
     dataset_location = Field(
         attribute="dataset_location", column_name="Dataset Location"
@@ -221,8 +221,10 @@ class SignalSetResource(resources.ModelResource):
     def after_import_row(self, row, row_result, **kwargs):
         try:
             signal_set_obj = SignalSet.objects.get(id=row_result.object_id)
+            signal_set_obj.pathogens.clear()
+            signal_set_obj.severity_pyramid_rungs.clear()
+            signal_set_obj.available_geographies.clear()
             for pathogen in row["Pathogen(s)/Syndrome(s)"].split(","):
-                signal_set_obj.pathogens.clear()
                 pathogen = Pathogen.objects.get(name=pathogen, used_in="signal_sets")
                 signal_set_obj.pathogens.add(pathogen)
             for severity_pyramid_rung in row["Surveillance Categories"].split(","):
@@ -231,7 +233,6 @@ class SignalSetResource(resources.ModelResource):
                     used_in="signal_sets"
                 ).first()
                 signal_set_obj.severity_pyramid_rungs.add(severity_pyramid_rung)
-
             for available_geography in row["Geographic Granularity - Delphi"].split(","):
                 available_geography = Geography.objects.get(name=available_geography, used_in="signal_sets")
                 signal_set_obj.available_geographies.add(available_geography)
