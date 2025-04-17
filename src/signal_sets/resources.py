@@ -4,7 +4,8 @@ from django.db.models import Max
 
 
 from import_export import resources
-from import_export.fields import Field, widgets
+from import_export.fields import Field
+from import_export.widgets import ForeignKeyWidget, ManyToManyWidget
 
 from datasources.models import DataSource
 from signal_sets.models import SignalSet
@@ -68,7 +69,7 @@ def process_datasources(row) -> None:
     if row["Original Data Provider"]:
         data_source = row["Original Data Provider"]
         data_source_obj, _ = DataSource.objects.get_or_create(name=data_source, defaults={"display_name": data_source.capitalize()})
-        row["Original Data Provider"] = data_source_obj
+        row["Original Data Provider"] = data_source_obj.id
 
 
 def fix_boolean_fields(row) -> Any:
@@ -101,7 +102,7 @@ class SignalSetResource(resources.ModelResource):
     data_source = Field(
         attribute="data_source",
         column_name="Original Data Provider",
-        widget=widgets.ForeignKeyWidget(DataSource, field="name"),
+        widget=ForeignKeyWidget(DataSource),
     )
     endpoint = Field(attribute="endpoint", column_name="Endpoint")
     language = Field(attribute="language", column_name="Language (likely English) ")
@@ -116,7 +117,7 @@ class SignalSetResource(resources.ModelResource):
     geographic_scope = Field(
         attribute="geographic_scope",
         column_name="Geographic Coverage",
-        widget=widgets.ForeignKeyWidget(GeographicScope),
+        widget=ForeignKeyWidget(GeographicScope),
     )
     geographic_granularity = Field(
         attribute="geographic_granularity",

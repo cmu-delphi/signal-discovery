@@ -1,7 +1,8 @@
 import re
 
 from import_export import resources
-from import_export.fields import Field, widgets
+from import_export.fields import Field
+from import_export.widgets import ForeignKeyWidget
 
 from base.models import Link
 from datasources.models import DataSource, SourceSubdivision
@@ -65,7 +66,7 @@ class SourceSubdivisionResource(resources.ModelResource):
     data_source = Field(
         column_name="DB Source",
         attribute="data_source",
-        widget=widgets.ForeignKeyWidget(DataSource, field="name"),
+        widget=ForeignKeyWidget(DataSource, field="name"),
     )
 
     class Meta:
