@@ -2,7 +2,8 @@ from typing import Any
 
 from import_export import resources
 from import_export.results import RowResult
-from import_export.fields import Field, widgets
+from import_export.fields import Field
+from import_export.widgets import ForeignKeyWidget, ManyToManyWidget
 
 from django.db.models import Max
 
@@ -63,7 +64,7 @@ def process_signal_type(row) -> None:
     if row["Indicator Type"]:
         signal_type = row["Indicator Type"]
         signal_type_obj, _ = SignalType.objects.get_or_create(name=signal_type)
-        row["Indicator Type"] = signal_type_obj
+        row["Indicator Type"] = signal_type_obj.id
 
 
 def process_format_type(row) -> None:
@@ -73,9 +74,7 @@ def process_format_type(row) -> None:
     if row["Format"]:
         format_type = row["Format"].strip()
         format_type_obj, _ = FormatType.objects.get_or_create(name=format_type)
-        row["Format"] = format_type_obj
-    else:
-        row["Format"] = None
+        row["Format"] = format_type_obj.id
 
 
 def process_severity_pyramid_rungs(row) -> None:
@@ -109,7 +108,7 @@ def process_category(row) -> None:
     if row["Category"]:
         category = row["Category"].strip()
         category_obj, _ = Category.objects.get_or_create(name=category)
-        row["Category"] = category_obj
+        row["Category"] = category_obj.id
 
 
 def process_geographic_scope(row) -> None:
@@ -131,7 +130,7 @@ def process_source(row) -> None:
     if row["Source Subdivision"]:
         source = row["Source Subdivision"]
         source_obj, _ = SourceSubdivision.objects.get_or_create(name=source)
-        row["Source Subdivision"] = source_obj
+        row["Source Subdivision"] = source_obj.id
 
 
 def process_available_geographies(row) -> None:
@@ -223,12 +222,12 @@ class SignalBaseResource(ModelResource):
     base = Field(
         attribute="base",
         column_name="base",
-        widget=widgets.ForeignKeyWidget(Signal, field="id"),
+        widget=ForeignKeyWidget(Signal, field="id"),
     )
     source = Field(
         attribute="source",
         column_name="Source Subdivision",
-        widget=widgets.ForeignKeyWidget(SourceSubdivision, field="name"),
+        widget=ForeignKeyWidget(SourceSubdivision),
     )
 
     class Meta:
@@ -258,12 +257,12 @@ class SignalResource(ModelResource):
     pathogen = Field(
         attribute="pathogen",
         column_name="Pathogen/\nDisease Area",
-        widget=widgets.ManyToManyWidget(Pathogen, field="name", separator=","),
+        widget=ManyToManyWidget(Pathogen, field="name", separator=","),
     )
     signal_type = Field(
         attribute="signal_type",
         column_name="Indicator Type",
-        widget=widgets.ForeignKeyWidget(SignalType, field="name"),
+        widget=ForeignKeyWidget(SignalType),
     )
     active = Field(attribute="active", column_name="Active")
     description = Field(attribute="description", column_name="Description")
@@ -273,7 +272,7 @@ class SignalResource(ModelResource):
     format_type = Field(
         attribute="format_type",
         column_name="Format",
-        widget=widgets.ForeignKeyWidget(FormatType, field="name"),
+        widget=ForeignKeyWidget(FormatType),
     )
     time_type = Field(attribute="time_type", column_name="Time Type")
     time_label = Field(attribute="time_label", column_name="Time Label")
@@ -292,22 +291,22 @@ class SignalResource(ModelResource):
     severity_pyramid_rung = Field(
         attribute="severity_pyramid_rung",
         column_name="Surveillance Categories",
-        widget=widgets.ForeignKeyWidget(SeverityPyramidRung),
+        widget=ForeignKeyWidget(SeverityPyramidRung),
     )
     category = Field(
         attribute="category",
         column_name="Category",
-        widget=widgets.ForeignKeyWidget(Category, "name"),
+        widget=ForeignKeyWidget(Category),
     )
     geographic_scope = Field(
         attribute="geographic_scope",
         column_name="Geographic Coverage",
-        widget=widgets.ForeignKeyWidget(GeographicScope),
+        widget=ForeignKeyWidget(GeographicScope),
     )
     available_geographies = Field(
         attribute="available_geography",
         column_name="Geographic Levels",
-        widget=widgets.ManyToManyWidget(Geography, field="name", separator=","),
+        widget=ManyToManyWidget(Geography, field="name", separator=","),
     )
     temporal_scope_start = Field(
         attribute="temporal_scope_start", column_name="Temporal Scope Start"
@@ -330,7 +329,7 @@ class SignalResource(ModelResource):
     source = Field(
         attribute="source",
         column_name="Source Subdivision",
-        widget=widgets.ForeignKeyWidget(SourceSubdivision, field="name"),
+        widget=ForeignKeyWidget(SourceSubdivision),
     )
     data_censoring = Field(attribute="data_censoring", column_name="Data Censoring")
     missingness = Field(attribute="missingness", column_name="Missingness")
@@ -346,7 +345,7 @@ class SignalResource(ModelResource):
     signal_set = Field(
         attribute="signal_set",
         column_name="Indicator Set",
-        widget=widgets.ForeignKeyWidget(SignalSet, field="name"),
+        widget=ForeignKeyWidget(SignalSet, field="name"),
     )
 
     class Meta:
@@ -429,7 +428,7 @@ class SignalResource(ModelResource):
                 signal_obj.related_links.add(link)
             process_available_geographies(row)
             signal_obj.severity_pyramid_rung = SeverityPyramidRung.objects.get(id=row["Surveillance Categories"])
-            signal_obj.format_type = row["Format"]
+            signal_obj.format_type = FormatType.objects.get(id=row["Format"])
             signal_obj.save()
         except Signal.DoesNotExist as e:
             print(f"Signal.DoesNotExist: {e}")
@@ -452,12 +451,12 @@ class OtherEndpointSignalResource(ModelResource):
     pathogen = Field(
         attribute="pathogen",
         column_name="Pathogen/\nDisease Area",
-        widget=widgets.ManyToManyWidget(Pathogen, field="name", separator=","),
+        widget=ManyToManyWidget(Pathogen, field="name", separator=","),
     )
     signal_type = Field(
         attribute="signal_type",
         column_name="Indicator Type",
-        widget=widgets.ForeignKeyWidget(SignalType, field="name"),
+        widget=ForeignKeyWidget(SignalType),
     )
     active = Field(attribute="active", column_name="Active")
     description = Field(attribute="description", column_name="Description")
@@ -467,7 +466,7 @@ class OtherEndpointSignalResource(ModelResource):
     format_type = Field(
         attribute="format_type",
         column_name="Format",
-        widget=widgets.ForeignKeyWidget(FormatType, field="name"),
+        widget=ForeignKeyWidget(FormatType),
     )
     time_type = Field(attribute="time_type", column_name="Time Type")
     time_label = Field(attribute="time_label", column_name="Time Label")
@@ -486,22 +485,22 @@ class OtherEndpointSignalResource(ModelResource):
     severity_pyramid_rung = Field(
         attribute="severity_pyramid_rung",
         column_name="Surveillance Categories",
-        widget=widgets.ForeignKeyWidget(SeverityPyramidRung),
+        widget=ForeignKeyWidget(SeverityPyramidRung),
     )
     category = Field(
         attribute="category",
         column_name="Category",
-        widget=widgets.ForeignKeyWidget(Category, "name"),
+        widget=ForeignKeyWidget(Category),
     )
     geographic_scope = Field(
         attribute="geographic_scope",
         column_name="Geographic Coverage",
-        widget=widgets.ForeignKeyWidget(GeographicScope),
+        widget=ForeignKeyWidget(GeographicScope),
     )
     available_geographies = Field(
         attribute="available_geography",
         column_name="Geographic Levels",
-        widget=widgets.ManyToManyWidget(Geography, field="name", separator=","),
+        widget=ManyToManyWidget(Geography, field="name", separator=","),
     )
     temporal_scope_start = Field(
         attribute="temporal_scope_start", column_name="Temporal Scope Start"
@@ -524,7 +523,7 @@ class OtherEndpointSignalResource(ModelResource):
     source = Field(
         attribute="source",
         column_name="Source Subdivision",
-        widget=widgets.ForeignKeyWidget(SourceSubdivision, field="name"),
+        widget=ForeignKeyWidget(SourceSubdivision),
     )
     data_censoring = Field(attribute="data_censoring", column_name="Data Censoring")
     missingness = Field(attribute="missingness", column_name="Missingness")
@@ -540,7 +539,7 @@ class OtherEndpointSignalResource(ModelResource):
     signal_set = Field(
         attribute="signal_set",
         column_name="Indicator Set",
-        widget=widgets.ForeignKeyWidget(SignalSet, field="name"),
+        widget=ForeignKeyWidget(SignalSet, field="name"),
     )
 
     class Meta:
@@ -623,7 +622,7 @@ class OtherEndpointSignalResource(ModelResource):
                 signal_obj.related_links.add(link)
             process_available_geographies(row)
             signal_obj.severity_pyramid_rung = SeverityPyramidRung.objects.get(id=row["Surveillance Categories"])
-            signal_obj.format_type = row["Format"]
+            signal_obj.format_type = FormatType.objects.get(id=row["Format"])
             signal_obj.save()
         except Signal.DoesNotExist as e:
             print(f"Signal.DoesNotExist: {e}")
