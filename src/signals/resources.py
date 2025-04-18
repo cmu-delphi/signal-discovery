@@ -227,7 +227,7 @@ class SignalBaseResource(ModelResource):
     source = Field(
         attribute="source",
         column_name="Source Subdivision",
-        widget=ForeignKeyWidget(SourceSubdivision),
+        widget=ForeignKeyWidget(SourceSubdivision, field="name"),
     )
 
     class Meta:
@@ -427,8 +427,14 @@ class SignalResource(ModelResource):
             for link in row["Links"]:
                 signal_obj.related_links.add(link)
             process_available_geographies(row)
-            signal_obj.severity_pyramid_rung = SeverityPyramidRung.objects.get(id=row["Surveillance Categories"])
-            signal_obj.format_type = FormatType.objects.get(id=row["Format"])
+            try:
+                signal_obj.severity_pyramid_rung = SeverityPyramidRung.objects.get(id=row["Surveillance Categories"])
+            except ValueError:
+                signal_obj.severity_pyramid_rung = None
+            try:
+                signal_obj.format_type = FormatType.objects.get(id=row["Format"])
+            except ValueError:
+                signal_obj.format_type = None
             signal_obj.save()
         except Signal.DoesNotExist as e:
             print(f"Signal.DoesNotExist: {e}")
@@ -621,8 +627,14 @@ class OtherEndpointSignalResource(ModelResource):
             for link in row["Links"]:
                 signal_obj.related_links.add(link)
             process_available_geographies(row)
-            signal_obj.severity_pyramid_rung = SeverityPyramidRung.objects.get(id=row["Surveillance Categories"])
-            signal_obj.format_type = FormatType.objects.get(id=row["Format"])
+            try:
+                signal_obj.severity_pyramid_rung = SeverityPyramidRung.objects.get(id=row["Surveillance Categories"])
+            except ValueError:
+                signal_obj.severity_pyramid_rung = None
+            try:
+                signal_obj.format_type = FormatType.objects.get(id=row["Format"])
+            except ValueError:
+                signal_obj.format_type = None
             signal_obj.save()
         except Signal.DoesNotExist as e:
             print(f"Signal.DoesNotExist: {e}")
