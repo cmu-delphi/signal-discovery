@@ -447,7 +447,7 @@ class OtherEndpointSignalResource(ModelResource):
 
     name = Field(attribute="name", column_name="Indicator")
     display_name = Field(attribute="display_name", column_name="Name")
-    member_name = Field(attribute="member_name", column_name="Member API Name")
+    member_name = Field(attribute="member_name", column_name="Member Name")
     member_short_name = Field(
         attribute="member_short_name", column_name="Member Short Name"
     )
